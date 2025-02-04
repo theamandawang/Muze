@@ -1,3 +1,5 @@
+import AlbumArt from "@/components/album_art/album_art"
+
 export default function Dashboard(){
     return (
         <div className="grid grid-flow-row auto-rows-max">
@@ -8,33 +10,9 @@ export default function Dashboard(){
                 <div className="bg-primary h-6 rounded-full text-center">
                     &lt;
                 </div>
-                <div className="relative bg-blue-500 aspect-square rounded-2xl">
-                    <div className="absolute bg-secondary rounded-full text-center place-content-center h-[10%] w-[30%] top-[4%] right-[4%]">
-                        song
-                    </div>
-                    <div className="absolute h-1/5 w-full bg-stone-950 bottom-0 rounded-b-2xl opacity-70">
-                        <h2 className="font-semibold ml-[4%] mt-[2%] text-2xl">Buddy Holly</h2>
-                        <h2 className=" font-semibold ml-[4%] mt-[1%] text-xl">Weezer</h2>
-                    </div>
-                </div>
-                <div className="relative bg-blue-500 aspect-square rounded-2xl">
-                    <div className="absolute bg-secondary rounded-full text-center place-content-center h-[10%] w-[30%] top-[4%] right-[4%]">
-                        song
-                    </div>
-                    <div className="absolute h-1/5 w-full bg-stone-950 bottom-0 rounded-b-2xl opacity-70">
-                        <h2 className="font-semibold ml-[4%] mt-[2%] text-2xl">Buddy Holly</h2>
-                        <h2 className=" font-semibold ml-[4%] mt-[1%] text-xl">Weezer</h2>
-                    </div>
-                </div>
-                <div className="relative bg-blue-500 aspect-square rounded-2xl">
-                    <div className="absolute bg-primary rounded-xl text-center place-content-center h-[10%] w-[30%] top-[4%] right-[4%]">
-                        album
-                    </div>
-                    <div className="absolute h-1/5 w-full bg-stone-950 bottom-0 rounded-b-2xl opacity-70">
-                        <h2 className="font-semibold ml-[4%] mt-[2%] text-2xl">Weezer (Blue Album)</h2>
-                        <h2 className=" font-semibold ml-[4%] mt-[1%] text-xl">Weezer</h2>
-                    </div>
-                </div>
+                <AlbumArt hasTitle={true} hasTypeSticker={true} type="song"/>
+                <AlbumArt hasTitle={true} hasTypeSticker={true} type="song"/>
+                <AlbumArt hasTitle={true} hasTypeSticker={true} type="album"/>
                 <div className="bg-primary h-6 rounded-full text-center">
                     &gt;
                 </div>
@@ -46,16 +24,7 @@ export default function Dashboard(){
                 <span className="text-3xl font-semibold">What your friends are saying...</span>
             </div>
             <div className="grid grid-cols grid-cols-[2fr_4fr] px-[15%] gap-8 mt-[5%] items-center">
-                <div className="relative bg-blue-500 aspect-square rounded-2xl">
-                    <div className="absolute aspect-square rounded-full bg-tertiary -top-[16%] -left-[16%] w-1/3"></div>
-                    <div className="absolute bg-primary rounded-xl text-center place-content-center h-[10%] w-[30%] top-[4%] right-[4%]">
-                        album
-                    </div>
-                    <div className="absolute h-1/5 w-full bg-stone-950 bottom-0 rounded-b-2xl opacity-70">
-                        <h2 className="font-semibold ml-[4%] mt-[2%] text-2xl">Weezer (Blue Album)</h2>
-                        <h2 className=" font-semibold ml-[4%] mt-[1%] text-xl">Weezer</h2>
-                    </div>
-                </div>
+                <AlbumArt hasTitle={true} hasProfileSticker={true} hasTypeSticker={true} type="song"/>
             </div>
         </div>
     )

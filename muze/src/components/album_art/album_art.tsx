@@ -1,0 +1,28 @@
+interface AlbumArtProps {
+    hasTitle?: boolean;
+    hasProfileSticker?: boolean;
+    hasTypeSticker?: boolean;
+    type?: "song" | "album";
+}
+export default function AlbumArt({ hasTitle = false, hasProfileSticker = false, hasTypeSticker = false, type }: AlbumArtProps) {
+    
+    return (
+        <div className="relative bg-blue-500 aspect-square rounded-2xl">
+            {hasProfileSticker && (
+                <div className="absolute aspect-square rounded-full bg-tertiary -top-[16%] -left-[16%] w-1/3"></div>
+            )}
+            {hasTypeSticker && type === "song" && (
+                <div className="absolute bg-secondary rounded-full text-center place-content-center h-[10%] w-[30%] top-[4%] right-[4%]">song</div>
+            )}
+            {hasTypeSticker && type === "album" && (
+                <div className="absolute bg-primary rounded-xl text-center place-content-center h-[10%] w-[30%] top-[4%] right-[4%]">album</div>
+            )}
+            {hasTitle && (
+                <div className="absolute h-1/5 w-full bg-stone-950 bottom-0 rounded-b-2xl opacity-70">
+                    <h2 className="font-semibold ml-[4%] mt-[2%] text-2xl">Buddy Holly</h2>
+                    <h2 className=" font-semibold ml-[4%] mt-[1%] text-xl">Weezer</h2>
+                </div>
+            )}
+        </div>
+    )
+}
