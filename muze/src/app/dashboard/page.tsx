@@ -2,7 +2,7 @@ import AlbumArt from "@/components/album_art/album_art"
 
 export default function Dashboard(){
     return (
-        <div className="grid grid-flow-row auto-rows-max mb-[15%]">
+        <div className="grid grid-flow-row auto-rows-max mb-[15%] mx-[15%]">
             <div className="px-[12%]">
                 <span className="text-3xl font-semibold">Hey, Maxine!</span>
             </div>

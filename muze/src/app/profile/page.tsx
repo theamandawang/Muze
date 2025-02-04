@@ -2,11 +2,11 @@ import AlbumArt from "@/components/album_art/album_art"
 
 export default function Profile(){
     return (
-        <div>
-            <div className="grid grid-flow-row auto-rows-max mb-[15%] mx-auto">
+        <div className="grid grid-flow-row auto-rows-max mb-[15%] mx-auto">
                 <div className="relative bg-secondary h-[10rem] w-full">
-                    <div className="absolute aspect-square rounded-full bg-tertiary top-[50%] left-[5%] w-[10%]"></div>
+                    <div className="absolute aspect-square rounded-full bg-tertiary top-[50%] left-[5%] w-[8%] mx-[13%]"></div>
                 </div>
+                <div className="mx-[15%]">
                     <div className="px-[5%] mt-[7%]">
                         <h1 className="text-5xl font-bold">Maxine Wu  
                             <span className="text-xl italic px-3 font-normal">(she/her)</span>
