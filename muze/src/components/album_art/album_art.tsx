@@ -2,7 +2,7 @@ interface AlbumArtProps {
     hasTitle?: boolean;
     hasProfileSticker?: boolean;
     hasTypeSticker?: boolean;
-    type?: "song" | "album";
+    type?: "song" | "album" | "song review" | "album review";
 }
 export default function AlbumArt({ hasTitle = false, hasProfileSticker = false, hasTypeSticker = false, type }: AlbumArtProps) {
     
@@ -11,11 +11,11 @@ export default function AlbumArt({ hasTitle = false, hasProfileSticker = false, 
             {hasProfileSticker && (
                 <div className="absolute aspect-square rounded-full bg-tertiary -top-[16%] -left-[16%] w-1/3"></div>
             )}
-            {hasTypeSticker && type === "song" && (
-                <div className="absolute bg-secondary rounded-full text-center place-content-center h-[10%] w-[30%] top-[4%] right-[4%]">song</div>
+            {hasTypeSticker && (type === "song" || type == "song review") && (
+                <div className="absolute bg-secondary rounded-full text-center place-content-center h-[10%] w-[30%] top-[4%] right-[4%]">{type}</div>
             )}
-            {hasTypeSticker && type === "album" && (
-                <div className="absolute bg-primary rounded-xl text-center place-content-center h-[10%] w-[30%] top-[4%] right-[4%]">album</div>
+            {hasTypeSticker && (type === "album" || type === "album review") && (
+                <div className="absolute bg-primary rounded-xl text-center place-content-center h-[10%] w-[30%] top-[4%] right-[4%]">{type}</div>
             )}
             {hasTitle && (
                 <div className="absolute h-1/5 w-full bg-stone-950 bottom-0 rounded-b-2xl opacity-70">
