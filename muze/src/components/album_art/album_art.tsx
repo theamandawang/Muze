@@ -18,9 +18,9 @@ export default function AlbumArt({ hasTitle = false, hasProfileSticker = false, 
                 <div className="absolute bg-primary rounded-xl text-center place-content-center h-[10%] w-[30%] top-[4%] right-[4%]">{type}</div>
             )}
             {hasTitle && (
-                <div className="absolute h-[5rem] w-full bg-stone-950 bottom-0 rounded-b-2xl opacity-70">
-                    <h2 className="font-semibold ml-[4%] mt-[2%] text-2xl">Buddy Holly</h2>
-                    <h2 className=" font-semibold ml-[4%] mt-[1%] text-xl">Weezer</h2>
+                <div className="absolute h-[50%] w-full bg-stone-950 bottom-0 rounded-b-2xl opacity-70">
+                    <h2 className="font-semibold ml-[4%] mt-[2%] sm:text-base md:text-lg lg:text-xl xl:text-2xl">Buddy Holly</h2>
+                    <h2 className=" font-semibold ml-[4%] mt-[1%] sm:text-xs md:text-base lg:text-lg xl:text-xl">Weezer</h2>
                 </div>
             )}
         </div>
