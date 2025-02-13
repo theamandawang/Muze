@@ -1,3 +1,23 @@
+import type { Metadata } from "next";
+import { DM_Sans, Instrument_Sans } from "next/font/google";
+import MuzeHeader from "@/components/muze_header/header";
+
+import "./globals.css";
+
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
+  subsets: ["latin"],
+})
+
+const instrumentSans = Instrument_Sans({
+  variable: "--font-instrument-sans",
+  subsets: ["latin"],
+})
+
+export const metadata: Metadata = {
+  title: "Muze",
+  description: "Where listeners become storytellers",
+};
 import authOptions from '@/app/api/auth/[...nextauth]/authOptions';
 import './globals.css';
 import AuthSessionProvider from '@/components/AuthSessionProvider';

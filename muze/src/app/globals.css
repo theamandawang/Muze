@@ -18,9 +18,21 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  --background: #0b001b;
+  --foreground: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
 }
 
 body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-dm-sans);
   margin: 0;
   display: flex;
   place-items: center;
@@ -31,4 +43,8 @@ body {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+
+h1 {
+  font-family: var(--font-instrument-sans);
 }
