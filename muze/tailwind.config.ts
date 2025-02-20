@@ -12,6 +12,7 @@ export default {
         primary: "#62558b",
         secondary: "#775460",
         tertiary: "#e7defd",
+        'custom-fuchsia': "#46293C",
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
