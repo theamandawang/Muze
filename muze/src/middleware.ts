@@ -9,8 +9,11 @@ export async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
     if (session && pathname === '/') {
-        console.log('Attempting redirect');
+        console.log('Attempting redirect to dash');
         return NextResponse.redirect(new URL('/dashboard', req.url));
+    } else if (!session && pathname === '/dashboard') {
+        console.log('Attempting redirect to login');
+        return NextResponse.redirect(new URL('/', req.url));
     }
 
     return NextResponse.next();
