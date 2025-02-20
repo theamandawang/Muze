@@ -5,7 +5,7 @@ import AuthSessionProvider from '@/components/AuthSessionProvider';
 import { getServerSession } from 'next-auth';
 import { Inter } from 'next/font/google';
 import { ReactNode } from 'react';
-import LayoutWrapper from './LayoutWrapper';
+import LayoutWrapper from './layout-wrapper';
 import './globals.css';
 
 const dmSans = DM_Sans({
