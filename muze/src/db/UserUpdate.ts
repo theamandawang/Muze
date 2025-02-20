@@ -1,13 +1,13 @@
-import SupabaseClient from './SupabaseClient';
+import { supabase } from '@/lib/supabase/supabase';
 
 export async function CreateUser(token: any) {
-    const existing = await SupabaseClient.from('users')
+    const existing = await supabase.from('users')
         .select()
         .eq('id', token.id);
 
     // if there is no existing
     if (!existing.error && existing.data.length === 0) {
-        const { data, error } = await SupabaseClient.from('users')
+        const { data, error } = await supabase.from('users')
             .insert({
                 bio: null,
                 created_at: new Date().toISOString(),
