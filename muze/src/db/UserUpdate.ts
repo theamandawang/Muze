@@ -1,25 +1,13 @@
-import { createClient } from '@supabase/supabase-js';
-import { Database } from '@/db/database.types';
-
-if (
-    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-) {
-    throw new Error('No Supabase URL or Anon Key');
-}
-
-const supabase = createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+import SupabaseClient from './SupabaseClient';
 
 export async function CreateUser(token: any) {
-    const existing = await supabase.from('users').select().eq('id', token.id);
+    const existing = await SupabaseClient.from('users')
+        .select()
+        .eq('id', token.id);
 
     // if there is no existing
     if (!existing.error && existing.data.length === 0) {
-        const { data, error } = await supabase
-            .from('users')
+        const { data, error } = await SupabaseClient.from('users')
             .insert({
                 bio: null,
                 created_at: new Date().toISOString(),
