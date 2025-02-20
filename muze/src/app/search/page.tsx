@@ -5,6 +5,7 @@ import sdk from '@/lib/spotify-sdk/ClientInstance';
 import { useSession } from 'next-auth/react';
 import { useDebouncedCallback } from 'use-debounce';
 import { useState } from 'react';
+import { UpdateUsername } from '@/db/UserUpdate';
 
 export default function Search() {
     const session = useSession();
@@ -15,6 +16,7 @@ export default function Search() {
 
     return (
         <div>
+            <UsernameChange session={session} />
             <SpotifySearch sdk={sdk} />
         </div>
     );
@@ -71,6 +73,32 @@ function SpotifySearch({ sdk }: { sdk: SpotifyApi }) {
                 </thead>
                 <tbody>{tableRows}</tbody>
             </table>
+        </>
+    );
+}
+
+function UsernameChange({ session }) {
+    const [text, setText] = useState('');
+    const click = async () => {
+        try {
+            await UpdateUsername(session.data.user.id, text);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    return (
+        <>
+            <h1>Type in new username: </h1>
+            <input
+                type='search'
+                onChange={(e) => {
+                    setText(e.target.value);
+                }}
+            ></input>
+            <button color='red' onClick={click}>
+                CLICK ME
+            </button>
         </>
     );
 }
