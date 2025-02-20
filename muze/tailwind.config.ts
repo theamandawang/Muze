@@ -13,6 +13,7 @@ export default {
         secondary: "#775460",
         tertiary: "#e7defd",
         'custom-fuchsia': "#46293C",
+        'search-purple': '#1c192a',
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
