@@ -17,7 +17,7 @@ export default function Profile(){
                     <div className="px-[4%]">
                             <p className="px-3 font-normal sm:text-sm md:text-base lg:text-lg xl:text-xl">@maxinewuu</p>
                     </div>
-                    <div className="px-[4%] py-[3%]">
+                    <div className="px-[4%] py-[2%]">
                             <p className="px-3 font-normal sm:text-sm md:text-base lg:text-lg xl:text-xl">
                                 lover of all things pop, kpop/cpop, and jazz &lt;3
                             </p>
@@ -26,6 +26,14 @@ export default function Profile(){
                                 <span className="underline px-[0.5%]">Fallin'</span>
                                 by Harry Styles
                             </p>
+                    </div>
+                    <div className='px-[4%] pb-[3%]'>
+                        <p className='px-3'>
+                            <span className='font-bold'>5 </span> 
+                            followers • 
+                            <span className='font-bold'> 5 </span> 
+                            following
+                        </p>
                     </div>
                     <div>
                         <div className="grid grid-cols-[1fr_1fr_1fr] px-[4%] gap-x-[8%] mb-[1%]">
