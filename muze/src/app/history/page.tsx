@@ -25,6 +25,7 @@ function SpotifySearch({ sdk }: { sdk: SpotifyApi }) {
         (async () => {
             // I don't think I can get recently played via the sdk, so getting topItems just to see.
             const results = await sdk.currentUser.topItems('artists');
+            console.log(results.items);
             setResults(() => results.items);
         })();
     }, [sdk]);
