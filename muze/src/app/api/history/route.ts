@@ -10,6 +10,7 @@ type SpotifyServerSession = {
 export async function GET() {
     const session: SpotifyServerSession | null | undefined =
         await getServerSession(authOptions);
+    console.log(session);
 
     if (!session || session.user.expires_in <= 0) {
         return NextResponse.json(

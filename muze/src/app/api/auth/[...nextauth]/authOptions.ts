@@ -1,6 +1,7 @@
 import spotifyProfile, { refreshAccessToken } from './SpotifyProfile';
 import { Account, AuthOptions } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
+import { CreateUser } from '@/db/UserUpdate';
 
 export type AuthUser = {
     name: string;
@@ -39,6 +40,13 @@ const authOptions: AuthOptions = {
 
             if (Date.now() < updatedToken.expires_at) {
                 return refreshAccessToken(updatedToken);
+            }
+
+            try {
+                await CreateUser(updatedToken);
+            } catch (error) {
+                // We'll log the error to the console for now
+                console.error(error);
             }
 
             return updatedToken;

@@ -17,7 +17,6 @@ export default function Home() {
             </div>
         );
     }
-
     return (
         <div>
             <p>Logged in as {session.data.user?.name}</p>
