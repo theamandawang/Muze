@@ -1,17 +1,22 @@
-require('dotenv').config({ path: '.env.test' });
+// jest.config.js
+const nextJest = require('next/jest');
 
-module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'jsdom',
-  setupFiles: ['dotenv/config'],
-  setupFilesAfterEnv: [
-    '<rootDir>/jest.setup.js'
-  ],
+const createJestConfig = nextJest({
+  dir: './', // Path to your Next.js app directory
+});
+
+// Add any custom configuration below
+const customJestConfig = {
+  // Use jsdom for testing components
+  testEnvironment: 'jest-environment-jsdom',
+
+  // If you use module aliasing (e.g. '@/...' paths), you can add a moduleNameMapper:
   moduleNameMapper: {
-    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-    '^@/(.*)$': '<rootDir>/src/$1'
+    '^@/(.*)$': '<rootDir>/src/$1',
   },
-  transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
-  },
+
+  // Optionally set up global variables, mocks, etc.
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 };
+
+module.exports = createJestConfig(customJestConfig);
