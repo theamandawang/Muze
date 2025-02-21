@@ -19,11 +19,11 @@ export type AuthUser = {
 const authOptions: AuthOptions = {
   providers: [spotifyProfile],
   session: {
-    maxAge: 60 * 60, // 1hr
+    maxAge: 60 * 60, // 1h
   },
   callbacks: {
     async jwt({ token, account }: { token: JWT; account: Account | null }) {
-      // If there's no account, simply return the existing token.
+      // If no account -> return existing token
       if (!account) {
         return token;
       }
@@ -39,7 +39,7 @@ const authOptions: AuthOptions = {
         id: account.providerAccountId, // Set token.id from providerAccountId
       };
 
-      // Optionally, refresh the token if needed.
+      // Refresh token if needed
       if (Date.now() < updatedToken.expires_at * 1000) {
         return refreshAccessToken(updatedToken);
       }
@@ -53,7 +53,7 @@ const authOptions: AuthOptions = {
       return updatedToken;
     },
     async session({ session, token }: { session: any; token: JWT }) {
-      // Extend session.user with the id from token.
+      // Extend session.user with the id from token
       session.user.id = token.id as string;
       return session;
     },
