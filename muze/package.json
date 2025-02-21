@@ -33,6 +33,7 @@
         "@types/react-dom": "^19",
         "babel-jest": "^29.7.0",
         "dotenv": "^16.4.7",
+        "@types/uuid": "^10.0.0",
         "eslint": "^9",
         "eslint-config-next": "15.1.6",
         "identity-obj-proxy": "^3.0.0",
