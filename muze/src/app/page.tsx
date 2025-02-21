@@ -17,10 +17,7 @@ export default function Home() {
                 </div>
                 <div>
                     <div className='h-screen place-content-center'>
-                        <div className='bg-white text-black font-bold rounded-full w-[25%] py-[1.25%] text-center'>
-                            {/* <button onClick={() => signIn('spotify')}>
-                                Sign up with Spotify
-                            </button> */}
+                        <div className='bg-white text-black font-bold rounded-full w-lg sm:w-sm py-3 text-center'>
                             <Link href={{
                                 pathname: '/signup',
                                 query: {
@@ -30,11 +27,8 @@ export default function Home() {
                                 Sign up with Spotify
                             </Link>
                         </div>
-                        <h1 className='font-bold text-lg mt-[3%]'>Already have an account?</h1>
-                        <div className='bg-primary text-white font-bold rounded-full w-[25%] py-[1.25%] mt-[1%] text-center '>
-                            {/* <button onClick={() => signIn('spotify')}>
-                                Sign in with Spotify
-                            </button> */}
+                        <h1 className='font-bold text-lg mt-[5%] mb-[5%]'>Already have an account?</h1>
+                        <div className='bg-primary text-white font-bold rounded-full w-lg sm:w-sm py-3 text-center'>
                             <Link href={{
                                 pathname: '/signup',
                                 query: {

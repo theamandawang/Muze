@@ -11,14 +11,18 @@ export default function MuzeHeader() {
     else if (pathname === '/search'){
         headerType = 'hasReviewButton';
     }
+
     return (
-        <header className="flex px-8 pt-8 pb-12 relative justify-between">
+        <header className="flex w-full px-8 pt-4 pb-4 relative justify-between items-center">
+            {/* Left side: "muze" text */}
             <Link href='/dashboard'>
                 <div>
                     <h1 className="text-3xl font-bold text-white">muze</h1>
                 </div>
             </Link>
-            <div className="flex flex-row gap-8 items-center">
+
+            {/* Right side: Profile icon and conditional elements */}
+            <div className="flex flex-row gap-8 items-center ml-auto">
                 {headerType === 'hasSearchbar' && (
                     <Link href='/search'>
                         <div className="bg-white h-10 w-56 border rounded-lg shadow-md text-black">
