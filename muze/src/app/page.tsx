@@ -4,6 +4,7 @@ import { SearchResults, SpotifyApi } from '@spotify/web-api-ts-sdk'; // use "@sp
 import sdk from '@/lib/spotify-sdk/ClientInstance';
 import { useSession, signOut, signIn } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 export default function Home() {
     const session = useSession();
@@ -17,15 +18,31 @@ export default function Home() {
                 <div>
                     <div className='h-screen place-content-center'>
                         <div className='bg-white text-black font-bold rounded-full w-[25%] py-[1.25%] text-center'>
-                            <button onClick={() => signIn('spotify')}>
+                            {/* <button onClick={() => signIn('spotify')}>
                                 Sign up with Spotify
-                            </button>
+                            </button> */}
+                            <Link href={{
+                                pathname: '/signup',
+                                query: {
+                                    hasAccount: false
+                                }
+                            }}>
+                                Sign up with Spotify
+                            </Link>
                         </div>
                         <h1 className='font-bold text-lg mt-[3%]'>Already have an account?</h1>
                         <div className='bg-primary text-white font-bold rounded-full w-[25%] py-[1.25%] mt-[1%] text-center '>
-                            <button onClick={() => signIn('spotify')}>
+                            {/* <button onClick={() => signIn('spotify')}>
                                 Sign in with Spotify
-                            </button>
+                            </button> */}
+                            <Link href={{
+                                pathname: '/signup',
+                                query: {
+                                    hasAccount: true
+                                }
+                            }}>
+                                Sign in with Spotify
+                            </Link>
                         </div>
                     </div>
                 </div>
