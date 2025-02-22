@@ -4,6 +4,7 @@ interface AlbumArtProps {
     hasTypeSticker?: boolean;
     type?: "song" | "album" | "song review" | "album review";
 }
+
 export default function AlbumArt({ hasTitle = false, hasProfileSticker = false, hasTypeSticker = false, type }: AlbumArtProps) {
     
     return (
