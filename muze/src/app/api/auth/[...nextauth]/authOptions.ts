@@ -47,7 +47,7 @@ const authOptions: AuthOptions = {
             }
 
             try {
-                await CreateUser(updatedToken);
+                await CreateUser();
             } catch (error) {
                 // We'll log the error to the console for now
                 console.error(error);
