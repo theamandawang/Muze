@@ -16,7 +16,7 @@ export default function Search() {
 
     return (
         <div>
-            <UsernameChange session={session} />
+            <UsernameChange />
             <SpotifySearch sdk={sdk} />
         </div>
     );
@@ -77,11 +77,11 @@ function SpotifySearch({ sdk }: { sdk: SpotifyApi }) {
     );
 }
 
-function UsernameChange({ session }) {
+function UsernameChange() {
     const [text, setText] = useState('');
     const click = async () => {
         try {
-            await UpdateUsername(session.data.user.id, text);
+            await UpdateUsername(text);
         } catch (error) {
             console.error(error);
         }
