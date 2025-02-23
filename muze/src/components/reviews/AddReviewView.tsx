@@ -7,9 +7,9 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { Track } from '@spotify/web-api-ts-sdk';
-import { supabase } from '@/lib/supabase/supabase';
 import { useSession } from "next-auth/react"
 import { AuthUser } from "@/app/api/auth/[...nextauth]/authOptions";
+import { addReview } from '@/app/api/review/addReview';
 
 interface AddReviewViewProps {
     track: Track;
@@ -18,28 +18,16 @@ interface AddReviewViewProps {
 
 export default function AddReviewView({ track, onBack }: AddReviewViewProps) {
     const { data: session, status } = useSession()
+    const [title, setTitle] = useState('');
     const [review, setReview] = useState('');
     const trackName = track.name;
     const userId = (session?.user as AuthUser).id;
     const trackArtistsList = track.artists.map((artist) => artist.name).join(", ");
+    const [rating, setRating] = useState(5);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const body = {
-            user_id: userId,
-            song_id: track.id, 
-            content: review, 
-            created_at: new Date().toISOString(),
-        }
-        const { data, error } = await supabase
-            .from('song_reviews')
-            .insert([body])
-            .select()
-        
-        if (error) {
-            alert('There was a problem with submitting your review.');
-        }
-        alert('Successfully submitted review!');
+        addReview(userId, track.id, title, review, rating);
     };
 
     return (
