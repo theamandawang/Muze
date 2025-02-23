@@ -2,9 +2,21 @@
 import SupabaseClient from './SupabaseClient';
 import { checkSession } from '@/utils/serverSession';
 
-export async function CreateUser() {
+async function getSessionAndErrorCheck() {
     const session = await checkSession();
+    if (session.error) {
+        console.error(session.error);
+        throw new Error('Bad session ' + session.error);
+    }
+    if (!session.user) {
+        console.error('There is no user in the session.');
+        throw new Error('No user in session.');
+    }
+    return session;
+}
 
+export async function CreateUser() {
+    const session = await getSessionAndErrorCheck();
     const { data, error } = await SupabaseClient.from('users')
         .upsert(
             {
@@ -32,7 +44,7 @@ export async function CreateUser() {
 }
 
 export async function UpdateUsername(username: string) {
-    const session = await checkSession();
+    const session = await getSessionAndErrorCheck();
     const { data, error } = await SupabaseClient.from('users')
         .update({ username: username })
         .match({ id: session.user.id })
@@ -45,7 +57,7 @@ export async function UpdateUsername(username: string) {
 }
 
 export async function UpdateProfilePicture(profile_pic: string) {
-    const session = await checkSession();
+    const session = await getSessionAndErrorCheck();
     const { data, error } = await SupabaseClient.from('users')
         .update({ profile_pic: profile_pic })
         .match({ id: session.user.id })
@@ -58,7 +70,7 @@ export async function UpdateProfilePicture(profile_pic: string) {
 }
 
 export async function UpdateBio(bio: string) {
-    const session = await checkSession();
+    const session = await getSessionAndErrorCheck();
     const { data, error } = await SupabaseClient.from('users')
         .update({ bio: bio })
         .match({ id: session.user.id })
@@ -72,7 +84,7 @@ export async function UpdateBio(bio: string) {
 }
 
 export async function UploadPhoto(file: File) {
-    const session = await checkSession();
+    const session = await getSessionAndErrorCheck();
     const fileExt = file.name.split('.').pop();
     const filePath = `${session.user.id}/avatar.${fileExt}`;
 
@@ -88,5 +100,5 @@ export async function UploadPhoto(file: File) {
         console.log('Error uploading!');
         throw error;
     }
-    return filePath;
+    return data.path;
 }
