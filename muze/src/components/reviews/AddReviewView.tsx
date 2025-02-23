@@ -9,7 +9,7 @@ import Container from '@mui/material/Container';
 import { Track } from '@spotify/web-api-ts-sdk';
 import { useSession } from "next-auth/react"
 import { AuthUser } from "@/app/api/auth/[...nextauth]/authOptions";
-import { addReview } from '@/app/api/review/addReview';
+import { addSongReview } from '@/app/api/review/route';
 
 interface AddReviewViewProps {
     track: Track;
@@ -27,7 +27,7 @@ export default function AddReviewView({ track, onBack }: AddReviewViewProps) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        addReview(userId, track.id, title, review, rating);
+        addSongReview(userId, track.id, title, review, rating);
     };
 
     return (
