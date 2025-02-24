@@ -16,6 +16,10 @@ export type AuthUser = {
     id: string;
 };
 
+export type SpotifyServerSession = {
+    user: AuthUser;
+    error: string;
+};
 const authOptions: AuthOptions = {
     providers: [spotifyProfile],
     session: {
