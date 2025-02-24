@@ -3,7 +3,13 @@ import { getServerSession } from 'next-auth';
 import authOptions, {
     SpotifyServerSession,
 } from '../auth/[...nextauth]/authOptions';
-import SupabaseClient from '@/db/SupabaseClient';
+
+import {
+    followUser,
+    unfollowUser,
+    getFollowers,
+    getFollowing,
+} from '@/db/UserFollowing';
 
 // Follow a User
 export async function POST(req: Request) {
@@ -24,40 +30,24 @@ export async function POST(req: Request) {
         );
     }
 
-    if (userId === following_id) {
-        return NextResponse.json(
-            { error: 'You cannot follow yourself!' },
-            { status: 400 }
-        );
-    }
-
-    const supabase = SupabaseClient;
-
-    // Prevent duplicate follows
-    const { data: existingFollow } = await supabase
-        .from('following')
-        .select('*')
-        .eq('follower_id', userId)
-        .eq('following_id', following_id)
-        .single();
-
-    if (existingFollow) {
-        return NextResponse.json(
-            { error: 'You are already following this user!' },
-            { status: 400 }
-        );
-    }
-
-    const { error } = await supabase.from('following').insert({
-        follower_id: userId,
-        following_id,
-    });
-
-    if (error) {
-        return NextResponse.json(
-            { error: 'Failed to follow user' },
-            { status: 500 }
-        );
+    try {
+        await followUser(userId, following_id);
+    } catch (error) {
+        const err = error as Error;
+        if (err.message === 'Cannot follow yourself!') {
+            return NextResponse.json(
+                { error: 'You cannot follow yourself!' },
+                { status: 400 }
+            );
+        } else if (err.message === 'You are already following this person!') {
+            // do nothing...
+        } else {
+            console.error(error);
+            return NextResponse.json(
+                { error: 'Failed to follow user.' },
+                { status: 500 }
+            );
+        }
     }
 
     return NextResponse.json(
@@ -85,13 +75,9 @@ export async function DELETE(req: Request) {
         );
     }
 
-    const supabase = SupabaseClient;
-    const { error } = await supabase
-        .from('following')
-        .delete()
-        .match({ follower_id: userId, following_id });
-
-    if (error) {
+    try {
+        await unfollowUser(userId, following_id);
+    } catch {
         return NextResponse.json(
             { error: 'Failed to unfollow user' },
             { status: 500 }
@@ -123,29 +109,18 @@ export async function GET(req: Request) {
         );
     }
 
-    const supabase = SupabaseClient;
-
-    let query;
-    if (type === 'following') {
-        query = supabase
-            .from('following')
-            .select('following_id')
-            .eq('follower_id', userId);
-    } else {
-        query = supabase
-            .from('following')
-            .select('follower_id')
-            .eq('following_id', userId);
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
+    try {
+        let data;
+        if (type === 'following') {
+            data = await getFollowing(userId);
+        } else {
+            data = await getFollowers(userId);
+        }
+        return NextResponse.json({ [type]: data }, { status: 200 });
+    } catch {
         return NextResponse.json(
             { error: `Failed to fetch ${type} list` },
             { status: 500 }
         );
     }
-
-    return NextResponse.json({ [type]: data }, { status: 200 });
 }
