@@ -18,7 +18,6 @@
         "next-auth": "^4.24.11",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
-        "supabase": "^2.12.1",
         "use-debounce": "^10.0.4"
     },
     "type": "module",
@@ -33,7 +32,6 @@
         "@types/react-dom": "^19",
         "babel-jest": "^29.7.0",
         "dotenv": "^16.4.7",
-        "@types/uuid": "^10.0.0",
         "eslint": "^9",
         "eslint-config-next": "15.1.6",
         "identity-obj-proxy": "^3.0.0",

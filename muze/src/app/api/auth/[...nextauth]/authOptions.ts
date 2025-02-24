@@ -4,62 +4,75 @@ import { JWT } from 'next-auth/jwt';
 import { CreateUser } from '@/db/UserUpdate';
 
 export type AuthUser = {
-  id: string;
-  name: string;
-  email: string;
-  image: string;
-  access_token: string;
-  token_type: string;
-  expires_at: number;
-  expires_in: number;
-  refresh_token: string;
-  scope: string;
+    name: string;
+    email: string;
+    image: string;
+    access_token: string;
+    token_type: string;
+    expires_at: number;
+    expires_in: number;
+    refresh_token: string;
+    scope: string;
+    id: string;
 };
 
+export type SpotifyServerSession = {
+    user: AuthUser;
+    error: string;
+};
 const authOptions: AuthOptions = {
-  providers: [spotifyProfile],
-  session: {
-    maxAge: 60 * 60, // 1h
-  },
-  callbacks: {
-    async jwt({ token, account }: { token: JWT; account: Account | null }) {
-      // If no account -> return existing token
-      if (!account) {
-        return token;
-      }
-
-      const updatedToken = {
-        ...token,
-        access_token: account.access_token,
-        token_type: account.token_type,
-        expires_at: account.expires_at ?? Math.floor(Date.now() / 1000),
-        expires_in: (account.expires_at ?? 0) - Math.floor(Date.now() / 1000),
-        refresh_token: account.refresh_token,
-        scope: account.scope,
-        id: account.providerAccountId, // Set token.id from providerAccountId
-      };
-
-      // Refresh token if needed
-      if (Date.now() < updatedToken.expires_at * 1000) {
-        return refreshAccessToken(updatedToken);
-      }
-
-      try {
-        await CreateUser(updatedToken);
-      } catch (error) {
-        console.error(error);
-      }
-
-      return updatedToken;
+    providers: [spotifyProfile],
+    session: {
+        maxAge: 60 * 60, // 1hr
     },
-    async session({ session, token }: { session: any; token: JWT }) {
-      // Extend session.user with the id from token
-      session.user.id = token.id as string;
-      return session;
+    callbacks: {
+        async jwt({ token, account }: { token: JWT; account: Account | null }) {
+            if (!account) {
+                return token;
+            }
+
+            const updatedToken = {
+                ...token,
+                access_token: account?.access_token,
+                token_type: account?.token_type,
+                expires_at: account?.expires_at ?? Date.now() / 1000,
+                expires_in: (account?.expires_at ?? 0) - Date.now() / 1000,
+                refresh_token: account?.refresh_token,
+                scope: account?.scope,
+                id: account?.providerAccountId,
+            };
+
+            if (Date.now() < updatedToken.expires_at) {
+                return refreshAccessToken(updatedToken);
+            }
+
+            try {
+                await CreateUser(updatedToken);
+            } catch (error) {
+                // We'll log the error to the console for now
+                console.error(error);
+            }
+
+            return updatedToken;
+        },
+        async session({ session, token }: { session: any; token: any }) {
+            const user: AuthUser = {
+                ...session.user,
+                access_token: token.access_token,
+                token_type: token.token_type,
+                expires_at: token.expires_at,
+                expires_in: token.expires_in,
+                refresh_token: token.refresh_token,
+                scope: token.scope,
+                id: token.id,
+            };
+            session.user = user;
+            session.error = token.error;
+            return session;
+        },
     },
-  },
-  debug: process.env.NODE_ENV === 'development',
-  secret: process.env.NEXTAUTH_SECRET,
+    debug: process.env.NODE_ENV === 'development',
+    secret: process.env.NEXTAUTH_SECRET,
 };
 
 export default authOptions;
