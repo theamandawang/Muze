@@ -7,31 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          operationName?: string
-          query?: string
-          variables?: Json
-          extensions?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       album_reviews: {
@@ -130,6 +105,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "song_reviews_song_id_fkey"
+            columns: ["song_id"]
+            isOneToOne: false
+            referencedRelation: "songs"
+            referencedColumns: ["spotify_id"]
+          },
+          {
             foreignKeyName: "song_reviews_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -158,45 +140,6 @@ export type Database = {
           title?: string | null
         }
         Relationships: []
-      }
-      top_songs: {
-        Row: {
-          created_at: string
-          id: string
-          rank: number | null
-          song_id: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          rank?: number | null
-          song_id?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          rank?: number | null
-          song_id?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "top_songs_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "songs"
-            referencedColumns: ["spotify_id"]
-          },
-          {
-            foreignKeyName: "top_songs_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       users: {
         Row: {
