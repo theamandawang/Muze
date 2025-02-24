@@ -52,11 +52,12 @@ export async function deleteSongReview(reviewId: string) {
     console.log(data, error)
 }
 
-export async function getSongReviewsForUser(userId:string) {
+export async function getSongReviewsForUser(userId:string, limit: number = 50, offset: number = 0) {
     const { data, error } = await supabase
         .from('song_reviews')
         .select()
         .eq('user_id', userId)
+        .range(offset, offset + limit - 1);
     
     if (error) {
         console.error('Error getting song reviews:', error);
@@ -66,11 +67,12 @@ export async function getSongReviewsForUser(userId:string) {
     return data;
 }
 
-export async function getSongReviewsForSong(songId:string) {
+export async function getSongReviewsForSong(songId:string, limit: number = 50, offset: number = 0) {
     const { data, error } = await supabase
         .from('song_reviews')
         .select()
         .eq('song_id', songId)
+        .range(offset, offset + limit - 1);
 
     if (error) {
         console.error('Error getting song reviews:', error);
