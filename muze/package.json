@@ -11,7 +11,12 @@
         "test": "jest --watchAll --config jest.config.cjs"
     },
     "dependencies": {
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.0",
+        "@mui/icons-material": "^6.4.5",
+        "@mui/material": "^6.4.5",
         "@spotify/web-api-ts-sdk": "^1.2.0",
+        "@supabase/ssr": "^0.5.2",
         "@supabase/supabase-js": "^2.48.1",
         "http": "^0.0.1-security",
         "next": "15.1.6",
@@ -39,6 +44,7 @@
         "jest-environment-jsdom": "^29.7.0",
         "node-fetch": "^3.3.2",
         "postcss": "^8",
+        "supabase": "^2.12.1",
         "tailwindcss": "^3.4.1",
         "ts-jest": "^29.2.5",
         "typescript": "^5",
