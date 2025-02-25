@@ -1,11 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import authOptions, { AuthUser } from '../auth/[...nextauth]/authOptions';
-
-type SpotifyServerSession = {
-    user: AuthUser;
-    error: string;
-};
+import authOptions, {
+    SpotifyServerSession,
+} from '../auth/[...nextauth]/authOptions';
 
 export async function GET() {
     const session: SpotifyServerSession | null | undefined =

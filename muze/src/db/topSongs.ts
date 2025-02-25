@@ -1,4 +1,4 @@
-import SupabaseClient from './SupabaseClient';
+import SupabaseClient from '@/db/SupabaseClient';
 
 export async function getTopSongs(uid: string) {
     const { data, error } = await SupabaseClient
