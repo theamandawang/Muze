@@ -17,7 +17,7 @@ export default function Profile(){
                     <div className="px-[4%]">
                             <p className="px-3 font-normal sm:text-sm md:text-base lg:text-lg xl:text-xl">@maxinewuu</p>
                     </div>
-                    <div className="px-[4%] py-[3%]">
+                    <div className="px-[4%] py-[2%]">
                             <p className="px-3 font-normal sm:text-sm md:text-base lg:text-lg xl:text-xl">
                                 lover of all things pop, kpop/cpop, and jazz &lt;3
                             </p>
@@ -26,6 +26,14 @@ export default function Profile(){
                                 <span className="underline px-[0.5%]">Fallin'</span>
                                 by Harry Styles
                             </p>
+                    </div>
+                    <div className='px-[4%] pb-[3%]'>
+                        <p className='px-3'>
+                            <span className='font-bold'>5 </span> 
+                            followers • 
+                            <span className='font-bold'> 5 </span> 
+                            following
+                        </p>
                     </div>
                     <div>
                         <div className="grid grid-cols-[1fr_1fr_1fr] px-[4%] gap-x-[8%] mb-[1%]">
@@ -48,7 +56,7 @@ export default function Profile(){
                         <AlbumArt hasTitle={true} type="song"/>
                         <div className="relative">
                             <div className="static bg-primary rounded-full mb-[2%] w-[15%] py-[0.5%] text-center">
-                                <span className="sm:text-xs md:text-xs lg:text-sm xl:text-base">album review</span>
+                                <span className="sm:text-xs md:text-xs lg:text-sm xl:text-base">album</span>
                             </div>
                             <h2 className="sm:text-lg md:text-xl lg:text-2xl xl:text-3xl">stunning. absolutely stunning. no words.</h2>
                             <h2 className="sm:text-sm md:text-base lg:text-lg xl:text-xl pt-[1%]">stunning. absolutely stunning. no words.</h2>
@@ -58,7 +66,7 @@ export default function Profile(){
                         <AlbumArt hasTitle={true} type="song"/>
                         <div className="relative">
                             <div className="static bg-primary rounded-full mb-[2%] w-[15%] py-[0.5%] text-center">
-                                <span className="sm:text-xs md:text-xs lg:text-sm xl:text-base">album review</span>
+                                <span className="sm:text-xs md:text-xs lg:text-sm xl:text-base">album</span>
                             </div>
                             <h2 className="sm:text-lg md:text-xl lg:text-2xl xl:text-3xl">the best song ever. on repeat all the time.</h2>
                             <h2 className="sm:text-sm md:text-base lg:text-lg xl:text-xl pt-[1%]">the way weezer writes is unmatched. their lyricism on this 
@@ -69,7 +77,7 @@ export default function Profile(){
                         <AlbumArt hasTitle={true} type="song"/>
                         <div className="relative">
                             <div className="static bg-primary rounded-full mb-[2%] w-[15%] py-[0.5%] text-center">
-                                <span className="sm:text-xs md:text-xs lg:text-sm xl:text-base">album review</span>
+                                <span className="sm:text-xs md:text-xs lg:text-sm xl:text-base">album</span>
                             </div>
                             <h2 className="sm:text-lg md:text-xl lg:text-2xl xl:text-3xl">one of the most powerful bridges, ever. </h2>
                             <h2 className="sm:text-sm md:text-base lg:text-lg xl:text-xl pt-[1%]">so so so so so good. weezer does it again, and we're 
