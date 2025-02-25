@@ -94,7 +94,7 @@ export default function Dashboard() {
                         hasTitle={true}
                         hasProfileSticker={true}
                         hasTypeSticker={true}
-                        type='album review'
+                        type='album'
                     />
                     <div className='pt-[3%]'>
                         <h2 className='sm:text-lg md:text-xl lg:text-2xl xl:text-3xl'>
@@ -115,7 +115,7 @@ export default function Dashboard() {
                         hasTitle={true}
                         hasProfileSticker={true}
                         hasTypeSticker={true}
-                        type='song review'
+                        type='song'
                     />
                     <div className='pt-[3%]'>
                         <h2 className='sm:text-lg md:text-xl lg:text-2xl xl:text-3xl'>
@@ -132,7 +132,7 @@ export default function Dashboard() {
                         hasTitle={true}
                         hasProfileSticker={true}
                         hasTypeSticker={true}
-                        type='album review'
+                        type='album'
                     />
                     <div className='pt-[3%]'>
                         <h2 className='sm:text-lg md:text-xl lg:text-2xl xl:text-3xl'>
@@ -148,7 +148,7 @@ export default function Dashboard() {
                         hasTitle={true}
                         hasProfileSticker={true}
                         hasTypeSticker={true}
-                        type='song review'
+                        type='song'
                     />
                     <div className='pt-[3%]'>
                         <h2 className='sm:text-lg md:text-xl lg:text-2xl xl:text-3xl'>
