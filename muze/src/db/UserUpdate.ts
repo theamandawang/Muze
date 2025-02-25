@@ -1,5 +1,5 @@
 'use server';
-import SupabaseClient from './SupabaseClient';
+import { supabase } from '@/lib/supabase/supabase';
 import { checkSession } from '@/utils/serverSession';
 
 async function getSessionAndErrorCheck() {
@@ -17,7 +17,8 @@ async function getSessionAndErrorCheck() {
 
 export async function CreateUser() {
     const session = await getSessionAndErrorCheck();
-    const { data, error } = await SupabaseClient.from('users')
+    const { data, error } = await supabase
+        .from('users')
         .upsert(
             {
                 bio: null,
@@ -45,7 +46,8 @@ export async function CreateUser() {
 
 export async function UpdateUsername(username: string) {
     const session = await getSessionAndErrorCheck();
-    const { data, error } = await SupabaseClient.from('users')
+    const { data, error } = await supabase
+        .from('users')
         .update({ username: username })
         .match({ id: session.user.id })
         .select();
@@ -58,7 +60,8 @@ export async function UpdateUsername(username: string) {
 
 export async function UpdateProfilePicture(profile_pic: string) {
     const session = await getSessionAndErrorCheck();
-    const { data, error } = await SupabaseClient.from('users')
+    const { data, error } = await supabase
+        .from('users')
         .update({ profile_pic: profile_pic })
         .match({ id: session.user.id })
         .select();
@@ -71,7 +74,8 @@ export async function UpdateProfilePicture(profile_pic: string) {
 
 export async function UpdateBio(bio: string) {
     const session = await getSessionAndErrorCheck();
-    const { data, error } = await SupabaseClient.from('users')
+    const { data, error } = await supabase
+        .from('users')
         .update({ bio: bio })
         .match({ id: session.user.id })
         .select();
@@ -88,7 +92,7 @@ export async function UploadPhoto(file: File) {
     const fileExt = file.name.split('.').pop();
     const filePath = `${session.user.id}/avatar.${fileExt}`;
 
-    const { data, error } = await SupabaseClient.storage
+    const { data, error } = await supabase.storage
         .from('avatars')
         .update(filePath, file, {
             cacheControl: '3600',
