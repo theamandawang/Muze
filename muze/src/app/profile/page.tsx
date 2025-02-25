@@ -4,7 +4,7 @@ import Avatar from './settings/avatar';
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 import { useState } from 'react';
-import { UpdateProfilePicture } from '@/db/UserUpdate';
+import { updateProfilePicture } from '../api/user/route';
 
 export default function Profile() {
     const [avatarUrl, setAvatarUrl] = useState('');
@@ -25,7 +25,7 @@ export default function Profile() {
                 size={150}
                 onUpload={(url) => {
                     setAvatarUrl(url);
-                    UpdateProfilePicture(url);
+                    updateProfilePicture(url);
                 }}
             ></Avatar>
             <div className='mx-[15%]'>

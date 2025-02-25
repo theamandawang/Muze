@@ -8,11 +8,16 @@ type SpotifyServerSession = {
     error: string;
 };
 
-export async function checkSession(): Promise<SpotifyServerSession> {
+export async function checkSession() {
     const session: SpotifyServerSession | null | undefined =
         await getServerSession(authOptions);
 
-    if (!session) {
+    if (
+        !session ||
+        !session.user ||
+        session.error ||
+        session.user.expires_in <= 0
+    ) {
         throw new Error('No user logged in');
     }
     return session;

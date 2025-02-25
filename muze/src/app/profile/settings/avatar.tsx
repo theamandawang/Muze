@@ -1,8 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import SupabaseClient from '@/db/SupabaseClient';
-import { UploadPhoto } from '@/db/UserUpdate';
+import { supabase } from '@/lib/supabase/supabase';
 import Image from 'next/image';
+import { uploadPhoto } from '@/app/api/user/route';
 
 export default function Avatar({
     url,
@@ -19,7 +19,7 @@ export default function Avatar({
     useEffect(() => {
         async function downloadImage(path: string) {
             try {
-                const { data, error } = await SupabaseClient.storage
+                const { data, error } = await supabase.storage
                     .from('avatars')
                     .download(path);
                 if (error) {
@@ -34,7 +34,7 @@ export default function Avatar({
         }
 
         if (url) downloadImage(url);
-    }, [url, SupabaseClient]);
+    }, [url, supabase]);
 
     const uploadAvatar: React.ChangeEventHandler<HTMLInputElement> = async (
         event
@@ -43,15 +43,21 @@ export default function Avatar({
             setUploading(true);
 
             if (!event.target.files || event.target.files.length === 0) {
-                throw new Error('You must select an image to upload.');
+                throw new Error('You must select a png to upload.');
+            }
+            if (event.target.files[0].type !== 'image/png') {
+                alert('This is not a png');
+                return;
+                // throw new Error('This is not a png file.');
             }
 
             const file = event.target.files[0];
 
-            const filePath = await UploadPhoto(file);
+            const filePath = await uploadPhoto(file);
 
-            await onUpload(filePath);
+            await onUpload(event.target.files[0].name);
         } catch (error) {
+            console.log(error);
             alert('Error uploading avatar!');
         } finally {
             setUploading(false);

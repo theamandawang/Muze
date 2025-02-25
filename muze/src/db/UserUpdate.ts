@@ -1,97 +1,62 @@
 'use server';
 import { supabase } from '@/lib/supabase/supabase';
-import { checkSession } from '@/utils/serverSession';
 
-async function getSessionAndErrorCheck() {
-    const session = await checkSession();
-    if (session.error) {
-        console.error(session.error);
-        throw new Error('Bad session ' + session.error);
-    }
-    if (!session.user) {
-        console.error('There is no user in the session.');
-        throw new Error('No user in session.');
-    }
-    return session;
-}
-
-export async function CreateUser() {
-    const session = await getSessionAndErrorCheck();
-    const { data, error } = await supabase
-        .from('users')
-        .upsert(
-            {
-                bio: null,
-                created_at: new Date().toISOString(),
-                email: session.user.email,
-                id: session.user.id,
-                profile_pic: session.user.image,
-                username: session.user.name,
-            },
-            { onConflict: 'id', ignoreDuplicates: true }
-        )
-        .select();
+export async function CreateUser(token: any) {
+    const { error } = await supabase.from('users').upsert(
+        {
+            bio: null,
+            created_at: new Date().toISOString(),
+            email: token.email,
+            id: token.id,
+            profile_pic: token.picture,
+            username: token.name,
+        },
+        { onConflict: 'id', ignoreDuplicates: true }
+    );
     if (error) {
         console.error(error);
         throw new Error('Upsert failed! ' + error.message);
-    } else {
-        console.log('==========Supabase upserted:');
-        if (data.length === 0) {
-            console.log('Upserted nothing.');
-        } else {
-            console.log(data);
-        }
     }
 }
 
-export async function UpdateUsername(username: string) {
-    const session = await getSessionAndErrorCheck();
-    const { data, error } = await supabase
+export async function UpdateUsername(userId: string, username: string) {
+    const { error } = await supabase
         .from('users')
         .update({ username: username })
-        .match({ id: session.user.id })
-        .select();
+        .match({ id: userId });
     if (error) {
         console.error(error);
-        throw new Error('Error updating username for ' + session.user.id);
+        throw new Error('Error updating username for ' + userId);
     }
-    console.log(data);
 }
 
-export async function UpdateProfilePicture(profile_pic: string) {
-    const session = await getSessionAndErrorCheck();
-    const { data, error } = await supabase
+export async function UpdateProfilePicture(
+    userId: string,
+    profile_pic: string
+) {
+    const { error } = await supabase
         .from('users')
         .update({ profile_pic: profile_pic })
-        .match({ id: session.user.id })
-        .select();
-    console.log(data);
+        .match({ id: userId });
     if (error) {
         console.error(error);
         throw new Error('Error updating profile pictures');
     }
 }
 
-export async function UpdateBio(bio: string) {
-    const session = await getSessionAndErrorCheck();
-    const { data, error } = await supabase
+export async function UpdateBio(userId: string, bio: string) {
+    const { error } = await supabase
         .from('users')
         .update({ bio: bio })
-        .match({ id: session.user.id })
-        .select();
-    console.log('Updating the bio');
-    console.log(data);
+        .match({ id: userId });
     if (error) {
         console.error(error);
         throw new Error('Error updating bio');
     }
 }
 
-export async function UploadPhoto(file: File) {
-    const session = await getSessionAndErrorCheck();
-    const fileExt = file.name.split('.').pop();
-    const filePath = `${session.user.id}/avatar.${fileExt}`;
-
+export async function UploadPhoto(userId: string, file: File) {
+    const filePath = `${userId}/avatar.png`;
     const { data, error } = await supabase.storage
         .from('avatars')
         .update(filePath, file, {
@@ -99,10 +64,23 @@ export async function UploadPhoto(file: File) {
             upsert: true,
         });
 
-    console.log(data);
     if (error) {
         console.log('Error uploading!');
         throw error;
     }
-    return data.path;
+    return (
+        'https://axcnthaoozwhcofglcwo.supabase.co/storage/v1/object/public/avatars/' +
+        data.fullPath
+    );
+}
+
+export async function DeletePhoto(userId: string) {
+    const filePath = `${userId}/avatar.png`;
+
+    const { error } = await supabase.storage.from('avatars').remove([filePath]);
+
+    if (error) {
+        console.log('Error deleting!');
+        throw error;
+    }
 }

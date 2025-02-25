@@ -1,8 +1,8 @@
 import { CreateUser, UploadPhoto } from '@/db/UserUpdate';
-import SupabaseClient from '@/db/SupabaseClient';
+import { supabase } from '@/lib/supabase/supabase';
 import { checkSession } from '@/utils/serverSession';
 
-jest.mock('@/db/SupabaseClient', () => ({
+jest.mock('@/lib/supabase/supabase', () => ({
     __esModule: true,
     default: {
         storage: {
@@ -48,7 +48,7 @@ describe('CreateUser', () => {
                 error: null,
             })
         );
-        (SupabaseClient.from as jest.Mock).mockReturnValue({
+        (supabase.from as jest.Mock).mockReturnValue({
             upsert: jest.fn().mockReturnValue({
                 select: jest.fn().mockResolvedValue({
                     data: [user],
@@ -60,7 +60,7 @@ describe('CreateUser', () => {
         await CreateUser();
 
         expect(checkSession).toHaveBeenCalled();
-        expect(SupabaseClient.from('users').upsert).toHaveBeenCalledWith(
+        expect(supabase.from('users').upsert).toHaveBeenCalledWith(
             expect.objectContaining({ id: user.id, email: user.email }),
             expect.objectContaining({})
         );
@@ -123,7 +123,7 @@ describe('UploadPhoto', () => {
 
         const filePath = `${user.id}/avatar.jpg`;
 
-        (SupabaseClient.storage.from as jest.Mock).mockReturnValue({
+        (supabase.storage.from as jest.Mock).mockReturnValue({
             update: jest.fn().mockResolvedValue({
                 data: {
                     id: 'id',
@@ -137,9 +137,11 @@ describe('UploadPhoto', () => {
         await UploadPhoto(file);
 
         expect(checkSession).toHaveBeenCalled();
-        expect(
-            SupabaseClient.storage.from('avatars').update
-        ).toHaveBeenCalledWith(filePath, file, expect.objectContaining({}));
+        expect(supabase.storage.from('avatars').update).toHaveBeenCalledWith(
+            filePath,
+            file,
+            expect.objectContaining({})
+        );
     });
 
     it('does not upload if user session errors', async () => {
