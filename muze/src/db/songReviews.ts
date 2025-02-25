@@ -2,6 +2,12 @@ import { supabase } from '@/lib/supabase/supabase';
 
 // Create new Song Review
 export async function createSongReview(userId:string, trackId:string, title?: string, review?:string, rating?:number) {
+    
+    const validationError = validateReview(title, rating);
+    if (validationError) {
+        throw new Error(validationError);
+    }
+
     const body = {
         user_id: userId,
         song_id: trackId, 
@@ -17,8 +23,7 @@ export async function createSongReview(userId:string, trackId:string, title?: st
         .select()
 
     if (error) {
-        console.error('Error adding review:', error);
-        return null;
+        throw error;
     }
 
     return data; 
@@ -26,6 +31,12 @@ export async function createSongReview(userId:string, trackId:string, title?: st
 
 // Update Song Review by Song ID
 export async function updateSongReviewByReviewId(reviewId:string, title?: string, review?:string, rating?:number) {
+
+    const validationError = validateReview(title, rating);
+    if (validationError) {
+        throw new Error(validationError);
+    }
+
     const body = {
         title: title, 
         content: review,
@@ -38,8 +49,7 @@ export async function updateSongReviewByReviewId(reviewId:string, title?: string
         .eq('id', reviewId)
     
     if (error) {
-        console.error('Error updating review:', error);
-        return null;
+        throw error;
     }
 
     return data;
@@ -54,8 +64,7 @@ export async function getSongReviewsForUser(userId:string, limit: number = 50, o
         .range(offset, offset + limit - 1);
     
     if (error) {
-        console.error('Error getting song reviews:', error);
-        return null;
+        throw error;
     }
     
     return data;
@@ -70,8 +79,7 @@ export async function getSongReviewsForSong(songId:string, limit: number = 50, o
         .range(offset, offset + limit - 1);
 
     if (error) {
-        console.error('Error getting song reviews:', error);
-        return null;
+        throw error;
     }
 
     return data;
@@ -83,4 +91,24 @@ export async function deleteSongReviewByReviewId(reviewId: string) {
         .from('song_reviews')
         .delete()
         .eq('id', reviewId)
+    if (error) {
+        throw error;
+    }
+}
+
+// Validate Song Review
+export function validateReview(title?: string, rating?: number): string | null {
+    // Title Validation
+    if (!title || title.length === 0) {
+        return 'Title is required.';
+    }
+    if (title.length > 150) {
+        return 'Title must not exceed 150 characters.';
+    }
+    // Review Validation
+    if (rating === undefined || rating < 1 || rating > 5) {
+        return 'Rating must be between 1 and 5.';
+    }
+
+    return null; 
 }
