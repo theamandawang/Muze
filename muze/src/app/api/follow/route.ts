@@ -12,7 +12,8 @@ import {
 } from '@/db/UserFollowing';
 
 // Follow a User
-export async function POST(req: Request) {
+
+export async function follow(followingId: string) {
     const session: SpotifyServerSession | null | undefined =
         await getServerSession(authOptions);
 
@@ -21,43 +22,30 @@ export async function POST(req: Request) {
     }
 
     const userId = session.user.id;
-    const { following_id } = await req.json();
-
-    if (!following_id) {
+    if (userId === followingId) {
         return NextResponse.json(
-            { error: 'Missing following_id' },
+            { error: 'You cannot follow yourself' },
             { status: 400 }
         );
     }
 
     try {
-        await followUser(userId, following_id);
+        await followUser(userId, followingId);
     } catch (error) {
-        const err = error as Error;
-        if (err.message === 'Cannot follow yourself!') {
-            return NextResponse.json(
-                { error: 'You cannot follow yourself!' },
-                { status: 400 }
-            );
-        } else if (err.message === 'You are already following this person!') {
-            // do nothing...
-        } else {
-            console.error(error);
-            return NextResponse.json(
-                { error: 'Failed to follow user.' },
-                { status: 500 }
-            );
-        }
+        console.error(error);
+        return NextResponse.json(
+            { error: 'Failed to follow user.' },
+            { status: 500 }
+        );
     }
-
     return NextResponse.json(
         { message: 'User followed successfully' },
         { status: 200 }
     );
 }
 
-// Unfollow a User
-export async function DELETE(req: Request) {
+// Unfollow user
+export async function unfollow(followingId: string) {
     const session: SpotifyServerSession | null | undefined =
         await getServerSession(authOptions);
 
@@ -66,18 +54,10 @@ export async function DELETE(req: Request) {
     }
 
     const userId = session.user.id;
-    const { following_id } = await req.json();
-
-    if (!following_id) {
-        return NextResponse.json(
-            { error: 'Missing following_id' },
-            { status: 400 }
-        );
-    }
-
     try {
-        await unfollowUser(userId, following_id);
-    } catch {
+        await unfollowUser(userId, followingId);
+    } catch (error) {
+        console.error(error);
         return NextResponse.json(
             { error: 'Failed to unfollow user' },
             { status: 500 }
@@ -91,35 +71,27 @@ export async function DELETE(req: Request) {
 }
 
 // Get a User's Following or Followers (Public)
-export async function GET(req: Request) {
-    const { searchParams } = new URL(req.url);
-    const userId = searchParams.get('user_id');
-    const type = searchParams.get('type'); // "following" or "followers"
-
-    if (!userId) {
-        return NextResponse.json({ error: 'Missing user_id' }, { status: 400 });
-    }
-
-    if (!type || (type !== 'following' && type !== 'followers')) {
+export async function getUserFollowing(userId: string) {
+    try {
+        const data = await getFollowing(userId);
+        return NextResponse.json({ data }, { status: 200 });
+    } catch (error) {
+        console.error(error);
         return NextResponse.json(
-            {
-                error: "Invalid or missing type parameter (must be 'following' or 'followers')",
-            },
-            { status: 400 }
+            { error: 'Failed to load following' },
+            { status: 500 }
         );
     }
+}
 
+export async function getUserFollowers(userId: string) {
     try {
-        let data;
-        if (type === 'following') {
-            data = await getFollowing(userId);
-        } else {
-            data = await getFollowers(userId);
-        }
-        return NextResponse.json({ [type]: data }, { status: 200 });
-    } catch {
+        const data = await getFollowers(userId);
+        return NextResponse.json({ data }, { status: 200 });
+    } catch (error) {
+        console.error(error);
         return NextResponse.json(
-            { error: `Failed to fetch ${type} list` },
+            { error: 'Failed to load following' },
             { status: 500 }
         );
     }

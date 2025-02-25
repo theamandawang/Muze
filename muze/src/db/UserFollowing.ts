@@ -2,43 +2,25 @@ import SupabaseClient from './SupabaseClient';
 
 // Follow a user
 export async function followUser(followerId: string, followingId: string) {
-    if (followerId === followingId) {
-        throw new Error('Cannot follow yourself!');
-    }
-
     // TODO: remove this check when we have UI capability to toggle the "follow vs. unfollow"
-    const { data: existingFollow } = await SupabaseClient.from('following')
-        .select('*')
-        .eq('follower_id', followerId)
-        .eq('following_id', followingId)
-        .single();
-
-    if (existingFollow) {
-        throw new Error('You are already following this person!');
-    }
-
-    const { data, error } = await SupabaseClient.from('following')
-        .insert([
+    const existingFollow = await getFollowingPair(followerId, followingId);
+    if (!existingFollow) {
+        const { error } = await SupabaseClient.from('following').insert([
             {
                 follower_id: followerId,
                 following_id: followingId,
             },
-        ])
-        .select();
-
-    if (error) throw error;
-    return data;
+        ]);
+        if (error) throw error;
+    }
 }
 
 // Unfollow a user
 export async function unfollowUser(followerId: string, followingId: string) {
-    const { data, error } = await SupabaseClient.from('following')
+    const { error } = await SupabaseClient.from('following')
         .delete()
-        .match({ follower_id: followerId, following_id: followingId })
-        .select();
-
+        .match({ follower_id: followerId, following_id: followingId });
     if (error) throw error;
-    return data;
 }
 
 // Get all the users that 'userId' is following
@@ -59,4 +41,23 @@ export async function getFollowers(userId: string) {
 
     if (error) throw error;
     return data;
+}
+
+// Get a following pair.
+export async function getFollowingPair(
+    followerId: string,
+    followingId: string
+) {
+    const { data, error } = await SupabaseClient.from('following')
+        .select('*')
+        .eq('follower_id', followerId)
+        .eq('following_id', followingId)
+        .limit(1);
+    if (error) {
+        throw new Error('Failed getting following pair.');
+    }
+    if (data) {
+        return data[0];
+    }
+    return null;
 }
