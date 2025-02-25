@@ -1,5 +1,5 @@
 import AlbumArt from "@/components/album_art/album_art";
-import Comment from "@/components/comment/comment";
+import Review from "@/components/review/review";
 
 export default function Song(){
     return (
@@ -12,7 +12,7 @@ export default function Song(){
                         <AlbumArt type="song"/>
                     </div>
                     <div className='col-span-9 -mt-[19%] z-10'>
-                        <div className="bg-primary rounded-3xl text-center place-content-center h-[13%] w-[18%] top-[4%] right-[4%]">album review</div>
+                        <div className="bg-primary rounded-3xl text-center place-content-center h-[13%] w-[18%] top-[4%] right-[4%]">album</div>
                         <h1 className='font-bold mt-[4%]'>Blue Album</h1>
                         <h1 className='text-xl'>Weezer</h1>
                     </div>
@@ -22,11 +22,11 @@ export default function Song(){
                 <h1 className='text-3xl font-bold'>Reviews</h1>
                 <div className='grid grid-cols-2'>
                     <div>
-                        <Comment />
-                        <Comment />
-                        <Comment />
-                        <Comment />
-                        <Comment />
+                        <Review />
+                        <Review />
+                        <Review />
+                        <Review />
+                        <Review />
                     </div>
                     <div className='justify-content-center mx-[30%] my-[7%]'>
                         <div className='grid grid-cols-2 gap-4'>

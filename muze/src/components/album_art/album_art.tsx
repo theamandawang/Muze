@@ -2,7 +2,7 @@ interface AlbumArtProps {
     hasTitle?: boolean;
     hasProfileSticker?: boolean;
     hasTypeSticker?: boolean;
-    type?: "song" | "album" | "song review" | "album review";
+    type?: "song" | "album";
 }
 
 export default function AlbumArt({ hasTitle = false, hasProfileSticker = false, hasTypeSticker = false, type }: AlbumArtProps) {
@@ -12,10 +12,10 @@ export default function AlbumArt({ hasTitle = false, hasProfileSticker = false, 
             {hasProfileSticker && (
                 <div className="absolute aspect-square rounded-full bg-tertiary -top-[16%] -left-[16%] w-1/3"></div>
             )}
-            {hasTypeSticker && (type === "song" || type == "song review") && (
+            {hasTypeSticker && (type === "song") && (
                 <div className="absolute bg-secondary rounded-full text-center place-content-center h-[10%] w-[30%] top-[4%] right-[4%]">{type}</div>
             )}
-            {hasTypeSticker && (type === "album" || type === "album review") && (
+            {hasTypeSticker && (type === "album") && (
                 <div className="absolute bg-primary rounded-xl text-center place-content-center h-[10%] w-[30%] top-[4%] right-[4%]">{type}</div>
             )}
             {hasTitle && (

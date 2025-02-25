@@ -1,4 +1,4 @@
-export default function Comment() {
+export default function Review() {
     return (
         <div className="flex items-start gap-3 w-full mt-[3%]">
             <div className="absolute w-12 h-12 rounded-full bg-tertiary flex-shrink-0 -ml-6 mt-2"></div>
