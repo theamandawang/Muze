@@ -7,33 +7,208 @@ export type Json =
     | Json[];
 
 export type Database = {
-    graphql_public: {
-        Tables: {
-            [_ in never]: never;
-        };
-        Views: {
-            [_ in never]: never;
-        };
-        Functions: {
-            graphql: {
-                Args: {
-                    operationName?: string;
-                    query?: string;
-                    variables?: Json;
-                    extensions?: Json;
-                };
-                Returns: Json;
-            };
-        };
-        Enums: {
-            [_ in never]: never;
-        };
-        CompositeTypes: {
-            [_ in never]: never;
-        };
-    };
     public: {
         Tables: {
+            album_reviews: {
+                Row: {
+                    album_id: string | null;
+                    content: string | null;
+                    created_at: string | null;
+                    id: string;
+                    rating: number | null;
+                    title: string | null;
+                    user_id: string;
+                };
+                Insert: {
+                    album_id?: string | null;
+                    content?: string | null;
+                    created_at?: string | null;
+                    id?: string;
+                    rating?: number | null;
+                    title?: string | null;
+                    user_id: string;
+                };
+                Update: {
+                    album_id?: string | null;
+                    content?: string | null;
+                    created_at?: string | null;
+                    id?: string;
+                    rating?: number | null;
+                    title?: string | null;
+                    user_id?: string;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: 'album_reviews_album_id_fkey';
+                        columns: ['album_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'albums';
+                        referencedColumns: ['spotify_id'];
+                    },
+                    {
+                        foreignKeyName: 'album_reviews_user_id_fkey';
+                        columns: ['user_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'users';
+                        referencedColumns: ['id'];
+                    }
+                ];
+            };
+            albums: {
+                Row: {
+                    cover_url: string | null;
+                    created_at: string | null;
+                    spotify_id: string;
+                    title: string;
+                };
+                Insert: {
+                    cover_url?: string | null;
+                    created_at?: string | null;
+                    spotify_id: string;
+                    title: string;
+                };
+                Update: {
+                    cover_url?: string | null;
+                    created_at?: string | null;
+                    spotify_id?: string;
+                    title?: string;
+                };
+                Relationships: [];
+            };
+            following: {
+                Row: {
+                    created_at: string | null;
+                    entry_id: string;
+                    follower_id: string;
+                    following_id: string;
+                };
+                Insert: {
+                    created_at?: string | null;
+                    entry_id?: string;
+                    follower_id?: string;
+                    following_id?: string;
+                };
+                Update: {
+                    created_at?: string | null;
+                    entry_id?: string;
+                    follower_id?: string;
+                    following_id?: string;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: 'following_follower_id_fkey';
+                        columns: ['follower_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'users';
+                        referencedColumns: ['id'];
+                    },
+                    {
+                        foreignKeyName: 'following_following_id_fkey';
+                        columns: ['following_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'users';
+                        referencedColumns: ['id'];
+                    }
+                ];
+            };
+            song_reviews: {
+                Row: {
+                    content: string | null;
+                    created_at: string | null;
+                    id: string;
+                    rating: number | null;
+                    song_id: string | null;
+                    title: string | null;
+                    user_id: string;
+                };
+                Insert: {
+                    content?: string | null;
+                    created_at?: string | null;
+                    id?: string;
+                    rating?: number | null;
+                    song_id?: string | null;
+                    title?: string | null;
+                    user_id: string;
+                };
+                Update: {
+                    content?: string | null;
+                    created_at?: string | null;
+                    id?: string;
+                    rating?: number | null;
+                    song_id?: string | null;
+                    title?: string | null;
+                    user_id?: string;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: 'song_reviews_user_id_fkey';
+                        columns: ['user_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'users';
+                        referencedColumns: ['id'];
+                    }
+                ];
+            };
+            songs: {
+                Row: {
+                    album_id: string | null;
+                    img: string | null;
+                    spotify_id: string;
+                    title: string | null;
+                };
+                Insert: {
+                    album_id?: string | null;
+                    img?: string | null;
+                    spotify_id: string;
+                    title?: string | null;
+                };
+                Update: {
+                    album_id?: string | null;
+                    img?: string | null;
+                    spotify_id?: string;
+                    title?: string | null;
+                };
+                Relationships: [];
+            };
+            top_songs: {
+                Row: {
+                    created_at: string;
+                    id: string;
+                    rank: number | null;
+                    song_id: string | null;
+                    user_id: string | null;
+                };
+                Insert: {
+                    created_at?: string;
+                    id?: string;
+                    rank?: number | null;
+                    song_id?: string | null;
+                    user_id?: string | null;
+                };
+                Update: {
+                    created_at?: string;
+                    id?: string;
+                    rank?: number | null;
+                    song_id?: string | null;
+                    user_id?: string | null;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: 'top_songs_song_id_fkey';
+                        columns: ['song_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'songs';
+                        referencedColumns: ['spotify_id'];
+                    },
+                    {
+                        foreignKeyName: 'top_songs_user_id_fkey';
+                        columns: ['user_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'users';
+                        referencedColumns: ['id'];
+                    }
+                ];
+            };
             users: {
                 Row: {
                     bio: string | null;
