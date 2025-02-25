@@ -75,6 +75,42 @@ export type Database = {
         }
         Relationships: []
       }
+      following: {
+        Row: {
+          created_at: string | null
+          entry_id: string
+          follower_id: string
+          following_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          entry_id?: string
+          follower_id?: string
+          following_id?: string
+        }
+        Update: {
+          created_at?: string | null
+          entry_id?: string
+          follower_id?: string
+          following_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "following_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "following_following_id_fkey"
+            columns: ["following_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       song_reviews: {
         Row: {
           content: string | null
@@ -105,13 +141,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "song_reviews_song_id_fkey"
-            columns: ["song_id"]
-            isOneToOne: false
-            referencedRelation: "songs"
-            referencedColumns: ["spotify_id"]
-          },
-          {
             foreignKeyName: "song_reviews_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -140,6 +169,45 @@ export type Database = {
           title?: string | null
         }
         Relationships: []
+      }
+      top_songs: {
+        Row: {
+          created_at: string
+          id: string
+          rank: number | null
+          song_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          rank?: number | null
+          song_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          rank?: number | null
+          song_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "top_songs_song_id_fkey"
+            columns: ["song_id"]
+            isOneToOne: false
+            referencedRelation: "songs"
+            referencedColumns: ["spotify_id"]
+          },
+          {
+            foreignKeyName: "top_songs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       users: {
         Row: {
