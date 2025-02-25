@@ -13,6 +13,7 @@
     "dependencies": {
         "@spotify/web-api-ts-sdk": "^1.2.0",
         "@supabase/supabase-js": "^2.48.1",
+        "build-url-ts": "^6.1.8",
         "next": "15.1.6",
         "next-auth": "^4.24.11",
         "react": "^19.0.0",
