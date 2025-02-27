@@ -1,10 +1,5 @@
 'use server';
-import {
-    CreateUser,
-    UpdateUser,
-    UploadPhoto,
-    DeletePhoto,
-} from '@/db/UserUpdate';
+import { CreateUser, UpdateUser, UploadPhoto } from '@/db/UserUpdate';
 import { GetUserById, GetUsersByUsername } from '@/db/UserGet';
 import { checkSession } from '@/utils/serverSession';
 
@@ -62,7 +57,6 @@ export async function updateUser(
             return fileURL;
         } catch (error) {
             console.error(error);
-            await DeletePhoto(session.user.id);
             return null;
         }
     } else {

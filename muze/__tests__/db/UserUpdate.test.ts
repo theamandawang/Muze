@@ -1,6 +1,5 @@
 import { CreateUser, UpdateUser, UploadPhoto } from '@/db/UserUpdate';
 import { supabase } from '@/lib/supabase/supabase';
-import { checkSession } from '@/utils/serverSession';
 
 jest.mock('@/lib/supabase/supabase', () => ({
     __esModule: true,
@@ -21,11 +20,6 @@ jest.mock('@/lib/supabase/supabase', () => ({
             })),
         })),
     },
-}));
-
-jest.mock('@/utils/serverSession', () => ({
-    __esModule: false,
-    checkSession: jest.fn(),
 }));
 
 describe('CreateUser', () => {
@@ -65,6 +59,29 @@ describe('CreateUser', () => {
             expect.objectContaining({})
         );
     });
+    it('throws error if upsert fails', async () => {
+        (supabase.from as jest.Mock).mockReturnValue({
+            upsert: jest
+                .fn()
+                .mockResolvedValue({ error: { message: 'error' } }),
+        });
+
+        try {
+            await CreateUser(mockToken);
+
+            expect(supabase.from('users').upsert).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    id: mockToken.id,
+                    email: mockToken.email,
+                    username: mockToken.name,
+                    profile_pic: mockToken.picture,
+                }),
+                expect.objectContaining({})
+            );
+        } catch (error) {
+            expect(error).toEqual(Error('Upsert failed! ' + 'error'));
+        }
+    });
 });
 
 const mockFile = (type: string, size: number): File => {
@@ -96,9 +113,7 @@ describe('UpdateUser', () => {
     it('updates user', async () => {
         (supabase.from as jest.Mock).mockReturnValue({
             update: mockUpdate.mockReturnValue({
-                match: mockMatch.mockReturnValue(() => {
-                    Promise.resolve(null);
-                }),
+                match: mockMatch.mockResolvedValue({ error: null }),
             }),
         });
 
@@ -116,53 +131,93 @@ describe('UpdateUser', () => {
                 profile_pic: userInfo.profile_pic,
             })
         );
-        // ideally would also expect match to contain id, id but can't figure it out.
+
+        expect(mockMatch).toHaveBeenCalledWith(
+            expect.objectContaining({
+                id: userInfo.id,
+            })
+        );
+    });
+
+    it('throw error if update fails', async () => {
+        (supabase.from as jest.Mock).mockReturnValue({
+            update: mockUpdate.mockReturnValue({
+                match: mockMatch.mockResolvedValue({ error: 'Error' }),
+            }),
+        });
+
+        try {
+            await UpdateUser(
+                userInfo.id,
+                userInfo.username,
+                userInfo.bio,
+                userInfo.profile_pic
+            );
+            expect(mockUpdate).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    username: userInfo.username,
+                    bio: userInfo.bio,
+                    profile_pic: userInfo.profile_pic,
+                })
+            );
+
+            expect(mockMatch).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    id: userInfo.id,
+                })
+            );
+        } catch (error) {
+            expect(error.message).toBe(
+                'Error updating user info for ' + userInfo.id
+            );
+        }
     });
 });
 
-// describe('UploadPhoto', () => {
-//     beforeEach(() => {
-//         jest.clearAllMocks();
-//     });
-//     const file = mockFile('png', 1024);
+describe('UploadPhoto', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+    const file = mockFile('png', 1024);
+    const userId = 'user123';
+    const filePath = `${userId}/avatar.png`;
+    it('uploads file', async () => {
+        (supabase.storage.from as jest.Mock).mockReturnValue({
+            update: jest.fn().mockResolvedValue({
+                data: {
+                    id: 'id',
+                    path: filePath,
+                    fullPath: `avatars/${filePath}`,
+                },
+                error: null,
+            }),
+        });
 
-//     const user = {
-//         id: 'user123',
-//         email: 'test@example.com',
-//         name: 'Test User',
-//         picture: 'https://test.com/profile.jpg',
-//     };
-//     it('uploads file', async () => {
-//         const filePath = `${user.id}/avatar.png`;
+        const url = await UploadPhoto(userId, file);
 
-//         (supabase.storage.from as jest.Mock).mockReturnValue({
-//             update: jest.fn().mockResolvedValue({
-//                 data: {
-//                     id: 'id',
-//                     path: filePath,
-//                     fullPath: 'fullPath',
-//                 },
-//                 error: null,
-//             }),
-//         });
+        expect(supabase.storage.from('avatars').update).toHaveBeenCalledWith(
+            filePath,
+            file,
+            expect.objectContaining({})
+        );
 
-//         expect(checkSession).toHaveBeenCalled();
-//         expect(supabase.storage.from('avatars').update).toHaveBeenCalledWith(
-//             filePath,
-//             file,
-//             expect.objectContaining({})
-//         );
-//     });
+        expect(url).toBe(
+            process.env.NEXT_PUBLIC_SUPABASE_URL +
+                `/storage/v1/object/public/avatars/${filePath}`
+        );
+    });
 
-//     it('does not upload if user session errors', async () => {
-//         (checkSession as jest.Mock).mockResolvedValue(
-//             Promise.resolve({
-//                 user,
-//                 error: 'Failed',
-//             })
-//         );
-//         expect(async () => {
-//             await UploadPhoto(file);
-//         }).rejects.toThrow();
-//     });
-// });
+    it('throw error if upload fails', async () => {
+        (supabase.storage.from as jest.Mock).mockReturnValue({
+            update: jest.fn().mockResolvedValue({
+                data: null,
+                error: 'Error',
+            }),
+        });
+        try {
+            await UploadPhoto(userId, file);
+        } catch (error) {
+            expect(error).toBe('Error');
+        }
+    });
+});

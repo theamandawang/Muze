@@ -55,14 +55,3 @@ export async function UploadPhoto(userId: string, file: File) {
         data.fullPath
     );
 }
-
-export async function DeletePhoto(userId: string) {
-    const filePath = `${userId}/avatar.png`;
-
-    const { error } = await supabase.storage.from('avatars').remove([filePath]);
-
-    if (error) {
-        console.log('Error deleting!');
-        throw error;
-    }
-}
