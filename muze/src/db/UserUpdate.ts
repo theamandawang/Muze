@@ -19,39 +19,19 @@ export async function CreateUser(token: any) {
     }
 }
 
-export async function UpdateUsername(userId: string, username: string) {
-    const { error } = await supabase
-        .from('users')
-        .update({ username: username })
-        .match({ id: userId });
-    if (error) {
-        console.error(error);
-        throw new Error('Error updating username for ' + userId);
-    }
-}
-
-export async function UpdateProfilePicture(
+export async function UpdateUser(
     userId: string,
+    username: string,
+    bio: string,
     profile_pic: string
 ) {
     const { error } = await supabase
         .from('users')
-        .update({ profile_pic: profile_pic })
+        .update({ username: username, bio: bio, profile_pic: profile_pic })
         .match({ id: userId });
     if (error) {
         console.error(error);
-        throw new Error('Error updating profile pictures');
-    }
-}
-
-export async function UpdateBio(userId: string, bio: string) {
-    const { error } = await supabase
-        .from('users')
-        .update({ bio: bio })
-        .match({ id: userId });
-    if (error) {
-        console.error(error);
-        throw new Error('Error updating bio');
+        throw new Error('Error updating user info for ' + userId);
     }
 }
 
@@ -68,8 +48,10 @@ export async function UploadPhoto(userId: string, file: File) {
         console.log('Error uploading!');
         throw error;
     }
+
     return (
-        'https://axcnthaoozwhcofglcwo.supabase.co/storage/v1/object/public/avatars/' +
+        process.env.NEXT_PUBLIC_SUPABASE_URL +
+        '/storage/v1/object/public/' +
         data.fullPath
     );
 }

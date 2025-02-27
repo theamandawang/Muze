@@ -1,12 +1,11 @@
 'use server';
-import { NextResponse } from 'next/server';
 import {
     CreateUser,
-    UpdateBio,
+    UpdateUser,
     UploadPhoto,
-    UpdateProfilePicture,
-    UpdateUsername,
+    DeletePhoto,
 } from '@/db/UserUpdate';
+import { GetUserById, GetUsersByUsername } from '@/db/UserGet';
 import { checkSession } from '@/utils/serverSession';
 
 // Create a user
@@ -27,103 +26,96 @@ export async function createUser(token: {
         await CreateUser(token);
     } catch (error) {
         console.error(error);
-        return NextResponse.json(
-            { error: 'Failed to create user.' },
-            { status: 500 }
-        );
+        return null;
     }
-    return NextResponse.json(
-        { message: 'User upserted successfully' },
-        { status: 200 }
-    );
+    return true;
 }
 
-export async function updateBio(bio: string) {
+export async function updateUser(
+    username: string,
+    bio: string,
+    file: File | null,
+    profile_pic?: string | null
+) {
+    if (!file && !profile_pic) {
+        console.error('If no new pfp, MUST send the old url');
+        return null;
+    }
     let session;
     try {
         session = await checkSession();
     } catch {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        return null;
     }
 
-    try {
-        await UpdateBio(session.user.id, bio);
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json(
-            { error: 'Failed to update bio.' },
-            { status: 500 }
-        );
+    if (file) {
+        let fileURL;
+        try {
+            fileURL = await UploadPhoto(session.user.id, file);
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+
+        try {
+            await UpdateUser(session.user.id, username, bio, fileURL);
+            return fileURL;
+        } catch (error) {
+            console.error(error);
+            await DeletePhoto(session.user.id);
+            return null;
+        }
+    } else {
+        // don't need to update the pfp!
+        // update with the url of the previous pfp
+        if (profile_pic) {
+            try {
+                await UpdateUser(session.user.id, username, bio, profile_pic);
+                return profile_pic;
+            } catch (error) {
+                console.error(error);
+                return null;
+            }
+        }
     }
-    return NextResponse.json(
-        { message: 'Bio updated successfully' },
-        { status: 200 }
-    );
 }
 
-export async function uploadPhoto(file: File) {
+export async function getCurrentUser() {
     let session;
     try {
         session = await checkSession();
     } catch {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        return null;
     }
 
-    let data;
+    let user;
     try {
-        data = await UploadPhoto(session.user.id, file);
+        user = await GetUserById(session.user.id);
     } catch (error) {
         console.error(error);
-        return NextResponse.json(
-            { error: 'Failed to upload photo.' },
-            { status: 500 }
-        );
+        return null;
     }
-    return NextResponse.json({ message: data }, { status: 200 });
+    return user;
 }
 
-export async function updateProfilePicture(url: string) {
-    let session;
+export async function getUserById(userId: string) {
+    let user;
     try {
-        session = await checkSession();
-    } catch {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    try {
-        await UpdateProfilePicture(session.user.id, url);
+        user = await GetUserById(userId);
     } catch (error) {
         console.error(error);
-        return NextResponse.json(
-            { error: 'Failed to update profile picture.' },
-            { status: 500 }
-        );
+        return null;
     }
-    return NextResponse.json(
-        { message: 'Profile picture updated successfully' },
-        { status: 200 }
-    );
+    return user;
 }
 
-export async function updateUsername(username: string) {
-    let session;
+export async function getUsersByUsername(username: string) {
+    let users;
     try {
-        session = await checkSession();
-    } catch {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    try {
-        await UpdateUsername(session.user.id, username);
+        users = await GetUsersByUsername(username);
     } catch (error) {
         console.error(error);
-        return NextResponse.json(
-            { error: 'Failed to update username.' },
-            { status: 500 }
-        );
+        return null;
     }
-    return NextResponse.json(
-        { message: 'Username updated successfully' },
-        { status: 200 }
-    );
+    return users;
 }

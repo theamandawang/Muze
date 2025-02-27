@@ -1,24 +1,13 @@
 'use server';
 import { supabase } from '@/lib/supabase/supabase';
 
-export async function GetUserProfilePictureURL(userId: string) {
-    const { data, error } = await supabase
-        .from('users')
-        .select('profile_pic')
-        .match({ id: userId })
-        .limit(1)
-        .single();
-
-    if (error) throw error;
-    return data?.profile_pic;
-}
-
 export async function GetUserById(userId: string) {
     const { data, error } = await supabase
         .from('users')
         .select('*')
         .match({ id: userId })
-        .limit(1);
+        .limit(1)
+        .single();
     if (error) throw error;
     return data;
 }

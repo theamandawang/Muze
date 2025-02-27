@@ -1,8 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase/supabase';
 import Image from 'next/image';
-import { uploadPhoto } from '@/app/api/user/route';
+import { getCurrentUser, updateUser } from '@/app/api/user/route';
 
 export default function Avatar({
     url,
@@ -11,7 +10,7 @@ export default function Avatar({
 }: {
     url: string | null;
     size: number;
-    onUpload: (url: string) => void;
+    onUpload: (file: File) => void;
 }) {
     const [avatarUrl, setAvatarUrl] = useState<string | null>(url);
     const [uploading, setUploading] = useState(false);
@@ -19,22 +18,18 @@ export default function Avatar({
     useEffect(() => {
         async function downloadImage(path: string) {
             try {
-                const { data, error } = await supabase.storage
-                    .from('avatars')
-                    .download(path);
-                if (error) {
-                    throw error;
+                const user = await getCurrentUser();
+                if (user) {
+                    console.log(user.profile_pic);
+                    setAvatarUrl(user.profile_pic);
                 }
-
-                const url = URL.createObjectURL(data);
-                setAvatarUrl(url);
             } catch (error) {
                 console.log('Error downloading image: ', error);
             }
         }
 
         if (url) downloadImage(url);
-    }, [url, supabase]);
+    }, [url]);
 
     const uploadAvatar: React.ChangeEventHandler<HTMLInputElement> = async (
         event
@@ -43,21 +38,35 @@ export default function Avatar({
             setUploading(true);
 
             if (!event.target.files || event.target.files.length === 0) {
-                throw new Error('You must select a png to upload.');
+                throw new Error('You must select an image to upload.');
             }
-            if (event.target.files[0].type !== 'image/png') {
-                alert('This is not a png');
-                return;
-                // throw new Error('This is not a png file.');
-            }
-
             const file = event.target.files[0];
 
-            const filePath = await uploadPhoto(file);
+            if (file.size > 10e6) {
+                alert('Your file must be less than 10 MB');
+                throw new Error('File is too large.');
+            }
 
-            await onUpload(event.target.files[0].name);
+            if (file.type !== 'image/png') {
+                alert('You can only upload pngs!');
+                throw new Error('You must select a png.');
+            }
+
+            // const fileURL = await updateUser(file);
+            // if (fileURL) {
+            //     onUpload(fileURL);
+            // }
+            const reader = new FileReader();
+
+            reader.onloadend = () => {
+                // Set the data URL of the image to display it
+                setAvatarUrl(reader.result);
+                onUpload(file);
+            };
+
+            // Read the file as a data URL
+            reader.readAsDataURL(file);
         } catch (error) {
-            console.log(error);
             alert('Error uploading avatar!');
         } finally {
             setUploading(false);

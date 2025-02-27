@@ -3,14 +3,49 @@ import AlbumArt from '@/components/album_art/album_art';
 import Avatar from './settings/avatar';
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
-import { useState } from 'react';
-import { updateProfilePicture } from '../api/user/route';
+import { useEffect, useState } from 'react';
+import { getCurrentUser, updateUser } from '../api/user/route';
+import { TextField } from '@mui/material';
 
 export default function Profile() {
     const [avatarUrl, setAvatarUrl] = useState('');
+    const [username, setUsername] = useState('');
+    const [bio, setBio] = useState('');
+    const [profile_pic, setProfilePic] = useState('');
+    const [file, setFile] = useState<File | null>(null);
     const session = useSession();
     if (!session || session.status === 'unauthenticated') {
         redirect(`/`);
+    }
+
+    useEffect(() => {
+        async function loadUser() {
+            try {
+                const user = await getCurrentUser();
+                if (user) {
+                    if (user.profile_pic && user.profile_pic !== '') {
+                        setAvatarUrl(user.profile_pic);
+                        setProfilePic(user.profile_pic);
+                    }
+                    setUsername(user.username);
+                    if (user.bio) {
+                        setBio(user.bio);
+                    }
+                }
+            } catch (error) {
+                console.log('Error loading user: ', error);
+            }
+        }
+        loadUser();
+    });
+
+    async function updateProfile() {
+        const done = await updateUser(username, bio, file, avatarUrl);
+        if (done) {
+            alert('uploaded!');
+        } else {
+            alert('failed to upload');
+        }
     }
 
     return (
@@ -20,18 +55,43 @@ export default function Profile() {
             </div>
             {/* sm: md: lg: xl: */}
             {/* sm: text-sm md: text-base lg: text-lg xl: */}
+            Modify profile: picture here
             <Avatar
                 url={avatarUrl}
                 size={150}
-                onUpload={(url) => {
-                    setAvatarUrl(url);
-                    updateProfilePicture(url);
+                onUpload={(file) => {
+                    setFile(file);
                 }}
             ></Avatar>
+            Modify Username
+            <TextField
+                onChange={(e) => {
+                    setUsername(e.target.value);
+                }}
+                title='Change username'
+                className='bg-white'
+                defaultValue={username}
+            ></TextField>
+            Modify bio
+            <TextField
+                onChange={(e) => {
+                    setBio(e.target.value);
+                }}
+                title='Change bio'
+                className='bg-white'
+                defaultValue={bio}
+            ></TextField>
+            <button
+                onClick={() => {
+                    updateProfile();
+                }}
+            >
+                Submit Profile Changes
+            </button>
             <div className='mx-[15%]'>
                 <div className='px-[5%] mt-[7%]'>
                     <h1 className='font-bold sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl'>
-                        Maxine Wu
+                        {username}
                         <span className='italic px-3 font-normal sm:text-sm md:text-base lg:text-lg xl:text-xl'>
                             (she/her)
                         </span>

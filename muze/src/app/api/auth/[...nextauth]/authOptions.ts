@@ -47,8 +47,8 @@ const authOptions: AuthOptions = {
             }
 
             const resp = await createUser(updatedToken);
-            if (!resp.ok) {
-                console.error(resp.body);
+            if (!resp) {
+                console.error('Unable to upsert user');
             }
 
             return updatedToken;
