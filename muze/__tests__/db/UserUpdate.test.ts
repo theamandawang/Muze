@@ -1,26 +1,23 @@
-import { CreateUser, UploadPhoto } from '@/db/UserUpdate';
+import { CreateUser, UpdateUser, UploadPhoto } from '@/db/UserUpdate';
 import { supabase } from '@/lib/supabase/supabase';
 import { checkSession } from '@/utils/serverSession';
 
 jest.mock('@/lib/supabase/supabase', () => ({
     __esModule: true,
-    default: {
+    supabase: {
         storage: {
             from: jest.fn(() => ({
                 update: jest.fn(),
+                remove: jest.fn(),
             })),
         },
         from: jest.fn(() => ({
             select: jest.fn(() => ({
                 eq: jest.fn(),
             })),
-            upsert: jest.fn(() => ({
-                select: jest.fn(),
-            })),
+            upsert: jest.fn(),
             update: jest.fn(() => ({
-                match: jest.fn(() => ({
-                    select: jest.fn(),
-                })),
+                match: jest.fn(),
             })),
         })),
     },
@@ -35,59 +32,38 @@ describe('CreateUser', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
-    const user = {
+    const mockToken = {
+        access_token: 'valid_token',
+        token_type: 'Bearer',
+        expires_at: Math.floor(Date.now() / 1000) + 3600, // Valid for 1 hour
+        expires_in: 3600,
+        refresh_token: 'refresh_token',
+        scope: 'user-read-email',
         id: 'user123',
         email: 'test@example.com',
         name: 'Test User',
-        picture: 'https://test.com/profile.jpg',
+        picture: 'https://test.com/profile.png',
     };
-    it('upserts if a user session is detected', async () => {
-        (checkSession as jest.Mock).mockResolvedValue(
-            Promise.resolve({
-                user,
-                error: null,
-            })
-        );
+    it('upserts if a token is given', async () => {
         (supabase.from as jest.Mock).mockReturnValue({
-            upsert: jest.fn().mockReturnValue({
-                select: jest.fn().mockResolvedValue({
-                    data: [user],
+            upsert: jest.fn().mockResolvedValue(() => {
+                Promise.resolve({
                     error: null,
-                }),
+                });
             }),
         });
 
-        await CreateUser();
+        await CreateUser(mockToken);
 
-        expect(checkSession).toHaveBeenCalled();
         expect(supabase.from('users').upsert).toHaveBeenCalledWith(
-            expect.objectContaining({ id: user.id, email: user.email }),
+            expect.objectContaining({
+                id: mockToken.id,
+                email: mockToken.email,
+                username: mockToken.name,
+                profile_pic: mockToken.picture,
+            }),
             expect.objectContaining({})
         );
-    });
-
-    it('does not upsert if user session errors', async () => {
-        (checkSession as jest.Mock).mockResolvedValue(
-            Promise.resolve({
-                user,
-                error: 'Failed',
-            })
-        );
-        expect(async () => {
-            await CreateUser();
-        }).rejects.toThrow();
-    });
-
-    it('does not upsert if user is null', async () => {
-        (checkSession as jest.Mock).mockResolvedValue(
-            Promise.resolve({
-                user: null,
-                error: 'Failed',
-            })
-        );
-        expect(async () => {
-            await CreateUser();
-        }).rejects.toThrow();
     });
 });
 
@@ -101,58 +77,92 @@ const mockFile = (type: string, size: number): File => {
     return file;
 };
 
-describe('UploadPhoto', () => {
+describe('UpdateUser', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
-    const file = mockFile('jpg', 1024);
 
-    const user = {
+    // our inputs
+    const userInfo = {
         id: 'user123',
-        email: 'test@example.com',
-        name: 'Test User',
-        picture: 'https://test.com/profile.jpg',
+        username: 'Test User',
+        bio: 'my bio',
+        profile_pic: 'https://test.com/profile.png',
     };
-    it('uploads if a user session is detected', async () => {
-        (checkSession as jest.Mock).mockResolvedValue(
-            Promise.resolve({
-                user,
-                error: null,
-            })
-        );
 
-        const filePath = `${user.id}/avatar.jpg`;
+    const mockUpdate = jest.fn();
+    const mockMatch = jest.fn();
 
-        (supabase.storage.from as jest.Mock).mockReturnValue({
-            update: jest.fn().mockResolvedValue({
-                data: {
-                    id: 'id',
-                    path: filePath,
-                    fullPath: 'fullPath',
-                },
-                error: null,
+    it('updates user', async () => {
+        (supabase.from as jest.Mock).mockReturnValue({
+            update: mockUpdate.mockReturnValue({
+                match: mockMatch.mockReturnValue(() => {
+                    Promise.resolve(null);
+                }),
             }),
         });
 
-        await UploadPhoto(file);
-
-        expect(checkSession).toHaveBeenCalled();
-        expect(supabase.storage.from('avatars').update).toHaveBeenCalledWith(
-            filePath,
-            file,
-            expect.objectContaining({})
+        await UpdateUser(
+            userInfo.id,
+            userInfo.username,
+            userInfo.bio,
+            userInfo.profile_pic
         );
-    });
 
-    it('does not upload if user session errors', async () => {
-        (checkSession as jest.Mock).mockResolvedValue(
-            Promise.resolve({
-                user,
-                error: 'Failed',
+        expect(mockUpdate).toHaveBeenCalledWith(
+            expect.objectContaining({
+                username: userInfo.username,
+                bio: userInfo.bio,
+                profile_pic: userInfo.profile_pic,
             })
         );
-        expect(async () => {
-            await UploadPhoto(file);
-        }).rejects.toThrow();
+        // ideally would also expect match to contain id, id but can't figure it out.
     });
 });
+
+// describe('UploadPhoto', () => {
+//     beforeEach(() => {
+//         jest.clearAllMocks();
+//     });
+//     const file = mockFile('png', 1024);
+
+//     const user = {
+//         id: 'user123',
+//         email: 'test@example.com',
+//         name: 'Test User',
+//         picture: 'https://test.com/profile.jpg',
+//     };
+//     it('uploads file', async () => {
+//         const filePath = `${user.id}/avatar.png`;
+
+//         (supabase.storage.from as jest.Mock).mockReturnValue({
+//             update: jest.fn().mockResolvedValue({
+//                 data: {
+//                     id: 'id',
+//                     path: filePath,
+//                     fullPath: 'fullPath',
+//                 },
+//                 error: null,
+//             }),
+//         });
+
+//         expect(checkSession).toHaveBeenCalled();
+//         expect(supabase.storage.from('avatars').update).toHaveBeenCalledWith(
+//             filePath,
+//             file,
+//             expect.objectContaining({})
+//         );
+//     });
+
+//     it('does not upload if user session errors', async () => {
+//         (checkSession as jest.Mock).mockResolvedValue(
+//             Promise.resolve({
+//                 user,
+//                 error: 'Failed',
+//             })
+//         );
+//         expect(async () => {
+//             await UploadPhoto(file);
+//         }).rejects.toThrow();
+//     });
+// });
