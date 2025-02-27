@@ -11,8 +11,8 @@ export default function Profile() {
     const [avatarUrl, setAvatarUrl] = useState('');
     const [username, setUsername] = useState('');
     const [bio, setBio] = useState('');
-    const [profile_pic, setProfilePic] = useState('');
     const [file, setFile] = useState<File | null>(null);
+    const [update, setUpdate] = useState(true);
     const session = useSession();
     if (!session || session.status === 'unauthenticated') {
         redirect(`/`);
@@ -25,7 +25,6 @@ export default function Profile() {
                 if (user) {
                     if (user.profile_pic && user.profile_pic !== '') {
                         setAvatarUrl(user.profile_pic);
-                        setProfilePic(user.profile_pic);
                     }
                     setUsername(user.username);
                     if (user.bio) {
@@ -37,12 +36,13 @@ export default function Profile() {
             }
         }
         loadUser();
-    });
+    }, [update]);
 
     async function updateProfile() {
         const done = await updateUser(username, bio, file, avatarUrl);
         if (done) {
             alert('uploaded!');
+            setUpdate(!update);
         } else {
             alert('failed to upload');
         }
