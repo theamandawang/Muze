@@ -1,14 +1,14 @@
 import authOptions from '@/app/api/auth/[...nextauth]/authOptions';
 import { JWT } from 'next-auth/jwt';
-import { CreateUser } from '@/db/UserUpdate';
+import { createUser } from '@/app/api/user/route';
 
-jest.mock('@/db/UserUpdate', () => ({
+jest.mock('@/app/api/user/route', () => ({
     __esModule: false,
-    CreateUser: jest.fn(),
+    createUser: jest.fn(),
 }));
 
 describe('Auth Session Management', () => {
-    (CreateUser as jest.Mock).mockResolvedValue({});
+    (createUser as jest.Mock).mockResolvedValue(true);
     it('returns an updated token when an access token is available', async () => {
         const mockToken: JWT = {
             access_token: 'old_token',
