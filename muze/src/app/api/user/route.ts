@@ -32,6 +32,17 @@ export async function updateUser(
     file: File | null,
     profile_pic?: string | null
 ) {
+    // Username validation
+    if (username.length < 2 ) {
+        console.error('Username is too short. Username must be at least 2 characters');
+        return null;
+    }
+    if (username.length > 32) {
+        console.error('Username is too long. Username must be less than 32 characters.');
+        return null;
+    }
+
+    // Profile picture upload validation
     if (!file && !profile_pic) {
         console.error('If no new pfp, MUST send the old url');
         return null;

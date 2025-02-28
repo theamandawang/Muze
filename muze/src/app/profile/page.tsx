@@ -41,10 +41,11 @@ export default function Profile() {
     async function updateProfile() {
         const done = await updateUser(username, bio, file, avatarUrl);
         if (done) {
-            alert('uploaded!');
+            alert('updated profile!');
             setUpdate(!update);
         } else {
-            alert('failed to upload');
+            // TODO: add more specific failure mode
+            alert('failed to update profile');
         }
     }
 
