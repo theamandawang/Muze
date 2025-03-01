@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { getCurrentUser, updateUser } from '@/app/api/user/route';
+import { getAvatarImageSrc } from './avatar-utils'
 
 export default function Avatar({
     url,
@@ -60,7 +61,7 @@ export default function Avatar({
 
             reader.onloadend = () => {
                 // Set the data URL of the image to display it
-                setAvatarUrl(reader.result);
+                setAvatarUrl(reader.result as string);
                 onUpload(file);
             };
 
@@ -79,7 +80,7 @@ export default function Avatar({
                 <Image
                     width={size}
                     height={size}
-                    src={avatarUrl}
+                    src={getAvatarImageSrc(avatarUrl)}
                     alt='Avatar'
                     className='avatar image'
                     style={{ height: size, width: size }}
