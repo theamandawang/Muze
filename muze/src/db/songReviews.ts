@@ -112,3 +112,25 @@ export function validateReview(title?: string, rating?: number): string | null {
 
     return null; 
 }
+
+// Get song reviews by newest from all song reviews
+export async function getLatestSongReviewsAll(limit: number = 50, offset: number = 0) {
+    const { data, error } = await supabase
+        .from('song_reviews')
+        .select(`
+            user_id,
+            song_id, 
+            rating, 
+            title, 
+            content,
+            user: user_id (username)
+          `)
+        .order('created_at', { ascending: false })
+        .range(offset, offset + limit - 1);
+    
+    if (error) {
+        throw error;
+    }
+
+    return data;
+}

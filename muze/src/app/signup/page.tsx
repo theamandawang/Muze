@@ -56,7 +56,10 @@ export default function SignUp() {
                         </h1>
                         <p className='text-sm md:text-base lg:text-lg'>where everyone listens</p>
                         <div className='justify-self-center bg-primary rounded-full mt-4 w-[75%] sm:w-[50%] py-2 sm:py-3 text-center text-white'>
-                            <span className='font-bold sm:text-xs md:text-xs lg:text-sm xl:text-base'>
+                            <span 
+                                className='font-bold sm:text-xs md:text-xs lg:text-sm xl:text-base'
+                                onClick={() => signIn("spotify")} 
+                            >
                                 Sign up with Spotify
                             </span>
                         </div>
