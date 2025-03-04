@@ -1,7 +1,7 @@
 import spotifyProfile, { refreshAccessToken } from './SpotifyProfile';
 import { Account, AuthOptions } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
-import { CreateUser } from '@/db/UserUpdate';
+import { createUser } from '@/app/api/user/route';
 
 export type AuthUser = {
     name: string;
@@ -46,11 +46,10 @@ const authOptions: AuthOptions = {
                 return refreshAccessToken(updatedToken);
             }
 
-            try {
-                await CreateUser(updatedToken);
-            } catch (error) {
-                // We'll log the error to the console for now
-                console.error(error);
+            const resp = await createUser(updatedToken);
+            if (!resp) {
+                console.error('Unable to upsert user...');
+                //TODO: clear the token; redirect to /
             }
 
             return updatedToken;
