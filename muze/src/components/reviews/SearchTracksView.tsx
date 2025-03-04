@@ -28,8 +28,8 @@ export default function SearchTracksView( { onTrackSelect } : SearchTracksViewPr
 
     return (
         <Container maxWidth="md">
-            <h1>Find song/album to review</h1>
-            <Box sx={{ mt: 4, mb: '15%' }}>
+            <h1 className="text-4xl mb-4">Find a song/album to review</h1>
+            <Box sx={{ mt: 4, mb: '15%'}}>
                 <form onSubmit={handleSearch}>
                     <Box sx={{ position: 'relative' }}>
                         <TextField
@@ -38,6 +38,13 @@ export default function SearchTracksView( { onTrackSelect } : SearchTracksViewPr
                             onChange={(e) => setSearchTerm(e.target.value)}
                             placeholder="Search for songs/albums..."
                             variant="outlined"
+                            sx={{
+                                backgroundColor: 'white',
+                                borderRadius: '20px',
+                                '& .MuiOutlinedInput-root': {
+                                    borderRadius: '20px',  // Ensures rounded corners
+                                },
+                            }}
                             InputProps={{
                                 endAdornment: (
                                     <IconButton 
@@ -60,15 +67,20 @@ export default function SearchTracksView( { onTrackSelect } : SearchTracksViewPr
                     <Box sx={{ mt: 2 }}>
                         <table>
                             <thead>
-                                <tr>
-                                    <th>Track</th>
-                                    <th>Artist</th>
-                                    <th>Album</th>
+                                <tr style = {{ color: 'var(--primary)' }}>
+                                    <th style = {{ padding: '8px', textAlign: 'left' }}>Track</th>
+                                    <th style = {{ padding: '8px', textAlign: 'left' }}>Artist</th>
+                                    <th style = {{ padding: '8px', textAlign: 'left' }}>Album</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {results.tracks.items.map((track:any) => (
-                                    <tr key={track.id} onClick={() => onTrackSelect(track)}>
+                                    <tr key={track.id} // Add hover color in search results
+                                        onClick={() => onTrackSelect(track)}
+                                        style = {{ cursor : 'pointer' }}
+                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--primary)'}
+                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                    >
                                         <td>{track.name}</td>
                                         <td>{track.artists[0].name}</td>
                                         <td>{track.album.name}</td>

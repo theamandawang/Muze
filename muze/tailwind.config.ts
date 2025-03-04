@@ -14,6 +14,7 @@ export default {
         tertiary: "#e7defd",
         'custom-fuchsia': "#46293C",
         'search-purple': '#1c192a',
+        'profile-lavender': '#e7defd',
         background: "var(--background)",
         foreground: "var(--foreground)",
       },

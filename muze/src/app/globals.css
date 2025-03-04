@@ -30,6 +30,10 @@
     :root {
         --background: #0a0a0a;
         --foreground: #ededed;
+        --primary: #62558b;
+        --secondary: "#775460",
+        --custom-fuchsia: "#46293C",
+        --search-purple: '#1c192a',
     }
 }
 
