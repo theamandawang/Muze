@@ -1,10 +1,13 @@
-import AlbumArt from "@/components/album_art/album_art"
+import AlbumArt from "@/components/album_art/album_art";
+import ProfilePic from "@/components/profile_pic/profile-pic";
 
 export default function Profile(){
     return (
         <div className="grid grid-flow-row auto-rows-max mb-[15%] mx-auto">
                 <div className="relative bg-secondary py-[4.3%] w-full">
-                    <div className="absolute aspect-square rounded-full bg-tertiary top-[50%] left-[5%] w-[8%] mx-[13%]"></div>
+                    <div className="absolute aspect-square rounded-full bg-tertiary top-[50%] left-[5%] mx-[13%] w-36">
+                        <ProfilePic />
+                    </div>
                 </div>
                 {/* sm: md: lg: xl: */}
                 {/* sm: text-sm md: text-base lg: text-lg xl: */}

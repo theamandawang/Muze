@@ -4,7 +4,7 @@ import { useState } from "react";
 import SearchModal from "../search/searchModal";
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/MenuOutlined';
-
+import ProfilePic from "../profile_pic/profile-pic";
 
 export default function MuzeHeader() {
     const pathname = usePathname();
@@ -48,9 +48,9 @@ export default function MuzeHeader() {
                             </div>
                         </Link>
                     )}
-                    <Link href='/profile'>
-                        <div className="aspect-square rounded-full bg-tertiary w-16"></div>
-                    </Link>
+                    <div className="relative w-16">
+                        <ProfilePic />
+                    </div>
                 </div>
             </header>
 
