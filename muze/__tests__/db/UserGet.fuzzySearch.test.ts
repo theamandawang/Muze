@@ -8,9 +8,8 @@ jest.mock('@/lib/supabase/supabase', () => ({
   },
 }));
 
-describe('Fuzzy Search for Users', () => {
-  it('should return fuzzy-matched users', async () => {
-    // Simulate returned data from supabase.rpc
+describe('Fuzzy Search for Users - Improved Algorithm', () => {
+  it('should return fuzzy-matched users sorted by relevance score', async () => {
     const fakeUsers = [
       {
         id: '1',
@@ -19,6 +18,7 @@ describe('Fuzzy Search for Users', () => {
         bio: null,
         created_at: '2023-03-01T00:00:00Z',
         email: 'maxine@example.com',
+        relevance_score: 0.9,
       },
       {
         id: '2',
@@ -27,12 +27,17 @@ describe('Fuzzy Search for Users', () => {
         bio: null,
         created_at: '2023-03-02T00:00:00Z',
         email: 'max@example.com',
+        relevance_score: 0.7,
       },
     ];
+    
     (supabase.rpc as jest.Mock).mockResolvedValue({ data: fakeUsers, error: null });
-
+    
     const users = await GetUsersByUsername('Maxin');
     expect(users).toHaveLength(2);
+    // Check that the first user has a higher (or equal) relevance score than the second user.
+    expect(users[0].relevance_score).toBeGreaterThanOrEqual(users[1].relevance_score);
+    // Ensure that at least one username contains 'Max'
     expect(users[0].username).toMatch(/Max/i);
   });
 

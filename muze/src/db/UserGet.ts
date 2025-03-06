@@ -13,16 +13,14 @@ export async function GetUserById(userId: string) {
 }
 
 export async function GetUsersByUsername(
-    username: string,
-    limit: number = 50,
-    offset: number = 0
-  ) {
-    const { data, error } = await supabase.rpc('search_users_by_username', { search: username });
-    if (error) {
-      throw new Error(error.message);
-    }
-    
-    // Apply local pagination
-    return data.slice(offset, offset + limit);
+  username: string,
+  limit: number = 50,
+  offset: number = 0
+) {
+  const { data, error } = await supabase.rpc('search_users_by_username', { search: username });
+  if (error) {
+    throw new Error(error.message);
   }
   
+  return (data as any[]).slice(offset, offset + limit);
+}
