@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createSongReview, updateSongReviewByReviewId, deleteSongReviewByReviewId } from '@/db/songReviews';
+import { createSongReview, updateSongReviewByReviewId, deleteSongReviewByReviewId, getSongReviewsForSong } from '@/db/songReviews';
 
 
 export async function addSongReview(userId:string, trackId:string, title?: string, review?:string, rating?:number) {
@@ -13,6 +13,19 @@ export async function addSongReview(userId:string, trackId:string, title?: strin
     } catch (error) {
         console.log('Error adding song review:', error);
         return NextResponse.json({error: 'Failed to add song review'});
+    }
+}
+
+export async function getReviewsForSong(songId: string){
+    if (!songId){
+        return NextResponse.json({ error: 'Need song ID' }, { status: 400 }); // status 400: bad request
+    }
+    try {
+        const data = await getSongReviewsForSong(songId);
+        return NextResponse.json({ data }, { status: 200 });
+    } catch (error) {
+        console.log('Error fetching song reviews', error);
+        return NextResponse.json({error: 'Failed to get song reviews'});
     }
 }
 
