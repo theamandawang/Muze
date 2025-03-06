@@ -1,10 +1,10 @@
-import SupabaseClient from './SupabaseClient';
+import { supabase } from '@/lib/supabase/supabase';
 
 // Like a Review
-export async function likeReivew(userId: string, reviewId: string) {
+export async function likeReview(userId: string, reviewId: string) {
     const existingLike = await getUserReviewPair(userId, reviewId);
     if (!existingLike) {
-        const { error } = await SupabaseClient.from('review_likes').insert([
+        const { error } = await supabase.from('review_likes').insert([
             {
                 user_id: userId,
                 review_id: reviewId,
@@ -18,7 +18,7 @@ export async function likeReivew(userId: string, reviewId: string) {
 export async function unlikeReview(userId: string, reviewId: string) {
     const existingLike = await getUserReviewPair(userId, reviewId);
     if (existingLike) {
-        const { error } = await SupabaseClient.from('review_likes')
+        const { error } = await supabase.from('review_likes')
         .delete()
         .match({ user_id: userId, review_id: reviewId });
     if (error) throw error;
@@ -30,7 +30,7 @@ export async function getUserReviewPair(
     userId: string,
     reviewId: string
 ) {
-    const { data, error } = await SupabaseClient.from('review_likes')
+    const { data, error } = await supabase.from('review_likes')
         .select('*')
         .eq('user_id', userId)
         .eq('review_id', reviewId)
@@ -42,4 +42,18 @@ export async function getUserReviewPair(
         return data[0];
     }
     return null;
+}
+
+// Get total number of likes for a review: 
+export async function totalReviewLikes(reviewId: string) {
+    const {count, error} = await supabase.from('review_likes')
+        .select('*', {count: 'exact', head: true})
+        .eq('id', reviewId); 
+
+    if (error) {
+        return error; 
+    }
+    else {
+        return count; 
+    }
 }
