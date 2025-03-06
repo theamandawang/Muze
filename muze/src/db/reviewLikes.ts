@@ -25,6 +25,14 @@ export async function unlikeReview(userId: string, reviewId: string) {
     }
 }
 
+// Wrapper around function name to check if user has liked a review 
+export async function userLikedReview(
+    userId: string, 
+    reviewId: string
+) { 
+    return getUserReviewPair(userId, reviewId); 
+}
+
 // Get a following pair.
 export async function getUserReviewPair(
     userId: string,
