@@ -14,9 +14,14 @@ import { addSongReview } from '@/app/api/review/route';
 interface AddReviewViewProps {
     track: Track;
     onBack: () => void;
+    onDone: () => void;
 }
 
-export default function AddReviewView({ track, onBack }: AddReviewViewProps) {
+export default function AddReviewView({
+    track,
+    onBack,
+    onDone,
+}: AddReviewViewProps) {
     const { data: session, status } = useSession();
     const [title, setTitle] = useState('');
     const [review, setReview] = useState('');
@@ -33,6 +38,7 @@ export default function AddReviewView({ track, onBack }: AddReviewViewProps) {
             alert('Please provide a title and a review.');
         } else {
             await addSongReview(userId, track.id, title, review, rating);
+            onDone();
         }
     };
 
