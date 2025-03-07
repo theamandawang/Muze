@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import authOptions, {
     SpotifyServerSession,
@@ -18,30 +17,23 @@ export async function follow(followingId: string) {
         await getServerSession(authOptions);
 
     if (!session || !session.user || !session.user.id) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        console.error('No session active.');
+        return null;
     }
 
     const userId = session.user.id;
     if (userId === followingId) {
-        return NextResponse.json(
-            { error: 'You cannot follow yourself' },
-            { status: 400 }
-        );
+        console.error('You cannot follow yourself.');
+        return null;
     }
 
     try {
         await followUser(userId, followingId);
     } catch (error) {
         console.error(error);
-        return NextResponse.json(
-            { error: 'Failed to follow user.' },
-            { status: 500 }
-        );
+        return null;
     }
-    return NextResponse.json(
-        { message: 'User followed successfully' },
-        { status: 200 }
-    );
+    return true;
 }
 
 // Unfollow user
@@ -50,7 +42,8 @@ export async function unfollow(followingId: string) {
         await getServerSession(authOptions);
 
     if (!session || !session.user || !session.user.id) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        console.error('No session active.');
+        return null;
     }
 
     const userId = session.user.id;
@@ -58,41 +51,29 @@ export async function unfollow(followingId: string) {
         await unfollowUser(userId, followingId);
     } catch (error) {
         console.error(error);
-        return NextResponse.json(
-            { error: 'Failed to unfollow user' },
-            { status: 500 }
-        );
+        return null;
     }
 
-    return NextResponse.json(
-        { message: 'User unfollowed successfully' },
-        { status: 200 }
-    );
+    return true;
 }
 
 // Get a User's Following or Followers (Public)
 export async function getUserFollowing(userId: string) {
     try {
         const data = await getFollowing(userId);
-        return NextResponse.json({ data }, { status: 200 });
+        return data;
     } catch (error) {
         console.error(error);
-        return NextResponse.json(
-            { error: 'Failed to load following' },
-            { status: 500 }
-        );
+        return null;
     }
 }
 
 export async function getUserFollowers(userId: string) {
     try {
         const data = await getFollowers(userId);
-        return NextResponse.json({ data }, { status: 200 });
+        return data;
     } catch (error) {
         console.error(error);
-        return NextResponse.json(
-            { error: 'Failed to load following' },
-            { status: 500 }
-        );
+        return null;
     }
 }
