@@ -250,10 +250,11 @@ export type Database = {
           username: string;
           profile_pic: string | null;
           bio: string | null;
-          created_at: string | null;
+          created_at: string; // Supabase sends timestamps as strings in JS
           email: string;
+          relevance_score: number;
         }[];
-      };
+      },
     },
     Enums: {
       [_ in never]: never
