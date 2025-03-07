@@ -29,7 +29,7 @@ const Hero: React.FC<HeroProps> = ({
       )}
 
       {/* Display Name */}
-      <h1 className='text-white text-2xl lg:text-4xl font-bold mb-5 lg:mb-10 mx-24'>hey, {displayName}!</h1>
+      <h1 className='text-white text-2xl lg:text-4xl font-bold mb-5 lg:mb-10 mx-24'>hey{displayName}!</h1>
     </section>
   );
 }

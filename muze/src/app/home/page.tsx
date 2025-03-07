@@ -7,21 +7,16 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { useEffect, useState } from "react";
 import { getLatestSongReviews } from "../api/review/route";
 import { getUserTopSongs } from "../api/topSongs/route";
-import { getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 export default function HomePage() {
-    const [session, setSession] = useState<any>(null);
     const [latestSongReviews, setLatestSongReviews] = useState<any[]>([]);
     const [albumCovers, setAlbumCovers] = useState<string[]>([]);
 
-    useEffect(() => {
-        const fetchSession = async () => {
-            const userSession = await getSession();
-            setSession(userSession);
-        };
-
-        fetchSession();
-    }, []);
+    const { data: session, status } = useSession();
+    if (status !== 'authenticated' || !session?.user) {
+        return null; // or you can display a loading or error message
+    }
 
     useEffect(() => {
         const fetchReviews = async () => {
@@ -75,7 +70,7 @@ export default function HomePage() {
 
     return (
     <div className="w-full">
-        <Hero displayName={session.user.name} albumArts={albumCovers}/>      
+        <Hero displayName={', ' + session.user.name || ' there'} albumArts={albumCovers}/>  {/* Display 'hey there!' if no displayName */}
         <div className="mx-auto w-[80%] p-4 space-y-8">
             {/* Popular with Friends Section */}
             <section className="w-full">
