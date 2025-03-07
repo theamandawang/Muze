@@ -1,4 +1,4 @@
-import { Box, TextField, IconButton, CircularProgress } from "@mui/material";
+import { Box, TextField, IconButton, CircularProgress, Link } from "@mui/material";
 import { SearchResults, Track } from "@spotify/web-api-ts-sdk";
 import { useState } from "react";
 import SearchIcon from '@mui/icons-material/Search';
@@ -28,7 +28,7 @@ export default function SearchTracksView( { onTrackSelect } : SearchTracksViewPr
 
     return (
         <Container maxWidth="md">
-            <h1 className="text-4xl mb-4">Find a song/album to review</h1>
+            <h1 className="text-4xl mb-4">Find a song/album:</h1>
             <Box sx={{ mt: 4, mb: '15%'}}>
                 <form onSubmit={handleSearch}>
                     <Box sx={{ position: 'relative' }}>
@@ -81,7 +81,9 @@ export default function SearchTracksView( { onTrackSelect } : SearchTracksViewPr
                                         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--primary)'}
                                         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                                     >
-                                        <td>{track.name}</td>
+                                        <Link href={`/song/${track.id}`}>
+                                            <td>{track.name}</td>
+                                        </Link>
                                         <td>{track.artists[0].name}</td>
                                         <td>{track.album.name}</td>
                                     </tr>
