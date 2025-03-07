@@ -3,6 +3,8 @@ import {
     updateSongReviewByReviewId,
     deleteSongReviewByReviewId,
     getLatestSongReviewsAll,
+    getSongReviewsForUser,
+    getSongReviewsForSong,
 } from '@/db/songReviews';
 import getSpotifySongInfo from '@/spotify-api/getSongInfo';
 
@@ -28,7 +30,21 @@ export async function addSongReview(
         );
         return data;
     } catch (error) {
-        console.log('Error adding song review:', error);
+        console.error('Error adding song review:', error);
+        return null;
+    }
+}
+
+export async function getReviewsForSong(songId: string) {
+    if (!songId) {
+        console.error('Need song ID');
+        return null;
+    }
+    try {
+        const data = await getSongReviewsForSong(songId);
+        return data;
+    } catch (error) {
+        console.error('Error fetching song reviews', error);
         return null;
     }
 }
@@ -53,7 +69,7 @@ export async function updateSongReview(
         );
         return data;
     } catch (error) {
-        console.log('Error updating song review:', error);
+        console.error('Error updating song review:', error);
         return null;
     }
 }
@@ -68,36 +84,62 @@ export async function deleteSongReview(reviewId: string) {
         const data = await deleteSongReviewByReviewId(reviewId);
         return data;
     } catch (error) {
-        console.log('Error deleting song review:', error);
+        console.error('Error deleting song review:', error);
         return null;
     }
 }
 
+// Get latest song reviews (from all users)
 export async function getLatestSongReviews(
     limit: number = 50,
     offset: number = 0
 ) {
+    // Get latest reviews from database
     const data = await getLatestSongReviewsAll(limit, offset);
+    // Map over all reviews and fetch additional data from Spotify
     const finalData = await Promise.all(
         data.map(async (review) => {
-            // Continue if no song id
-            if (review.song_id == null) return {};
-
-            // TODO: Temp workaround to get song data until we implement caching
-            const spotifyData = await getSpotifySongInfo(review.song_id);
-
-            // Continue if no song data retrieved
-            if (spotifyData == null) return {};
-            return {
-                ...review,
-                mediaType: 'Song',
-                mediaName: spotifyData.songName,
-                artistName: spotifyData.artistNames || 'Unknown',
-                mediaCoverArt: spotifyData.imageUrl || '',
-                reviewerName: review.user.username, // Move username to top level
-            };
+            return await fetchMediaData(review, getSpotifySongInfo);
         })
     );
 
     return finalData;
+}
+
+// Get song reviews from one user (from most recent to least recent)
+export async function getUserSongReviews(
+    userId: string,
+    limit: number = 50,
+    offset: number = 0
+) {
+    // Get reviews from one user
+    const data = await getSongReviewsForUser(userId, limit, offset);
+    // Map over all reviews and fetch additional data from Spotify
+    const finalData = await Promise.all(
+        data.map(async (review) => {
+            return await fetchMediaData(review, getSpotifySongInfo);
+        })
+    );
+    return finalData; 
+}
+
+// Helper function to fetch data (for the album cover & artists) from Spotify 
+async function fetchMediaData(review: any, mediaFetchFunction: any) {
+    if (review.song_id == null) return {};
+
+    // Get data from Spotify
+    const spotifyData = await mediaFetchFunction(review.song_id);
+
+    // Continue if no song data retrieved
+    if (spotifyData == null) return {};
+    console.log('Spotify data:', spotifyData);
+    console.log('Review:', review);
+    return {
+        ...review,
+        mediaType: 'Song',
+        mediaName: spotifyData.songName,
+        artistName: spotifyData.artistNames || 'Unknown',
+        mediaCoverArt: spotifyData.imageUrl || '',
+        reviewerName: review.user.username, // Move username to top level
+    };
 }
