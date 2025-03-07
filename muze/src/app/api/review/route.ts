@@ -3,6 +3,7 @@ import {
     updateSongReviewByReviewId,
     deleteSongReviewByReviewId,
     getLatestSongReviewsAll,
+    getSongReviewsForSong,
 } from '@/db/songReviews';
 import getSpotifySongInfo from '@/spotify-api/getSongInfo';
 
@@ -28,7 +29,21 @@ export async function addSongReview(
         );
         return data;
     } catch (error) {
-        console.log('Error adding song review:', error);
+        console.error('Error adding song review:', error);
+        return null;
+    }
+}
+
+export async function getReviewsForSong(songId: string) {
+    if (!songId) {
+        console.error('Need song ID');
+        return null;
+    }
+    try {
+        const data = await getSongReviewsForSong(songId);
+        return data;
+    } catch (error) {
+        console.error('Error fetching song reviews', error);
         return null;
     }
 }
@@ -53,7 +68,7 @@ export async function updateSongReview(
         );
         return data;
     } catch (error) {
-        console.log('Error updating song review:', error);
+        console.error('Error updating song review:', error);
         return null;
     }
 }
@@ -68,7 +83,7 @@ export async function deleteSongReview(reviewId: string) {
         const data = await deleteSongReviewByReviewId(reviewId);
         return data;
     } catch (error) {
-        console.log('Error deleting song review:', error);
+        console.error('Error deleting song review:', error);
         return null;
     }
 }

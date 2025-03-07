@@ -1,23 +1,21 @@
-import { getServerSession } from 'next-auth';
-import authOptions, {
-    SpotifyServerSession,
-} from '../auth/[...nextauth]/authOptions';
+'use server';
+import { checkSession } from '@/utils/serverSession';
 
 import {
     followUser,
     unfollowUser,
     getFollowers,
     getFollowing,
+    getFollowingPair,
 } from '@/db/UserFollowing';
 
 // Follow a User
 
 export async function follow(followingId: string) {
-    const session: SpotifyServerSession | null | undefined =
-        await getServerSession(authOptions);
-
-    if (!session || !session.user || !session.user.id) {
-        console.error('No session active.');
+    let session;
+    try {
+        session = await checkSession();
+    } catch {
         return null;
     }
 
@@ -38,11 +36,10 @@ export async function follow(followingId: string) {
 
 // Unfollow user
 export async function unfollow(followingId: string) {
-    const session: SpotifyServerSession | null | undefined =
-        await getServerSession(authOptions);
-
-    if (!session || !session.user || !session.user.id) {
-        console.error('No session active.');
+    let session;
+    try {
+        session = await checkSession();
+    } catch {
         return null;
     }
 
@@ -68,9 +65,38 @@ export async function getUserFollowing(userId: string) {
     }
 }
 
+export async function getCurrentUserFollowing() {
+    let session;
+    try {
+        session = await checkSession();
+    } catch {
+        return null;
+    }
+    try {
+        const data = await getFollowing(session.user.id);
+        return data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
 export async function getUserFollowers(userId: string) {
     try {
         const data = await getFollowers(userId);
+        return data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export async function getUserFollowingPair(
+    followerId: string,
+    followeeId: string
+) {
+    try {
+        const data = await getFollowingPair(followerId, followeeId);
         return data;
     } catch (error) {
         console.error(error);
