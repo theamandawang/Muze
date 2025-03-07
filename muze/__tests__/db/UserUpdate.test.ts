@@ -167,7 +167,7 @@ describe('UpdateUser', () => {
                 })
             );
         } catch (error) {
-            expect(error.message).toBe(
+            expect((error as Error).message).toBe(
                 'Error updating user info for ' + userInfo.id
             );
         }
