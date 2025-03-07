@@ -20,7 +20,7 @@ const Hero: React.FC<HeroProps> = ({
               key={index}
               src={art}
               alt={`Album ${index + 1}`}
-              className={`w-28 h-28 sm:w-36 sm:h-36 lg:w-60 lg:h-60 object-cover transition-transform duration-300 drop-shadow-2xl ${
+              className={`w-28 h-28 sm:w-36 sm:h-36 lg:w-60 lg:h-60 rounded-xl object-cover transition-transform duration-300 drop-shadow-2xl ${
                 index % 2 === 1 ? 'translate-y-8' : '-translate-y-8'
               }`}
             />
