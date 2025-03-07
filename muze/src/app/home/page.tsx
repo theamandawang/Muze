@@ -6,15 +6,33 @@ import ReviewWide from "@/components/review/DiscoverReviewWide"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { useEffect, useState } from "react";
 import { getLatestSongReviews } from "../api/review/route";
+import { getUserTopSongs } from "../api/topSongs/route";
+import { useSession } from "next-auth/react";
 
 export default function HomePage() {
     const [latestSongReviews, setLatestSongReviews] = useState<any[]>([]);
+    const [albumCovers, setAlbumCovers] = useState<string[]>([]);
+
+    const { data: session, status } = useSession();
+    if (status !== 'authenticated' || !session?.user) {
+        return null; // or you can display a loading or error message
+    }
+
     useEffect(() => {
         const fetchReviews = async () => {
             try {
                 // Fetch the 10 newest reviews
                 const reviews = await getLatestSongReviews(10); 
                 setLatestSongReviews(reviews);
+
+            // Extract album cover images from lastest reviews (temporary for visualization purposes)
+            // Comment out once users can set their favorite songs
+                const covers = reviews
+                    .map((review) => review.mediaCoverArt) // Get the cover images
+                    .filter((cover) => cover); // Remove undefined/null covers
+
+                setAlbumCovers(covers.slice(0, 5)); // Limit to 5 covers for the hero section
+
             } catch (err) {
                 console.error("Failed to load reviews")
             } finally {
@@ -25,9 +43,34 @@ export default function HomePage() {
         fetchReviews();
     }, []); 
 
+    {/* Code for fetching album covers of top songs*/}
+    // useEffect(() => {
+    //     if (!session) return;
+
+    //     const fetchAlbumCovers = async () => {
+    //         try {
+    //             const userTopSongs = await getUserTopSongs(session.user.id) || [];
+        
+    //             const covers = userTopSongs
+    //                 .map((song) => song.songs?.img)
+    //                 .filter((cover): cover is string => Boolean(cover));
+
+    //             setAlbumCovers(covers.slice(0, 5));
+    //         } catch (err) {
+    //             console.error("Failed to load top songs");
+    //         }
+    //     };
+
+    //     fetchAlbumCovers();
+    // }, [session]);
+
+    if (!session) {
+        return null;
+    }
+
     return (
     <div className="w-full">
-        <Hero displayName="maxine"></Hero>        
+        <Hero displayName={', ' + session.user.name || ' there'} albumArts={albumCovers}/>  {/* Display 'hey there!' if no displayName */}
         <div className="mx-auto w-[80%] p-4 space-y-8">
             {/* Popular with Friends Section */}
             <section className="w-full">
