@@ -21,7 +21,6 @@ export default function AlbumArt({
     hasTypeSticker = false, 
     type 
 }: AlbumArtProps) {
-    console.log("url", imageUrl)
     if (imageUrl){
         return (
             <div>

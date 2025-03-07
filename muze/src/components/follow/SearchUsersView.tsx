@@ -45,7 +45,6 @@ export default function SearchUsersView({
         e.preventDefault();
         setIsLoading(true);
         try {
-            console.log('search term', searchTerm);
             const searchResults = await getUsersByUsername(searchTerm);
             setResults(searchResults);
 
@@ -61,7 +60,6 @@ export default function SearchUsersView({
             if (followResults) {
                 setFollowing(followResults);
             }
-            console.log('results', searchResults);
         } catch (error) {
             console.error('Search failed:', error);
         } finally {
@@ -173,7 +171,6 @@ export default function SearchUsersView({
                                 onClick={(e) => {
                                     e.stopPropagation(); // Prevent triggering onUserSelect
                                     toggleFollow(user.id);
-                                    console.log('following', following);
                                 }}
                             >
                                 {following[user.id] ? 'Unfollow' : 'Follow'}

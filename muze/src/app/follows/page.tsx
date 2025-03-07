@@ -32,7 +32,7 @@ export default async function Follows() {
                     >
                         <div className='w-36 aspect-square rounded-full bg-profile-lavender flex items-center justify-center overflow-hidden'>
                             <Image
-                                src='/default-profile-pic.svg'
+                                src={follower.profile_pic || '/default-profile-pic.svg'}
                                 alt={follower.id}
                                 width={80}
                                 height={80}

@@ -16,7 +16,6 @@ interface ReviewContent {
 export default async function Review({ songId }: ReviewProps) {
     const data = await getReviewsForSong(songId);
     const reviews: ReviewContent[] | null = data;
-    console.log('reviews', reviews);
 
     return (
         <div>

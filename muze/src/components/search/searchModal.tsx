@@ -5,6 +5,7 @@ import Close from '@mui/icons-material/Close';
 import SearchTracksView from '../reviews/SearchTracksView';
 import AddReviewView from '../reviews/AddReviewView';
 import SearchUsersView from '../follow/SearchUsersView';
+import { Track, User } from '@spotify/web-api-ts-sdk';
 
 export default function SearchModal({
     searchMode,
