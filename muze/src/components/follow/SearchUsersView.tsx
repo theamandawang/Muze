@@ -1,12 +1,26 @@
-import { 
-    Box, TextField, IconButton, CircularProgress, Avatar, 
-    List, ListItem, ListItemAvatar, ListItemText, Button 
-} from "@mui/material";
-import { useState } from "react";
+import {
+    Box,
+    TextField,
+    IconButton,
+    CircularProgress,
+    Avatar,
+    List,
+    ListItem,
+    ListItemAvatar,
+    ListItemText,
+    Button,
+} from '@mui/material';
+import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import Container from '@mui/material/Container';
-import { getUsersByUsername } from "@/app/api/user/route";
-import { follow, unfollow } from "@/app/api/follow/route";
+import { getUsersByUsername } from '@/app/api/user/route';
+import {
+    follow,
+    unfollow,
+    getCurrentUserFollowing,
+} from '@/app/api/follow/route';
+
+// import { getServerSession } from 'next-auth';
 
 interface SearchUsersViewProps {
     onUserSelect: (user: User) => void;
@@ -19,7 +33,9 @@ interface User {
     bio: string | null;
 }
 
-export default function SearchUsersView({ onUserSelect }: SearchUsersViewProps) {
+export default function SearchUsersView({
+    onUserSelect,
+}: SearchUsersViewProps) {
     // replace when api to retrieve spotify data is implemented
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -29,10 +45,23 @@ export default function SearchUsersView({ onUserSelect }: SearchUsersViewProps) 
         e.preventDefault();
         setIsLoading(true);
         try {
-            console.log("search term", searchTerm);
+            console.log('search term', searchTerm);
             const searchResults = await getUsersByUsername(searchTerm);
             setResults(searchResults);
-            console.log("results", searchResults);
+
+            // TODO: this stores all the people the current user follows....
+            // consider: would it be better to check each pair once we get those?
+            // the alternative would be a lot of DB calls, so this may be more optimal.
+            const followResults: { [key: string]: boolean } | undefined = (
+                await getCurrentUserFollowing()
+            )?.reduce((acc, item) => {
+                acc[item.following_id] = true;
+                return acc;
+            }, {});
+            if (followResults) {
+                setFollowing(followResults);
+            }
+            console.log('results', searchResults);
         } catch (error) {
             console.error('Search failed:', error);
         } finally {
@@ -42,25 +71,28 @@ export default function SearchUsersView({ onUserSelect }: SearchUsersViewProps) 
 
     const toggleFollow = async (userId: string) => {
         try {
-            setFollowing((prev) => ({
-                ...prev,
-                [userId]: !prev[userId],
-            }));
-            if (!following){
-                // await follow(userId);
+            let success: boolean | null = false;
+            if (!following[userId]) {
+                success = await follow(userId);
+            } else {
+                success = await unfollow(userId);
             }
-            else {
-                // await unfollow(userId);
+            if (success) {
+                setFollowing((prev) => ({
+                    ...prev,
+                    [userId]: !prev[userId],
+                }));
+            } else {
+                alert('Unable to follow/unfollow user!');
             }
-        } catch(error){
-            console.error("Error toggling follow", error);
+        } catch (error) {
+            console.error('Error toggling follow', error);
         }
-        // TODO: Call API to follow/unfollow user
     };
 
     return (
-        <Container maxWidth="md">
-            <h1 className="text-4xl mb-4">Find a user</h1>
+        <Container maxWidth='md'>
+            <h1 className='text-4xl mb-4'>Find a user</h1>
             <Box sx={{ mt: 4, mb: '15%' }}>
                 <form onSubmit={handleSearch}>
                     <Box sx={{ position: 'relative' }}>
@@ -68,19 +100,19 @@ export default function SearchUsersView({ onUserSelect }: SearchUsersViewProps) 
                             fullWidth
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="Search for users..."
-                            variant="outlined"
+                            placeholder='Search for users...'
+                            variant='outlined'
                             sx={{
                                 backgroundColor: 'white',
                                 borderRadius: '20px',
                                 '& .MuiOutlinedInput-root': {
-                                    borderRadius: '20px', 
+                                    borderRadius: '20px',
                                 },
                             }}
                             InputProps={{
                                 endAdornment: (
-                                    <IconButton 
-                                        type="submit"
+                                    <IconButton
+                                        type='submit'
                                         disabled={isLoading}
                                         sx={{ padding: '8px' }}
                                     >
@@ -99,31 +131,52 @@ export default function SearchUsersView({ onUserSelect }: SearchUsersViewProps) 
 
             {/* Render results if available */}
             {results && results.length > 0 && (
-                <List sx={{ mt: 4, bgcolor: 'black', borderRadius: 2, boxShadow: 1 }}>
+                <List
+                    sx={{
+                        mt: 4,
+                        bgcolor: 'black',
+                        borderRadius: 2,
+                        boxShadow: 1,
+                    }}
+                >
                     {results.map((user) => (
-                        <ListItem 
-                            key={user.id} 
+                        <ListItem
+                            key={user.id}
                             onClick={() => onUserSelect(user)}
-                            sx={{ display: 'flex', justifyContent: 'space-between' }}
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                            }}
                         >
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <ListItemAvatar>
-                                    <Avatar src={user.profile_pic || "/default-profile.png"} />
+                                    <Avatar
+                                        src={
+                                            user.profile_pic ||
+                                            '/default-profile.png'
+                                        }
+                                    />
                                 </ListItemAvatar>
                                 <ListItemText primary={user.username} />
                             </Box>
 
                             {/* Follow/Unfollow Button */}
                             <Button
-                                variant={following[user.id] ? "outlined" : "contained"}
-                                color={following[user.id] ? "secondary" : "primary"}
+                                variant={
+                                    following[user.id]
+                                        ? 'outlined'
+                                        : 'contained'
+                                }
+                                color={
+                                    following[user.id] ? 'secondary' : 'primary'
+                                }
                                 onClick={(e) => {
                                     e.stopPropagation(); // Prevent triggering onUserSelect
                                     toggleFollow(user.id);
-                                    console.log("following", following)
+                                    console.log('following', following);
                                 }}
                             >
-                                {following[user.id] ? "Unfollow" : "Follow"}
+                                {following[user.id] ? 'Unfollow' : 'Follow'}
                             </Button>
                         </ListItem>
                     ))}
