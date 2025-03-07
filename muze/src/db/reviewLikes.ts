@@ -56,7 +56,7 @@ export async function getUserReviewPair(
 export async function totalReviewLikes(reviewId: string) {
     const {count, error} = await supabase.from('review_likes')
         .select('*', {count: 'exact', head: true})
-        .eq('id', reviewId); 
+        .eq('review_id', reviewId); 
 
     if (error) {
         return error; 
