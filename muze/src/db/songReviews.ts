@@ -72,9 +72,20 @@ export async function getSongReviewsForUser(
 ) {
     const { data, error } = await supabase
         .from('song_reviews')
-        .select()
+        .select(
+            `
+            user_id,
+            song_id, 
+            rating, 
+            title, 
+            content,
+            user: user_id (username)
+          `
+        )
         .eq('user_id', userId)
-        .range(offset, offset + limit - 1);
+        .range(offset, offset + limit - 1)
+        .order('created_at', { ascending: false })
+        ;
 
     if (error) {
         throw error;

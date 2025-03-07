@@ -3,6 +3,7 @@ import {
     updateSongReviewByReviewId,
     deleteSongReviewByReviewId,
     getLatestSongReviewsAll,
+    getSongReviewsForUser,
 } from '@/db/songReviews';
 import getSpotifySongInfo from '@/spotify-api/getSongInfo';
 
@@ -73,31 +74,57 @@ export async function deleteSongReview(reviewId: string) {
     }
 }
 
+// Get latest song reviews (from all users)
 export async function getLatestSongReviews(
     limit: number = 50,
     offset: number = 0
 ) {
+    // Get latest reviews from database
     const data = await getLatestSongReviewsAll(limit, offset);
+    // Map over all reviews and fetch additional data from Spotify
     const finalData = await Promise.all(
         data.map(async (review) => {
-            // Continue if no song id
-            if (review.song_id == null) return {};
-
-            // TODO: Temp workaround to get song data until we implement caching
-            const spotifyData = await getSpotifySongInfo(review.song_id);
-
-            // Continue if no song data retrieved
-            if (spotifyData == null) return {};
-            return {
-                ...review,
-                mediaType: 'Song',
-                mediaName: spotifyData.songName,
-                artistName: spotifyData.artistNames || 'Unknown',
-                mediaCoverArt: spotifyData.imageUrl || '',
-                reviewerName: review.user.username, // Move username to top level
-            };
+            return await fetchMediaData(review, getSpotifySongInfo);
         })
     );
 
     return finalData;
+}
+
+// Get song reviews from one user (from most recent to least recent)
+export async function getUserSongReviews(
+    userId: string,
+    limit: number = 50,
+    offset: number = 0
+) {
+    // Get reviews from one user
+    const data = await getSongReviewsForUser(userId, limit, offset);
+    // Map over all reviews and fetch additional data from Spotify
+    const finalData = await Promise.all(
+        data.map(async (review) => {
+            return await fetchMediaData(review, getSpotifySongInfo);
+        })
+    );
+    return finalData; 
+}
+
+// Helper function to fetch data (for the album cover & artists) from Spotify 
+async function fetchMediaData(review: any, mediaFetchFunction: any) {
+    if (review.song_id == null) return {};
+
+    // Get data from Spotify
+    const spotifyData = await mediaFetchFunction(review.song_id);
+
+    // Continue if no song data retrieved
+    if (spotifyData == null) return {};
+    console.log('Spotify data:', spotifyData);
+    console.log('Review:', review);
+    return {
+        ...review,
+        mediaType: 'Song',
+        mediaName: spotifyData.songName,
+        artistName: spotifyData.artistNames || 'Unknown',
+        mediaCoverArt: spotifyData.imageUrl || '',
+        reviewerName: review.user.username, // Move username to top level
+    };
 }
