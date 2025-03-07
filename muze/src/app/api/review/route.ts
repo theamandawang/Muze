@@ -132,8 +132,6 @@ async function fetchMediaData(review: any, mediaFetchFunction: any) {
 
     // Continue if no song data retrieved
     if (spotifyData == null) return {};
-    console.log('Spotify data:', spotifyData);
-    console.log('Review:', review);
     return {
         ...review,
         mediaType: 'Song',
