@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { getUserById, getUsersByUsername } from '../../api/user/route';
 import { getUserSongReviews } from '../../api/review/route';
+import { getUserFollowingCount, getUserFollowerCount } from '../../api/follow/route';
 import { ReviewProps } from '@/components/review/review-types';
 import * as Tabs from '@radix-ui/react-tabs';
 import './styles.css';
@@ -24,6 +25,8 @@ export default function UserProfile() {
   const { user_id } = useParams();  // get user_id from url 
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userReviews, setUserReviews] = useState<ReviewProps[] | null>([]);
+  const [followingCount, setFollowingCount] = useState<number>(0);
+  const [followerCount, setFollowerCount] = useState<number>(0);
 
   useEffect(() => {
     // if user_id is null, return
@@ -37,6 +40,14 @@ export default function UserProfile() {
     // get user song reviews
     getUserSongReviews(user_id, 20).then((data) => {
         setUserReviews(data);
+    });
+    // get user following count
+    getUserFollowingCount(user_id).then((count) => {
+        setFollowingCount(count);
+    });
+    // get user following count
+    getUserFollowerCount(user_id).then((count) => {
+        setFollowerCount(count);
     });
   }, [user_id]);    // on change of user id
 
@@ -53,10 +64,11 @@ export default function UserProfile() {
                         alt={`${userData.username}'s profile`} 
                         className='w-16 h-16 rounded-full object-cover' 
                     />
-                    {/* Username and Bio */}
+                    {/* Username, Bio, and Followers/Following Count */}
                     <div>
                         <h1 className='font-bold text-2xl md:text-3xl lg:text-4xl xl:text-5xl'>{userData.username}</h1>
                         <p>{userData.bio}</p>
+                        <p className='text-gray-500 text-sm'>{followerCount} followers • {followingCount} following</p>
                     </div>
                 </div>
 
