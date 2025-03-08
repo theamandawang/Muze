@@ -1,13 +1,13 @@
-import Image from "next/image";
 import Link from "next/link";
+import * as AvatarPrimitive from '@radix-ui/react-avatar';
 
-export default function ProfilePic(){
-    // console.log("userer", userInfo)
+export default function ProfilePic({userId, src}: {userId: string, src: string | undefined}) {
     return (
-        <Link href="/profile">
-            <div className="aspect-square rounded-full bg-tertiary w-full flex place-content-center">
-                <Image src='/default-profile-pic.svg' alt='profile pic' fill />
-            </div>
+        <Link href={"/user/" + userId}>
+            <AvatarPrimitive.Root>
+                <AvatarPrimitive.Image src={src} alt="Profile Pic" className="rounded-full"/>
+                <AvatarPrimitive.Fallback delayMs={600}></AvatarPrimitive.Fallback>
+            </AvatarPrimitive.Root>
         </Link>
     )
 }
