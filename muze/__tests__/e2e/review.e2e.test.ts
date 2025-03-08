@@ -18,8 +18,6 @@ describe('Review Flow E2E', () => {
       review: 'I loved the beat and lyrics.',
       rating: 5,
     };
-
-    // Expect the route to return the review object now
     const result = await addSongReview(
       reviewInput.userId,
       reviewInput.trackId,
@@ -27,8 +25,6 @@ describe('Review Flow E2E', () => {
       reviewInput.review,
       reviewInput.rating
     );
-
-    // Instead of expecting undefined, we expect the returned object from createSongReview
     expect(result).toEqual({ data: { id: 'uniqueID' } });
     expect(createSongReview).toHaveBeenCalledWith(
       reviewInput.userId,
@@ -37,5 +33,27 @@ describe('Review Flow E2E', () => {
       reviewInput.review,
       reviewInput.rating
     );
+  });
+
+  it('returns null when userId is missing', async () => {
+    const result = await addSongReview('', 'track123', 'Title', 'Review content', 4);
+    expect(result).toBeNull();
+  });
+
+  it('returns null when trackId is missing', async () => {
+    const result = await addSongReview('user123', '', 'Title', 'Review content', 4);
+    expect(result).toBeNull();
+  });
+
+  it('returns null when createSongReview throws an error', async () => {
+    (createSongReview as jest.Mock).mockRejectedValue(new Error('DB error'));
+    const result = await addSongReview('user123', 'track123', 'Title', 'Review content', 4);
+    expect(result).toBeNull();
+  });
+
+  it('returns null when review validation fails due to invalid rating', async () => {
+    (createSongReview as jest.Mock).mockRejectedValue(new Error('Rating must be between 1 and 5.'));
+    const result = await addSongReview('user123', 'track123', 'Title', 'Review content', 6);
+    expect(result).toBeNull();
   });
 });
