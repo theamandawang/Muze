@@ -148,7 +148,7 @@ export default function SearchUsersView({
                             }}
                         >
                             <Link
-                                href={`/users/${user.id}`}
+                                href={`/user/${user.id}`}
                             >
                                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                     <ListItemAvatar>
