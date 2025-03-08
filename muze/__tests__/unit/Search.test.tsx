@@ -2,7 +2,6 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Search from '@/app/search/page';
 import '@testing-library/jest-dom';
 import { SessionProvider } from 'next-auth/react';
-import sdk from '@/lib/spotify-sdk/ClientInstance';
 
 jest.mock('@/lib/spotify-sdk/ClientInstance', () => ({
   __esModule: true,
@@ -23,7 +22,6 @@ describe('Search Page', () => {
       </SessionProvider>
     );
 
-    // Wait for input to appear before searching
     await waitFor(() => expect(screen.getByRole('searchbox')).toBeInTheDocument());
 
     const input = screen.getByRole('searchbox');
