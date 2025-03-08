@@ -9,6 +9,8 @@ import ProfileDropdown from "../profile_pic/ProfileDropdown";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { useSession } from "next-auth/react";
 
+import { getCurrentUserProfilePicture } from "@/app/api/user/route";
+
 export default function MuzeHeader() {
     const { data: session } = useSession();
     const pathname = usePathname();
@@ -16,6 +18,10 @@ export default function MuzeHeader() {
     const [searchMode, setSearchMode] = useState(false); // false = search songs/albums, true = search users
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+    // use this to load the correct source for the user pfp.
+    const [src, setSrc] = useState('/default-profile-pic.svg');
+    getCurrentUserProfilePicture().then((pfp) => {setSrc(pfp);});
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -82,8 +88,9 @@ export default function MuzeHeader() {
                     </Link>
                     <div className="relative w-8">
                         <ProfilePic 
+                            key={src}
                             userId={session?.user?.id}
-                            src={session?.user?.image || "/default-profile-pic.svg"}
+                            src={src}
                         />
                     </div>
                 </div>

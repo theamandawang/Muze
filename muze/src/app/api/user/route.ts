@@ -124,3 +124,19 @@ export async function getUsersByUsername(username: string) {
     }
     return users;
 }
+
+export async function getCurrentUserProfilePicture() {
+    const defaultImage = '/default-profile-pic.svg';
+    let session;
+    try {
+        session = await checkSession();
+    } catch {
+        return defaultImage;
+    }
+
+    const pfp = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${session.user.id}/avatar.png`
+    if((await fetch(pfp)).ok) {
+        return pfp;
+    }
+    return(session.user.image || defaultImage);
+}
