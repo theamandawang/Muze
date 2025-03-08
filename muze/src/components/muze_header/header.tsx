@@ -6,14 +6,16 @@ import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/MenuOutlined';
 import ProfilePic from "../profile_pic/profile-pic";
 import ProfileDropdown from "../profile_pic/ProfileDropdown";
+import { PlusIcon } from "@radix-ui/react-icons";
+import { useSession } from "next-auth/react";
 
 export default function MuzeHeader() {
+    const { data: session } = useSession();
     const pathname = usePathname();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchMode, setSearchMode] = useState(false); // false = search songs/albums, true = search users
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement | null>(null);
-
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -28,14 +30,14 @@ export default function MuzeHeader() {
 
     return (
         <>
-            <header className="flex w-full px-8 pt-1 pb-1 relative justify-between items-center">
+            <header className="sticky bg-[#0d001d] top-0 flex w-full px-8 pt-2 pb-2 relative justify-between items-center border-b border-gray-800 z-[9990]">
                 {/* Left side: "muze" text & search bar */}
                 <div className="flex flex-row gap-8 items-center mr-auto">
                     <Link href='/home'>
                         <h1 className="text-3xl font-bold text-white">muze</h1>
                     </Link>
                         <div 
-                            className="bg-tertiary h-7 md:w-80 sm:w-60 border rounded-3xl shadow-md text-secondary flex items-center px-4 cursor-pointer space-x-3 relative"
+                            className="bg-tertiary h-9 md:w-80 sm:w-60 border rounded-3xl shadow-md text-secondary flex items-center px-4 cursor-pointer space-x-3 relative"
                             onClick={() => setIsSearchOpen(true)}
                         >
                         {/* Menu icon with dropdown */}
@@ -65,20 +67,24 @@ export default function MuzeHeader() {
                             )}
                         </div>
                         
-                        <span className="flex-grow">Search...</span>
+                        <span className="flex-grow">Search Muze</span>
                         <SearchIcon className="w-5 h-5 text-secondary" />
                     </div>
                 </div>
 
                 {/* Right side: Profile icon and review button */}
                 <div className="flex flex-row gap-4 items-center ml-auto">
-                    <Link href=''>
-                        <div className="flex bg-primary h-7 w-28 rounded-3xl justify-center items-center">
-                            <span className='text-sm'>Review</span>
+                    <Link href="">
+                        <div className="flex items-center justify-center h-9 w-24 rounded-3xl bg-transparent transition duration-200 hover:bg-[#2B1B3D]">
+                            <PlusIcon className="w-4 h-4 mr-1" />
+                            <span className="text-xs font-bold">Review</span>
                         </div>
                     </Link>
                     <div className="relative w-8">
-                        <ProfileDropdown />
+                        <ProfilePic 
+                            userId={session?.user?.id}
+                            src={session?.user?.image || "/default-profile-pic.svg"}
+                        />
                     </div>
                 </div>
             </header>

@@ -20,11 +20,11 @@ export default function ProfileDropdown() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button className="w-full">    
-                    <Image src='/default-profile-pic.svg' alt='profile pic' width={32} height={32}/>
+                <button className="w-full z-[9999]">    
+                    <Image className="border-white" src='/default-profile-pic.svg' alt='profile pic' width={32} height={32}/>
                 </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-[#1f0f30] absolute top-[10px] right-[-12px] shadow-lg rounded-md p-2 w-40">
+            <DropdownMenuContent className="bg-[#1f0f30] absolute top-[15px] right-[-12px] shadow-lg rounded-md p-2 w-32 text-center">
                 <DropdownMenuItem>
                     <Link href="/profile" className="w-full block px-2 py-1">
                         Profile
@@ -32,7 +32,7 @@ export default function ProfileDropdown() {
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                     <Link 
-                        className="w-full text-left px-2 py-1"
+                        className="w-full px-2 py-1"
                         href="/"
                         onClick={() => {handleSignOut()}}
                     >
