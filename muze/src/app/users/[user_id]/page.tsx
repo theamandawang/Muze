@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { getUserById, getUsersByUsername } from '../../api/user/route';
+import { getUserById, getCurrentUser, getUsersByUsername } from '../../api/user/route';
 import { getUserSongReviews } from '../../api/review/route';
-import { getUserFollowingCount, getUserFollowerCount } from '../../api/follow/route';
+import { follow, unfollow, getCurrentUserFollowing, getUserFollowingCount, getUserFollowerCount } from '../../api/follow/route';
 import { ReviewProps } from '@/components/review/review-types';
+import { Button } from '@mui/material';
 import * as Tabs from '@radix-ui/react-tabs';
 import './styles.css';
 import { MediaCoverProps } from '@/components/review/AlbumCoverArt';
@@ -23,10 +24,14 @@ interface UserData {
 
 export default function UserProfile() {
   const { user_id } = useParams();  // get user_id from url 
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userReviews, setUserReviews] = useState<ReviewProps[] | null>([]);
   const [followingCount, setFollowingCount] = useState<number>(0);
   const [followerCount, setFollowerCount] = useState<number>(0);
+  const [following, setFollowing] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
 
   useEffect(() => {
     // if user_id is null, return
@@ -49,7 +54,43 @@ export default function UserProfile() {
     getUserFollowerCount(user_id).then((count) => {
         setFollowerCount(count);
     });
+    //get current user ID
+    getCurrentUser().then((currentUser) => {
+        if (currentUser) setCurrentUserId(currentUser.id);
+    });
+
+    // get current user following data
+    getCurrentUserFollowing().then((followingData) => {
+        if (followingData?.some(follow => follow.following_id == user_id)){
+            setFollowing(true);
+        }
+    });
+    
+    
   }, [user_id]);    // on change of user id
+
+  const toggleFollow = async () => {
+    if (!user_id) return;
+    
+    setIsLoading(true);
+
+    try {
+        setFollowing((prev) => !prev);
+        setFollowerCount((prev) => (following ? prev - 1 : prev + 1));
+
+        if (following) {
+            await unfollow(user_id);
+        } else {
+            await follow(user_id);
+        }
+    } catch (error) {
+        console.error("Error toggling follow:", error);
+        setFollowing((prev) => !prev);
+        setFollowerCount((prev) => (following ? prev + 1 : prev - 1));
+    } finally {
+        setIsLoading(false);
+    }
+};
 
   // if loading, display nothing
   if (!userData || !userReviews) return <p></p>;
@@ -71,6 +112,20 @@ export default function UserProfile() {
                         <p className='text-gray-500 text-sm'>{followerCount} followers • {followingCount} following</p>
                     </div>
                 </div>
+
+                {/* Follow/Unfollow Button */}
+                {currentUserId && currentUserId !== user_id && ( // Button only appears for profiles that are not the current user's profile
+                <div className='mt-4'>
+                   <Button
+                        variant={following ? 'outlined' : 'contained'}
+                        color={following ? 'secondary' : 'primary'}
+                        onClick={toggleFollow}
+                        disabled={isLoading}
+                        >
+                        {isLoading ? 'Loading...' : following ? 'Unfollow' : 'Follow'}
+                    </Button> 
+                </div>
+                )}
 
                 <div className="flex mt-[2%]">
                     <div className="flex-1 ">
