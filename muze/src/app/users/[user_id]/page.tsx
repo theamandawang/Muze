@@ -1,5 +1,6 @@
 "use client";
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { getUserById, getCurrentUser, getUsersByUsername } from '../../api/user/route';
@@ -109,7 +110,14 @@ export default function UserProfile() {
                     <div>
                         <h1 className='font-bold text-2xl md:text-3xl lg:text-4xl xl:text-5xl'>{userData.username}</h1>
                         <p>{userData.bio}</p>
-                        <p className='text-gray-500 text-sm'>{followerCount} followers • {followingCount} following</p>
+                        <p className='text-gray-500 text-sm'>
+                            <Link href={`/users/${user_id}/followers`} className='hover:underline'>
+                            {followerCount} followers
+                            </Link>{' '}•{' '}
+                            <Link href={`/users/${user_id}/following`} className='hover:underline'>
+                            {followingCount} following
+                            </Link>
+                        </p>
                     </div>
                 </div>
 
