@@ -1,7 +1,6 @@
 import { GetUsersByUsername } from '@/db/UserGet';
 import { supabase } from '@/lib/supabase/supabase';
 
-// Mock the supabase.rpc method
 jest.mock('@/lib/supabase/supabase', () => ({
   supabase: {
     rpc: jest.fn(),
@@ -35,9 +34,7 @@ describe('Fuzzy Search for Users - Improved Algorithm', () => {
     
     const users = await GetUsersByUsername('Maxin');
     expect(users).toHaveLength(2);
-    // Check that the first user has a higher (or equal) relevance score than the second user.
     expect(users[0].relevance_score).toBeGreaterThanOrEqual(users[1].relevance_score);
-    // Ensure that at least one username contains 'Max'
     expect(users[0].username).toMatch(/Max/i);
   });
 
