@@ -21,7 +21,7 @@ interface AddReviewViewProps {
 }
 
 
-export default function AddReviewView({ media, onBack }: AddReviewViewProps) {
+export default function AddReviewView({ media, onBack, onDone }: AddReviewViewProps) {
     const { data: session } = useSession();
     const [title, setTitle] = useState('');
     const [review, setReview] = useState('');

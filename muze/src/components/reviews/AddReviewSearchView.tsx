@@ -40,7 +40,7 @@ export default function SearchTracksView({ onTrackSelect }: SearchTracksViewProp
     );
 
     return (
-        <div className="w-full mx-auto p-6">
+        <div className="w-full mx-auto">
             <h1 className="text-2xl font-bold mb-4">Review your next song/album</h1>
             <p className="text-sm mt-2">Rave about your favs and rant about your overplayed tracks</p>
             <form className="relative flex items-center gap-2 mt-3" onSubmit={(e) => { e.preventDefault(); }}>
