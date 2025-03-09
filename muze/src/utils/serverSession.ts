@@ -16,7 +16,7 @@ export async function checkSession() {
         !session ||
         !session.user ||
         session.error ||
-        session.user.expires_in <= 0
+        session.user.expires_at <= Date.now()/1000
     ) {
         throw new Error('No user logged in');
     }
