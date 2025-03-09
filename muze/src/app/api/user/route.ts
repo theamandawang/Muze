@@ -124,3 +124,21 @@ export async function getUsersByUsername(username: string) {
     }
     return users;
 }
+
+// This function is a little bit uglier, but it avoids a db call
+// instead, it checks if an image exists; otherwise it uses spotify default or our default
+export async function getCurrentUserProfilePicture() {
+    const defaultImage = '/default-profile-pic.svg';
+    let session;
+    try {
+        session = await checkSession();
+    } catch {
+        return defaultImage;
+    }
+
+    const pfp = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${session.user.id}/avatar.png`
+    if((await fetch(pfp)).ok) {
+        return pfp;
+    }
+    return(session.user.image || defaultImage);
+}

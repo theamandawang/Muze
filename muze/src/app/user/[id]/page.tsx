@@ -21,24 +21,24 @@ interface UserData {
 }
 
 export default function UserProfile() {
-  const { user_id } = useParams();  // get user_id from url 
+  const { id } = useParams();  // get user_id from url 
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userReviews, setUserReviews] = useState<ReviewProps[] | null>([]);
 
   useEffect(() => {
-    // if user_id is null, return
-    if (user_id == null) return;
-    // ensure user_id is a string
-    if (typeof user_id !== 'string') return;
+    // if user id is null, return
+    if (id == null) return;
+    // ensure user id is a string
+    if (typeof id !== 'string') return;
     // get user data by user id
-    getUserById(user_id).then((data) => {
+    getUserById(id).then((data) => {
         if (data != null) setUserData(data);
     });
     // get user song reviews
-    getUserSongReviews(user_id, 20).then((data) => {
+    getUserSongReviews(id, 20).then((data) => {
         setUserReviews(data);
     });
-  }, [user_id]);    // on change of user id
+  }, [id]);    // on change of user id
 
   // if loading, display nothing
   if (!userData || !userReviews) return <p></p>;
