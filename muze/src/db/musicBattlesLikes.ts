@@ -32,10 +32,24 @@ export async function getCurrentUserVote(music_battle: string, userId: string)
         .eq('user_id', userId ) 
         .limit(1);
     if (error) {
-        throw new Error('Failed getting following pair.');
+        throw new Error('Failed getting user vote for specific battle.');
     }
     if (data) {
         return data[0];
     }
     return null;
+}
+
+export async function getAllVotesForUser(userId: string)
+{
+    const { data, error } = await SupabaseClient.from('music_battle_likes')
+        .select('*')
+        .eq('user_id', userId); 
+    
+        if (error) { 
+            throw new Error('Failed getting all votes for user')
+        }
+        if (data) {
+            return data[0]; 
+        }
 }
