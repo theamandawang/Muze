@@ -9,7 +9,6 @@ export default function SignUp() {
     const logIn = async () => {
         await signIn('spotify', { redirect: false, callbackUrl: 'http://localhost:3000/' });
         router.push('/');
-        console.log("AWESOME");
     };
 
     const searchParams = useSearchParams();

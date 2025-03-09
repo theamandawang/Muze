@@ -70,11 +70,11 @@ export default function HomePage() {
 
     return (
     <div className="w-full">
-        <Hero displayName={', ' + session.user.name || ' there'} albumArts={albumCovers}/>  {/* Display 'hey there!' if no displayName */}
-        <div className="mx-auto w-[80%] p-4 space-y-8">
+        <Hero displayName="maxine"></Hero>        
+        <div className="mx-auto w-[85%] p-4 space-y-8">
             {/* Popular with Friends Section */}
             <section className="w-full">
-            <h2 className="text-2xl font-bold mb-4">popular with your friends</h2>
+            <h2 className="text-2xl font-bold mb-4 text-center">Popular with Friends</h2>
             <ScrollArea className="max-w-screen-xl overflow-x-auto w-full">
                 <div className="flex gap-0 pb-4 w-full"> 
                 {latestSongReviews.map((review, index) => (
@@ -89,10 +89,10 @@ export default function HomePage() {
             
             {/* Your Feed or Other Sections */}
             <section className="w-full">
-            <h2 className="text-2xl font-bold mb-4">the latest on muze</h2>
-            <div className="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-2 auto-rows-auto">
+            <h2 className="text-2xl font-bold mb-4 text-center">Latest on Muze</h2>
+            <div className="grid xs:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-auto justify-items-center justify-between">
                 {latestSongReviews.map((review, index) => (
-                        <div key={index} className="flex-shrink-0 w-[300px] md:w-[350px]"> 
+                        <div key={index} className="flex-shrink-0"> 
                         <ReviewWide {...review} />
                         </div>
                 ))}

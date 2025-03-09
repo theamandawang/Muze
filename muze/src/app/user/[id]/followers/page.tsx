@@ -8,18 +8,18 @@ import { getUserById } from '@/app/api/user/route';
 import { useParams } from 'next/navigation';
 
 export default function Followers() {
-    const { user_id } = useParams();
+    const { id } = useParams();
     const [followers, setFollowers] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!user_id) return;
+        if (!id) return;
 
         async function getFollowers() {
             try {
                 setIsLoading(true);
-                const followersData = await getUserFollowers(user_id);
+                const followersData = await getUserFollowers(id);
 
                 if (followersData) {
                     const userFollowers = await Promise.all(
@@ -37,7 +37,7 @@ export default function Followers() {
         }
 
         getFollowers();
-    }, [user_id]);
+    }, [id]);
 
     if (isLoading) {
         return <div>Loading...</div>;

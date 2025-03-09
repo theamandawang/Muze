@@ -24,8 +24,9 @@ interface UserData {
 }
 
 export default function UserProfile() {
-  const { user_id } = useParams();  // get user_id from url 
+  const { id } = useParams();  // get user_id from url 
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userReviews, setUserReviews] = useState<ReviewProps[] | null>([]);
   const [followingCount, setFollowingCount] = useState<number>(0);
@@ -35,24 +36,24 @@ export default function UserProfile() {
 
 
   useEffect(() => {
-    // if user_id is null, return
-    if (user_id == null) return;
-    // ensure user_id is a string
-    if (typeof user_id !== 'string') return;
+    // if user id is null, return
+    if (id == null) return;
+    // ensure user id is a string
+    if (typeof id !== 'string') return;
     // get user data by user id
-    getUserById(user_id).then((data) => {
+    getUserById(id).then((data) => {
         if (data != null) setUserData(data);
     });
     // get user song reviews
-    getUserSongReviews(user_id, 20).then((data) => {
+    getUserSongReviews(id, 20).then((data) => {
         setUserReviews(data);
     });
     // get user following count
-    getUserFollowingCount(user_id).then((count) => {
+    getUserFollowingCount(id).then((count) => {
         setFollowingCount(count);
     });
     // get user following count
-    getUserFollowerCount(user_id).then((count) => {
+    getUserFollowerCount(id).then((count) => {
         setFollowerCount(count);
     });
     //get current user ID
@@ -62,16 +63,15 @@ export default function UserProfile() {
 
     // get current user following data
     getCurrentUserFollowing().then((followingData) => {
-        if (followingData?.some(follow => follow.following_id == user_id)){
+        if (followingData?.some(follow => follow.following_id == id)){
             setFollowing(true);
         }
     });
     
-    
-  }, [user_id]);    // on change of user id
+  }, [id]);    // on change of user id
 
   const toggleFollow = async () => {
-    if (!user_id) return;
+    if (!id) return;
     
     setIsLoading(true);
 
@@ -80,9 +80,9 @@ export default function UserProfile() {
         setFollowerCount((prev) => (following ? prev - 1 : prev + 1));
 
         if (following) {
-            await unfollow(user_id);
+            await unfollow(id);
         } else {
-            await follow(user_id);
+            await follow(id);
         }
     } catch (error) {
         console.error("Error toggling follow:", error);
@@ -111,10 +111,10 @@ export default function UserProfile() {
                         <h1 className='font-bold text-2xl md:text-3xl lg:text-4xl xl:text-5xl'>{userData.username}</h1>
                         <p>{userData.bio}</p>
                         <p className='text-gray-500 text-sm'>
-                            <Link href={`/user/${user_id}/followers`} className='hover:underline'>
+                            <Link href={`/user/${id}/followers`} className='hover:underline'>
                             {followerCount} followers
                             </Link>{' '}•{' '}
-                            <Link href={`/user/${user_id}/following`} className='hover:underline'>
+                            <Link href={`/user/${id}/following`} className='hover:underline'>
                             {followingCount} following
                             </Link>
                         </p>
@@ -122,7 +122,7 @@ export default function UserProfile() {
                 </div>
 
                 {/* Follow/Unfollow Button */}
-                {currentUserId && currentUserId !== user_id && ( // Button only appears for profiles that are not the current user's profile
+                {currentUserId && currentUserId !== id && ( // Button only appears for profiles that are not the current user's profile
                 <div className='mt-4'>
                    <Button
                         variant={following ? 'outlined' : 'contained'}

@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from "next/navigation";
 import { SearchResults, SpotifyApi } from '@spotify/web-api-ts-sdk'; // use "@spotify/web-api-ts-sdk" in your own project
 import sdk from '@/lib/spotify-sdk/ClientInstance';
 import { useSession, signOut, signIn } from 'next-auth/react';
@@ -7,7 +8,14 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 export default function Home() {
+    const router = useRouter();
     const session = useSession();
+
+    const logIn = async () => {
+        await signIn('spotify', { redirect: false, callbackUrl: 'http://localhost:3000/' });
+        router.push('/');
+    };
+
     if (!session || session.status !== 'authenticated') {
         return (
             <div className='grid grid-cols-2 gap-x-10 items-start'>
@@ -28,15 +36,11 @@ export default function Home() {
                             </Link>
                         </div>
                         <h1 className='font-bold text-lg mt-[5%] mb-[5%]'>Already have an account?</h1>
-                        <div className='bg-primary text-white font-bold rounded-full w-lg sm:w-sm py-3 text-center'>
-                            <Link href={{
-                                pathname: '/signup',
-                                query: {
-                                    hasAccount: true
-                                }
-                            }}>
-                                Sign in with Spotify
-                            </Link>
+                        <div 
+                            className="bg-primary text-white font-bold rounded-full w-lg sm:w-sm py-3 text-center cursor-pointer"
+                            onClick={logIn} 
+                        >
+                            Sign in with Spotify
                         </div>
                     </div>
                 </div>
