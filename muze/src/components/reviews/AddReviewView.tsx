@@ -1,122 +1,112 @@
 'use client';
+
 import { useState } from 'react';
-import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import { Track } from '@spotify/web-api-ts-sdk';
 import { useSession } from 'next-auth/react';
+import { Track, Album } from '@spotify/web-api-ts-sdk';
 import { AuthUser } from '@/app/api/auth/[...nextauth]/authOptions';
 import { addSongReview } from '@/app/api/review/route';
-import checkClientSessionExpiry from '@/utils/checkClientSessionExpiry';
-import { redirect } from 'next/navigation';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner"
+import StarRating from './StarRating';
 
 interface AddReviewViewProps {
-    track: Track;
+    media: Track | Album;
     onBack: () => void;
     onDone: () => void;
 }
 
-export default function AddReviewView({
-    track,
-    onBack,
-    onDone,
-}: AddReviewViewProps) {
-    const { data: session, status } = useSession();
-    if(!checkClientSessionExpiry(session, status)) {
-            redirect('/');
-    }
+
+export default function AddReviewView({ media, onBack }: AddReviewViewProps) {
+    const { data: session } = useSession();
     const [title, setTitle] = useState('');
     const [review, setReview] = useState('');
-    const trackName = track.name;
-    const userId = (session?.user as AuthUser).id;
-    const trackArtistsList = track.artists
-        .map((artist) => artist.name)
-        .join(', ');
-    const [rating, setRating] = useState(5);
+    const [rating, setRating] = useState(0);
+    
+    const mediaName = media.name;
+    const mediaArtistList = media.artists.map((artist) => artist.name).join(', ');
+    const userId = (session?.user as AuthUser)?.id;
+
+    const albumCoverArt = (media as Album).images?.[0]?.url || (media as Track).album?.images?.[0]?.url;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (title === '' || review === '') {
+        if (!title || !review) {
             alert('Please provide a title and a review.');
-        } else {
-            await addSongReview(userId, track.id, title, review, rating);
-            onDone();
+            return;
         }
+        if (rating == 0) {
+            alert('Please provide a rating.');
+            return;
+        }
+        try {
+            await addSongReview(userId, media.id, title, review, rating);
+      
+            // toast pop up
+            toast('Review successfully submitted!');
+      
+          } catch (error) {
+            console.error('Error submitting review:', error);
+            alert('There was an error submitting your review. Please try again.');
+          }
+        await addSongReview(userId, media.id, title, review, rating);
+    };
+
+    const handleRatingChange = (newRating: number) => {
+        setRating(newRating);
     };
 
     return (
-        <Container maxWidth='md'>
-            <IconButton onClick={onBack} sx={{ mt: 2, mb: 2 }}>
-                <ArrowBackIcon />
-            </IconButton>
-            <form onSubmit={handleSubmit}>
-                <Box
-                    sx={{
-                        padding: 3,
-                        borderRadius: 1,
-                        boxShadow: 1,
-                    }}
-                >
-                    <h1>{trackName}</h1>
-                    <p>{trackArtistsList}</p>
-                    <select
-                        onChange={(e) => {
-                            setRating(Number(e.target.value));
-                        }}
-                    >
-                        <option value='1'>1</option>
-                        <option value='2'>2</option>
-                        <option value='3'>3</option>
-                        <option value='4'>4</option>
-                        <option value='5'>5</option>
-                    </select>
-                    <TextField
-                        fullWidth
-                        label='Title'
-                        onChange={(e) => setTitle(e.target.value)}
-                        variant='outlined'
-                        sx={{
-                            mt: 2,
-                            backgroundColor: 'white',
-                        }}
-                    ></TextField>
+        <div className="w-full max-h-[60vh] mx-auto">
+            <Card className="shadow-none bg-transparent">
+            <CardHeader className="flex justify-between items-center">
+                <div className="flex flex-col flex-grow">
+                    <CardTitle className="text-lg">{mediaName}</CardTitle>
+                    <p className="text-sm text-gray-400">{mediaArtistList}</p>
+                </div>
+                <div>
+                    <img src={albumCoverArt} className="w-24 h-24 object-cover"></img>
+                </div>
+            </CardHeader>
 
-                    <TextField
-                        fullWidth
-                        multiline
-                        rows={4}
-                        label='Write your review...'
-                        value={review}
-                        onChange={(e) => setReview(e.target.value)}
-                        variant='outlined'
-                        sx={{
-                            mt: 2,
-                            backgroundColor: 'white',
-                        }}
-                    />
+                <CardContent>
+                    <Toaster>
+                    </Toaster>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <StarRating initialRating={rating} onRatingChange={handleRatingChange} />
+                        {/* Title Input */}
+                        <div>
+                            <Input
+                                placeholder="Title your review..."
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                className="mt-1"
+                            />
+                        </div>
+                        {/* Review Textarea */}
+                        <div>
+                            <Textarea
+                                placeholder="Start your review..."
+                                value={review}
+                                onChange={(e) => setReview(e.target.value)}
+                                rows={4}
+                                className="mt-1"
+                            />
+                        </div>
 
-                    <Box
-                        sx={{
-                            mt: 2,
-                            display: 'flex',
-                            justifyContent: 'flex-end',
-                        }}
-                    >
-                        <Button
-                            type='submit'
-                            variant='contained'
-                            sx={{
-                                minWidth: 120,
-                            }}
-                        >
-                            Submit
-                        </Button>
-                    </Box>
-                </Box>
-            </form>
-        </Container>
+                        {/* Submit Button */}
+                        <div className="flex justify-end">
+                            <Button type="submit" className="w-24">
+                                Submit
+                            </Button>
+                        </div>
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
     );
 }

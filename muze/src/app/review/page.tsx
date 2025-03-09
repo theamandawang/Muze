@@ -6,6 +6,7 @@ import { Track } from '@spotify/web-api-ts-sdk';
 import SearchTracksView from '@/components/reviews/SearchTracksView';
 import AddReviewView from '@/components/reviews/AddReviewView';
 import Container from '@mui/material/Container';
+import AddReviewSearchView from '@/components/reviews/AddReviewSearchView';
 
 export default function SearchPage() {
     const [view, setView] = useState('search');
@@ -22,15 +23,16 @@ export default function SearchPage() {
     };
 
     return (
-        <Container maxWidth="md">
+        <Container className="w-full pt-8">
             {view === 'search' ? (
-                <SearchTracksView 
+                <AddReviewSearchView 
                   onTrackSelect={handleTrackSelect}
                 /> 
             ) : selectedTrack ? (
                 <AddReviewView 
-                    track={selectedTrack} 
+                    media={selectedTrack} 
                     onBack={handleBackToSearch}
+                    onDone={()=>{}}
                 />
             ) : (
                 <Box display="flex" justifyContent="center">
