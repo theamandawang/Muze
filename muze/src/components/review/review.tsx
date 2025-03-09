@@ -1,4 +1,5 @@
 import { getReviewsForSong } from '@/app/api/review/route';
+import Link from 'next/link';
 
 interface ReviewProps {
     songId: string;
@@ -24,12 +25,15 @@ export default async function Review({ songId }: ReviewProps) {
                     key={index}
                     className='flex items-start gap-3 w-full mt-[3%]'
                 >
-                    <div className='absolute w-12 h-12 rounded-full bg-tertiary flex-shrink-0 -ml-6 mt-2'></div>
+                    {/*Removing user pfp -- this takes a lot of loading time; need to query per image. and isn't necessary.*/}
+                    {/* <div className='absolute w-12 h-12 rounded-full bg-tertiary flex-shrink-0 -ml-6 mt-2'></div> */}
                     <div className='flex flex-col flex-1'>
-                        <h2 className='text-lg font-semibold px-8'>
-                            {review.user_id} gives this song {review.rating}{' '}
-                            {review.rating > 1 ? 'stars' : 'star'}
-                        </h2>
+                        <Link href={`/user/${review.user_id}`}>
+                            <h2 className='text-lg font-semibold px-8'>
+                                {review.user_id} gives this song {review.rating}{' '}
+                                {review.rating > 1 ? 'stars' : 'star'}
+                            </h2>
+                        </Link>
                         <div className='rounded-xl bg-custom-fuchsia py-4 px-8'>
                             <h2 className='text-xl mb-2'>{review.title}</h2>
                             <h3>{review.content}</h3>
