@@ -11,7 +11,7 @@ export async function getAllActiveBattles()
         throw new Error('Failed to get active music battles.'); 
     }
     if (data) {
-        return data[0]; 
+        return data; 
     }
 }
 
@@ -26,7 +26,7 @@ export async function getAllVotesForBattle(musicBattleId: string)
         throw new Error('Failed to get votes for battle')
     }
     if (data) {
-        return data[0]; 
+        return data; 
     }
 }
 
@@ -42,7 +42,7 @@ export async function getAllVotesForArtistInBattle(musicBattleId: string, artist
         throw new Error('Failed to get votes for battle')
     }
     if (data) {
-        return data[0]; 
+        return data; 
     }
 }
 
