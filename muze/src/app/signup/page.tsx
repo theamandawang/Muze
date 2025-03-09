@@ -2,6 +2,7 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useSession, signOut, signIn } from 'next-auth/react';
+import checkClientSessionExpiry from "@/utils/checkClientSessionExpiry";
 
 export default function SignUp() {
     const router = useRouter();
@@ -14,9 +15,9 @@ export default function SignUp() {
     const searchParams = useSearchParams();
     const hasAccount = searchParams.get('hasAccount');
     console.log("has account", hasAccount);
-    const { data: session, status } = useSession();
+    const {data: session, status} = useSession();
 
-    if (!session || status !== 'authenticated') {
+    if (!checkClientSessionExpiry(session, status)) {
         if (hasAccount === 'true') {
             return (
                 <div className='flex justify-center w-full px-4'>

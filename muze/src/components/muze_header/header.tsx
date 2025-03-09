@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import SearchModal from "../search/searchModal";
 import SearchIcon from '@mui/icons-material/Search';
@@ -10,18 +10,21 @@ import { PlusIcon } from "@radix-ui/react-icons";
 import { useSession } from "next-auth/react";
 
 import { getCurrentUserProfilePicture } from "@/app/api/user/route";
+import checkClientSessionExpiry from "@/utils/checkClientSessionExpiry";
 
 export default function MuzeHeader() {
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
+    if(!checkClientSessionExpiry(session, status)) {
+        redirect('/');
+    }
+    
     const pathname = usePathname();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchMode, setSearchMode] = useState(false); // false = search songs/albums, true = search users
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-    // use this to load the correct source for the user pfp.
     const [src, setSrc] = useState('/default-profile-pic.svg');
-    getCurrentUserProfilePicture().then((pfp) => {setSrc(pfp);});
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -31,6 +34,10 @@ export default function MuzeHeader() {
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
+
+        // use this to load the correct source for the user pfp.
+        getCurrentUserProfilePicture().then((pfp) => {setSrc(pfp);});
+
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 

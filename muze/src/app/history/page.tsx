@@ -3,12 +3,14 @@ import { SpotifyApi } from '@spotify/web-api-ts-sdk'; // use "@spotify/web-api-t
 import sdk from '@/lib/spotify-sdk/ClientInstance';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import checkClientSessionExpiry from '@/utils/checkClientSessionExpiry';
+import { redirect } from 'next/navigation';
 
 export default function History() {
-    const session = useSession();
+    const {data: session, status} = useSession();
 
-    if (!session || session.status !== 'authenticated') {
-        return <p>No one is signed in ://</p>;
+   if (!checkClientSessionExpiry(session, status)) {
+           redirect(`/`);
     } else {
         return (
             <div>
