@@ -4,15 +4,41 @@ import { getToken } from 'next-auth/jwt';
 
 const secret = process.env.NEXTAUTH_SECRET;
 
+type Token = {
+    name: string | null | undefined,
+    email: string | null | undefined,
+    picture: string | null | undefined,
+    sub: string | null | undefined,
+    access_token: string | null | undefined,
+    token_type: string | null | undefined,
+    expires_at: number | null | undefined,
+    expires_in: number | null | undefined,
+    refresh_token: string | null | undefined,
+    scope: string | null | undefined,
+    id: string | null | undefined,
+    iat: number | null | undefined,
+    exp: number | null | undefined,
+    jti: string | null | undefined,
+}
+
+const checkTokenExpiry = (session: Token) => {
+    return (session && session.expires_at && session.expires_at > Date.now() / 1000);
+}
+
 export async function middleware(req: NextRequest) {
-    const session = await getToken({ req, secret });
+    const session = (await getToken({ req, secret })) as Token;
     const { pathname } = req.nextUrl;
 
-    if (session && pathname === '/') {
-        console.log('Attempting redirect to dash');
-        return NextResponse.redirect(new URL('/dashboard', req.url));
-    } else if (!session && pathname === '/dashboard') {
-        console.log('Attempting redirect to login');
+    if (req.nextUrl.pathname.startsWith('/_next')) {
+        return NextResponse.next();
+    }
+
+    if (pathname === '/' && checkTokenExpiry(session)) {
+        return NextResponse.redirect(new URL('/home', req.url));
+    } else if(pathname.startsWith('/api/auth')) {
+        // do nothing.
+    }
+    else if (pathname !== '/' && !checkTokenExpiry(session)) {
         return NextResponse.redirect(new URL('/', req.url));
     }
 

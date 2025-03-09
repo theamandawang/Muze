@@ -1,11 +1,11 @@
-import SupabaseClient from './SupabaseClient';
+import { supabase } from '@/lib/supabase/supabase';
 
 // Follow a user
 export async function followUser(followerId: string, followingId: string) {
     // TODO: remove this check when we have UI capability to toggle the "follow vs. unfollow"
     const existingFollow = await getFollowingPair(followerId, followingId);
     if (!existingFollow) {
-        const { error } = await SupabaseClient.from('following').insert([
+        const { error } = await supabase.from('following').insert([
             {
                 follower_id: followerId,
                 following_id: followingId,
@@ -17,7 +17,8 @@ export async function followUser(followerId: string, followingId: string) {
 
 // Unfollow a user
 export async function unfollowUser(followerId: string, followingId: string) {
-    const { error } = await SupabaseClient.from('following')
+    const { error } = await supabase
+        .from('following')
         .delete()
         .match({ follower_id: followerId, following_id: followingId });
     if (error) throw error;
@@ -25,7 +26,8 @@ export async function unfollowUser(followerId: string, followingId: string) {
 
 // Get all the users that 'userId' is following
 export async function getFollowing(userId: string) {
-    const { data, error } = await SupabaseClient.from('following')
+    const { data, error } = await supabase
+        .from('following')
         .select('*')
         .eq('follower_id', userId);
 
@@ -35,7 +37,8 @@ export async function getFollowing(userId: string) {
 
 // Get all the users that are following 'userId'
 export async function getFollowers(userId: string) {
-    const { data, error } = await SupabaseClient.from('following')
+    const { data, error } = await supabase
+        .from('following')
         .select('*')
         .eq('following_id', userId);
 
@@ -48,7 +51,8 @@ export async function getFollowingPair(
     followerId: string,
     followingId: string
 ) {
-    const { data, error } = await SupabaseClient.from('following')
+    const { data, error } = await supabase
+        .from('following')
         .select('*')
         .eq('follower_id', followerId)
         .eq('following_id', followingId)
