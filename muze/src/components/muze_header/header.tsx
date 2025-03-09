@@ -87,7 +87,7 @@ export default function MuzeHeader() {
 
                 {/* Right side: Profile icon and review button */}
                 <div className="flex flex-row gap-4 items-center ml-auto">
-                    <Link href="">
+                    <Link href="/review">
                         <div className="flex items-center justify-center h-9 w-24 rounded-3xl bg-transparent transition duration-200 hover:bg-[#2B1B3D]">
                             <PlusIcon className="w-4 h-4 mr-1" />
                             <span className="text-xs font-bold">Review</span>

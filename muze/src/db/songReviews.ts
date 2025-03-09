@@ -100,6 +100,7 @@ export async function getSongReviewsForSong(
         .from('song_reviews')
         .select()
         .eq('song_id', songId)
+        .order('created_at', { ascending: false })
         .range(offset, offset + limit - 1);
 
     if (error) {
