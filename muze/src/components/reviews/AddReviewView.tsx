@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner"
 import StarRating from './StarRating';
+import { useRouter } from "next/navigation";
 
 interface AddReviewViewProps {
     media: Track | Album;
@@ -26,7 +27,7 @@ export default function AddReviewView({ media, onBack, onDone }: AddReviewViewPr
     const [title, setTitle] = useState('');
     const [review, setReview] = useState('');
     const [rating, setRating] = useState(0);
-    
+    const router = useRouter();
     const mediaName = media.name;
     const mediaArtistList = media.artists.map((artist) => artist.name).join(', ');
     const userId = (session?.user as AuthUser)?.id;
@@ -39,7 +40,7 @@ export default function AddReviewView({ media, onBack, onDone }: AddReviewViewPr
             alert('Please provide a title and a review.');
             return;
         }
-        if (rating == 0) {
+        if (rating === 0) {
             alert('Please provide a rating.');
             return;
         }
@@ -48,12 +49,12 @@ export default function AddReviewView({ media, onBack, onDone }: AddReviewViewPr
       
             // toast pop up
             toast('Review successfully submitted!');
+            router.push(`/song/${media.id}`);
       
           } catch (error) {
             console.error('Error submitting review:', error);
             alert('There was an error submitting your review. Please try again.');
           }
-        await addSongReview(userId, media.id, title, review, rating);
     };
 
     const handleRatingChange = (newRating: number) => {

@@ -14,7 +14,20 @@ export default function SearchPage() {
     const router = useRouter();
     
     const handleMediaSelect = (media: Track | Album) => {
-        router.push(`/review/create?track=${encodeURIComponent(JSON.stringify(media))}`);
+        const trackOrAlbum = {
+            id: media.id,
+            artists: media.artists,
+            name: media.name,
+            album: {
+                id: media.album?.id,
+                images: media.album?.images,
+                // name: media.album?.name,
+                // release_date: media.album?.release_date,
+            },
+            images: media.images,
+            // release_date: media.release_date,
+        }
+        router.push(`/review/create?track=${encodeURIComponent(JSON.stringify(trackOrAlbum))}`);
     };
 
     return (
