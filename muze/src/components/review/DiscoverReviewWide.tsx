@@ -57,7 +57,9 @@ const ReviewWide: React.FC<ReviewProps> = ({
                 <h2 className='text-m font-bold mt-1'>{title}</h2>
                 <p className='text-sm mt-1'>{content}</p>
             </div>
-            <ReviewFooter />
+            <ReviewFooter
+                reviewId={id}
+            />
         </Card>
     );
 };

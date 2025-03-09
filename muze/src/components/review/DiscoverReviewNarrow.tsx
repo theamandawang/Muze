@@ -73,10 +73,7 @@ const Review: React.FC<ReviewProps> = ({
                         </Button>
                     )}
                 </div>
-                <ReviewFooter />
+                <ReviewFooter reviewId={id}/>
             </CardContent>
         </Card>
-    );
-};
-
 export default Review;

@@ -7,6 +7,7 @@ import StarRating from './StarRating'
 import { ReviewProps } from './review-types'
 import AlbumCoverArt from './AlbumCoverArt'
 import Link from 'next/link'
+import LikeButton from './LikeButton'
 
 const ProfileReview: React.FC<ReviewProps> = ({
     id,
@@ -41,10 +42,7 @@ const ProfileReview: React.FC<ReviewProps> = ({
                     <p className="text-sm mt-1">{content}</p>
                 </div>
                 <div className="flex flex-col justify-between mt-1">
-                    <Button variant="ghost" className="text-gray-400 hover:text-white">
-                        🧡 
-                    </Button>
-                    
+                    <LikeButton reviewId={id} />
                     <Button variant="ghost" className="text-gray-400 hover:text-white">
                         ···
                     </Button>
