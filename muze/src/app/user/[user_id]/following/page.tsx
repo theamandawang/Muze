@@ -54,7 +54,7 @@ export default function Following() {
             </h1>
             <div className='w-full max-w-6xl p-4 rounded-lg shadow-md grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6'>
                 {following?.map((follow) => (
-                    <Link key={follow.id} href={`/users/${follow.id}`} className="no-underline">
+                    <Link key={follow.id} href={`/user/${follow.id}`} className="no-underline">
                         <div className='flex flex-col items-center space-y-2 p-3 rounded-lg min-w-[18%] sm:min-w-[22%] md:min-w-[25%] flex-grow-0 cursor-pointer hover:bg-primary hover:bg-opacity-30 transition'>
                             <div className='w-36 aspect-square rounded-full bg-profile-lavender flex items-center justify-center overflow-hidden'>
                                 <Image

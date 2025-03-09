@@ -111,10 +111,10 @@ export default function UserProfile() {
                         <h1 className='font-bold text-2xl md:text-3xl lg:text-4xl xl:text-5xl'>{userData.username}</h1>
                         <p>{userData.bio}</p>
                         <p className='text-gray-500 text-sm'>
-                            <Link href={`/users/${user_id}/followers`} className='hover:underline'>
+                            <Link href={`/user/${user_id}/followers`} className='hover:underline'>
                             {followerCount} followers
                             </Link>{' '}•{' '}
-                            <Link href={`/users/${user_id}/following`} className='hover:underline'>
+                            <Link href={`/user/${user_id}/following`} className='hover:underline'>
                             {followingCount} following
                             </Link>
                         </p>
