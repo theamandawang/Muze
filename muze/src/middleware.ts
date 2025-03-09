@@ -21,6 +21,10 @@ type Token = {
     jti: string | null | undefined,
 }
 
+const checkTokenExpiry = (session: Token) => {
+    return (session && session.expires_at && session.expires_at > Date.now() / 1000);
+}
+
 export async function middleware(req: NextRequest) {
     const session = (await getToken({ req, secret })) as Token;
     const { pathname } = req.nextUrl;
@@ -29,12 +33,12 @@ export async function middleware(req: NextRequest) {
         return NextResponse.next();
     }
 
-    if (pathname === '/' && session && session.exp && session.exp > Date.now() / 1000) {
+    if (pathname === '/' && checkTokenExpiry(session)) {
         return NextResponse.redirect(new URL('/home', req.url));
     } else if(pathname.startsWith('/api/auth')) {
         // do nothing.
     }
-    else if (pathname !== '/' && (!session || !session.exp || session.exp < Date.now() / 1000)) {
+    else if (pathname !== '/' && !checkTokenExpiry(session)) {
         return NextResponse.redirect(new URL('/', req.url));
     }
 

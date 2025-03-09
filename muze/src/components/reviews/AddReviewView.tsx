@@ -10,6 +10,8 @@ import { Track } from '@spotify/web-api-ts-sdk';
 import { useSession } from 'next-auth/react';
 import { AuthUser } from '@/app/api/auth/[...nextauth]/authOptions';
 import { addSongReview } from '@/app/api/review/route';
+import checkClientSessionExpiry from '@/utils/checkClientSessionExpiry';
+import { redirect } from 'next/navigation';
 
 interface AddReviewViewProps {
     track: Track;
@@ -23,6 +25,9 @@ export default function AddReviewView({
     onDone,
 }: AddReviewViewProps) {
     const { data: session, status } = useSession();
+    if(!checkClientSessionExpiry(session, status)) {
+            redirect('/');
+    }
     const [title, setTitle] = useState('');
     const [review, setReview] = useState('');
     const trackName = track.name;

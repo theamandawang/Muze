@@ -8,14 +8,16 @@ import { useEffect, useState } from "react";
 import { getLatestSongReviews } from "../api/review/route";
 import { getUserTopSongs } from "../api/topSongs/route";
 import { useSession } from "next-auth/react";
+import checkClientSessionExpiry from "@/utils/checkClientSessionExpiry";
+import { redirect } from "next/navigation";
 
 export default function HomePage() {
     const [latestSongReviews, setLatestSongReviews] = useState<any[]>([]);
     const [albumCovers, setAlbumCovers] = useState<string[]>([]);
 
-    const { data: session, status } = useSession();
-    if (status !== 'authenticated' || !session?.user) {
-        return null; // or you can display a loading or error message
+    const {data: session, status} = useSession();
+    if (!checkClientSessionExpiry(session, status)) {
+            redirect(`/`);
     }
 
     useEffect(() => {
@@ -42,6 +44,9 @@ export default function HomePage() {
 
         fetchReviews();
     }, []); 
+   
+   
+
 
     {/* Code for fetching album covers of top songs*/}
     // useEffect(() => {
@@ -63,10 +68,6 @@ export default function HomePage() {
 
     //     fetchAlbumCovers();
     // }, [session]);
-
-    if (!session) {
-        return null;
-    }
 
     return (
     <div className="w-full">

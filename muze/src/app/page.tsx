@@ -1,22 +1,23 @@
 'use client';
 
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { SearchResults, SpotifyApi } from '@spotify/web-api-ts-sdk'; // use "@spotify/web-api-ts-sdk" in your own project
 import sdk from '@/lib/spotify-sdk/ClientInstance';
 import { useSession, signOut, signIn } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import checkClientSessionExpiry from "@/utils/checkClientSessionExpiry";
 
 export default function Home() {
     const router = useRouter();
-    const session = useSession();
+    const {data: session, status} = useSession();
 
     const logIn = async () => {
         await signIn('spotify', { redirect: false, callbackUrl: 'http://localhost:3000/' });
         router.push('/');
     };
 
-    if (!session || session.status !== 'authenticated') {
+    if (!checkClientSessionExpiry(session, status)) {
         return (
             <div className='grid grid-cols-2 gap-x-10 items-start'>
                 <div className='justify-self-end place-content-center h-full'>
@@ -46,50 +47,7 @@ export default function Home() {
                 </div>
             </div>
         );
+    } else {
+        router.push('/home');
     }
-    return (    
-        <div>
-            <p>Logged in as {session.data.user?.name}</p>
-            <button onClick={() => signOut()}>Sign out</button>
-            <SpotifySearch sdk={sdk} />
-        </div>
-    );
-}
-
-function SpotifySearch({ sdk }: { sdk: SpotifyApi }) {
-    const [results, setResults] = useState<SearchResults>({} as SearchResults);
-
-    useEffect(() => {
-        (async () => {
-            const results = await sdk.search('The Beatles', ['artist']);
-            setResults(() => results);
-        })();
-    }, [sdk]);
-
-    // generate a table for the results
-    const tableRows = results.artists?.items.map((artist) => {
-        return (
-            <tr key={artist.id}>
-                <td>{artist.name}</td>
-                <td>{artist.popularity}</td>
-                <td>{artist.followers.total}</td>
-            </tr>
-        );
-    });
-
-    return (
-        <>
-            <h1>Spotify Search for The Beatles</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Popularity</th>
-                        <th>Followers</th>
-                    </tr>
-                </thead>
-                <tbody>{tableRows}</tbody>
-            </table>
-        </>
-    );
 }
