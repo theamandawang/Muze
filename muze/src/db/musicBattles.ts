@@ -1,9 +1,9 @@
-import SupabaseClient from './SupabaseClient';
+import { supabase } from '@/lib/supabase/supabase';
 
 // Returns all current music battles 
 export async function getAllActiveBattles()
 {
-    const { data, error } = await SupabaseClient.from('music_battles')
+    const { data, error } = await supabase.from('music_battles')
         .select('*')
         .eq('active', true); 
     
@@ -18,7 +18,7 @@ export async function getAllActiveBattles()
 // Returns all votes for a specific music batle
 export async function getAllVotesForBattle(musicBattleId: string)
 {
-    const { data, error } = await SupabaseClient.from('music_battle_likes')
+    const { data, error } = await supabase.from('music_battle_likes')
         .select('*')
         .eq('battle_id', musicBattleId);
 
@@ -33,7 +33,7 @@ export async function getAllVotesForBattle(musicBattleId: string)
 // Returns all votes for a specific music batle and specific artist
 export async function getAllVotesForArtistInBattle(musicBattleId: string, artistId: string)
 {
-    const { data, error } = await SupabaseClient.from('music_battle_likes')
+    const { data, error } = await supabase.from('music_battle_likes')
         .select('*')
         .eq('battle_id', musicBattleId)
         .eq('artist_vote', artistId); 
@@ -51,7 +51,7 @@ export async function getAllVotesForArtistInBattle(musicBattleId: string, artist
 // Assumes the U.I. has toggle control
 export async function userAddVote(musicBattleId: string, userId: string, artistId: string) 
 {
-    const { error } = await SupabaseClient.from('music_battle_likes').insert([
+    const { error } = await supabase.from('music_battle_likes').insert([
         {
             battle_id: musicBattleId, 
             user_id: userId, 
