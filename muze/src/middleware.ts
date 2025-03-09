@@ -12,9 +12,9 @@ export async function middleware(req: NextRequest) {
         return NextResponse.next();
     }
     if (session && pathname === '/') {
-        console.log('Attempting redirect to dash');
-        return NextResponse.redirect(new URL('/dashboard', req.url));
-    } else if (!session && pathname === '/dashboard') {
+        console.log('Attempting redirect to home');
+        return NextResponse.redirect(new URL('/home', req.url));
+    } else if (!session && pathname === '/home') {
         console.log('Attempting redirect to login');
         return NextResponse.redirect(new URL('/', req.url));
     } else if (!session && pathname === '/profile') {

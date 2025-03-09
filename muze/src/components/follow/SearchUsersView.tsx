@@ -9,6 +9,7 @@ import {
     ListItemAvatar,
     ListItemText,
     Button,
+    Link,
 } from '@mui/material';
 import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
@@ -146,17 +147,21 @@ export default function SearchUsersView({
                                 justifyContent: 'space-between',
                             }}
                         >
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <ListItemAvatar>
-                                    <Avatar
-                                        src={
-                                            user.profile_pic ||
-                                            '/default-profile.png'
-                                        }
-                                    />
-                                </ListItemAvatar>
-                                <ListItemText primary={user.username} />
-                            </Box>
+                            <Link
+                                href={`/user/${user.id}`}
+                            >
+                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <ListItemAvatar>
+                                        <Avatar
+                                            src={
+                                                user.profile_pic ||
+                                                '/default-profile.png'
+                                            }
+                                        />
+                                    </ListItemAvatar>
+                                    <ListItemText primary={user.username} />
+                                </Box>
+                            </Link>
 
                             {/* Follow/Unfollow Button */}
                             <Button

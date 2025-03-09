@@ -46,21 +46,11 @@ export default function SearchModal({
                     )}
 
                     {/* Show AddReviewView when a track is selected, otherwise show SearchTracksView */}
-                    {selectedTrack ? (
-                        <AddReviewView
-                            track={selectedTrack}
-                            onBack={() => setSelectedTrack(null)}
-                            onDone={() => {
-                                closeModal();
-                            }}
+                    <div className='flex flex-col items-left p-10'>
+                        <SearchTracksView
+                            onTrackSelect={setSelectedTrack}
                         />
-                    ) : (
-                        <div className='flex flex-col items-left p-10'>
-                            <SearchTracksView
-                                onTrackSelect={setSelectedTrack}
-                            />
-                        </div>
-                    )}
+                    </div>
                 </div>
             </div>
         );
