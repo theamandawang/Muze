@@ -94,6 +94,35 @@ export async function getSongReviewsForUser(
     return data;
 }
 
+// get song reviews from multiple users
+export async function getSongReviewsForUsers(
+    userIds: string[],
+    limit: number = 20,
+    offset: number = 0
+) {
+    const { data, error } = await supabase
+        .from('song_reviews')
+        .select(
+            `
+            user_id,
+            song_id, 
+            rating, 
+            title, 
+            content,
+            user: user_id (username)
+          `
+        ).in('user_id', userIds)
+        .range(offset, offset + limit - 1)
+        .order('created_at', { ascending: false })
+        ;
+
+    if (error) {
+        throw error;
+    }
+
+    return data;
+}
+
 // Get Song Reviews by Song ID
 export async function getSongReviewsForSong(
     songId: string,
