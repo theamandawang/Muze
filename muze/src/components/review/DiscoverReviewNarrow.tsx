@@ -7,8 +7,17 @@ import StarRating from './StarRating'
 import Link from 'next/link'
 import { ReviewProps } from './review-types'
 import ReviewFooter from './ReviewFooter'
+import MediaLink from './MediaLink'
+import { get } from 'http'
+import { totalReviewLikes } from '@/db/reviewLikes'
+import { Avatar } from '@mui/material'
+import Image from "next/image";
+
 
 const Review: React.FC<ReviewProps> = ({
+    id,
+    user_id, 
+    media_id,
     reviewerName,
     reviewerAvatar,
     mediaCoverArt,
@@ -37,7 +46,9 @@ const Review: React.FC<ReviewProps> = ({
                     <p className="text-xs text-muted-foreground">
                     {reviewerName} listened to
                     </p>
-                    <h2 className="text-md font-bold">{mediaName}</h2>
+                    <h2 className="text-lg font-bold">
+                        <MediaLink media_id={media_id} mediaName={mediaName} mediaType={mediaType} />
+                    </h2>
                     <p className="text-xs text-muted-foreground">{artistName} | {mediaType}</p>
                     <StarRating rating={rating}></StarRating>
                 </div>
@@ -67,7 +78,7 @@ const Review: React.FC<ReviewProps> = ({
                         </Button>
                     )}
                 </div>
-                <ReviewFooter/>
+                <ReviewFooter reviewId={id}/>
             </CardContent>
         </Card>
     )

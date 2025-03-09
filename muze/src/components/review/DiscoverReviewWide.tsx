@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,14 @@ import StarRating from './StarRating'
 import Link from 'next/link'
 import { ReviewProps } from './review-types'
 import ReviewFooter from './ReviewFooter'
+import MediaLink from './MediaLink'
+import { totalReviewLikes } from '@/db/reviewLikes'
+import { PostgrestError } from '@supabase/supabase-js'
+import ProfilePic from '../profile_pic/profile-pic'
 const ReviewWide: React.FC<ReviewProps> = ({
+    id,
+    user_id,
+    media_id, 
     reviewerName,
     reviewerAvatar,
     mediaCoverArt,
@@ -27,13 +34,7 @@ const ReviewWide: React.FC<ReviewProps> = ({
             <div className="flex-1">
                     <p className="text-sm text-muted-foreground">{reviewerName} listened to</p>
                     <h2 className="text-lg font-bold">
-                        <Link 
-                            href=""
-                            // to={`/song-reviews/${mediaName}`} // Route to the song reviews page
-                            className="hover:underline cursor-pointer" // Hover underline and cursor pointer for click
-                        >
-                            {mediaName}
-                        </Link>
+                        <MediaLink media_id={media_id} mediaName={mediaName} mediaType={mediaType} />
                     </h2>
                     <p className="text-xs">{artistName} | {mediaType}</p>
                     <StarRating rating={rating} />
@@ -50,7 +51,9 @@ const ReviewWide: React.FC<ReviewProps> = ({
                 <h2 className="text-m font-bold mt-1">{title}</h2>
                 <p className="text-sm mt-1">{content}</p>
             </div>
-            <ReviewFooter/>
+            <ReviewFooter
+                reviewId={id}
+            />
         </Card>
     );
     
