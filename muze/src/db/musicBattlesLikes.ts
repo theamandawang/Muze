@@ -4,24 +4,33 @@ import SupabaseClient from './SupabaseClient';
 // Assumes the U.I. has toggle control
 export async function userAddVote(musicBattleId: string, userId: string, artistId: string) 
 {
-    const { error } = await SupabaseClient.from('music_battle_likes').insert([
-        {
-            battle_id: musicBattleId, 
-            user_id: userId, 
-            artist_vote: artistId,
-        }
-    ]);
+    const currVote = await getCurrentUserVote(musicBattleId, userId);
+    if(currVote == null || currVote.length == 0) 
+    {
+        const { error } = await SupabaseClient.from('music_battle_likes').insert([
+            {
+                battle_id: musicBattleId, 
+                user_id: userId, 
+                artist_vote: artistId,
+            }
+        ]);
 
-    if (error) throw error; 
+        if (error) throw error;
+    } 
 }
 
 // remove the vote for a specific music_battle
 // Assumes that UI uses a toggle method
-export async function userRemoveVote(musicBattleId: string, userId: string, artistId: string) {
-    const { error } = await SupabaseClient.from('music_battle_likes')
-        .delete()
-        .match({ battle_id: musicBattleId, user_id: userId, artist_vote: artistId});
-    if (error) throw error;
+export async function userRemoveVote(musicBattleId: string, userId: string, artistId: string) 
+{
+    const currVote = await getCurrentUserVote(musicBattleId, userId); 
+    if(currVote != undefined && currVote.length > 0)
+    {
+        const { error } = await SupabaseClient.from('music_battle_likes')
+            .delete()
+            .match({ battle_id: musicBattleId, user_id: userId, artist_vote: artistId});
+        if (error) throw error;
+    }
 }
 
 export async function getCurrentUserVote(music_battle: string, userId: string) 
@@ -35,7 +44,7 @@ export async function getCurrentUserVote(music_battle: string, userId: string)
         throw new Error('Failed getting user vote for specific battle.');
     }
     if (data) {
-        return data[0];
+        return data;
     }
     return null;
 }
@@ -50,6 +59,6 @@ export async function getAllVotesForUser(userId: string)
             throw new Error('Failed getting all votes for user')
         }
         if (data) {
-            return data[0]; 
+            return data; 
         }
 }
