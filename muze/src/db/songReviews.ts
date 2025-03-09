@@ -74,11 +74,7 @@ export async function getSongReviewsForUser(
         .from('song_reviews')
         .select(
             `
-            user_id,
-            song_id, 
-            rating, 
-            title, 
-            content,
+            *,
             user: user_id (username)
           `
         )
@@ -150,11 +146,7 @@ export async function getLatestSongReviewsAll(
         .from('song_reviews')
         .select(
             `
-            user_id,
-            song_id, 
-            rating, 
-            title, 
-            content,
+            *,
             user: user_id (username)
           `
         )
