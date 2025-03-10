@@ -1,6 +1,6 @@
 'use server';
 import { CreateUser, UpdateUser, UploadPhoto } from '@/db/UserUpdate';
-import { GetUserById, GetUsersByUsername } from '@/db/UserGet';
+import { GetUserById, GetMultipleUsersById, GetUsersByUsername } from '@/db/UserGet';
 import { checkSession } from '@/utils/serverSession';
 
 // Create a user
@@ -112,6 +112,17 @@ export async function getUserById(userId: string) {
         return null;
     }
     return user;
+}
+
+export async function getMultipleUsersById(userIds: string[]) {
+    let users;
+    try {
+        users = await GetMultipleUsersById(userIds);
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+    return users;
 }
 
 export async function getUsersByUsername(username: string) {
