@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getCurrentUser, updateUser } from '../api/user/route';
 import { TextField } from '@mui/material';
+import checkClientSessionExpiry from '@/utils/checkClientSessionExpiry';
 
 export default function Profile() {
     const [avatarUrl, setAvatarUrl] = useState('');
@@ -13,8 +14,9 @@ export default function Profile() {
     const [bio, setBio] = useState('');
     const [file, setFile] = useState<File | null>(null);
     const [update, setUpdate] = useState(true);
-    const session = useSession();
-    if (!session || session.status === 'unauthenticated') {
+    const {data: session, status} = useSession();
+    
+    if (!checkClientSessionExpiry(session, status)) {
         redirect(`/`);
     }
 

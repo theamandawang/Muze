@@ -5,20 +5,45 @@ import Review from "@/components/review/DiscoverReviewNarrow"
 import ReviewWide from "@/components/review/DiscoverReviewWide"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { useEffect, useState } from "react";
-import { getLatestSongReviews } from "../api/review/route";
+import { getLatestSongReviews, getMultipleUserSongReviews } from "../api/review/route";
 import { getUserTopSongs } from "../api/topSongs/route";
 import { useSession } from "next-auth/react";
+import checkClientSessionExpiry from "@/utils/checkClientSessionExpiry";
+import { redirect } from "next/navigation";
+import { getCurrentUser } from "../api/user/route";
+import { getCurrentUserFollowing } from "../api/follow/route";
 
 export default function HomePage() {
     const [latestSongReviews, setLatestSongReviews] = useState<any[]>([]);
     const [albumCovers, setAlbumCovers] = useState<string[]>([]);
 
-    const { data: session, status } = useSession();
-    if (status !== 'authenticated' || !session?.user) {
-        return null; // or you can display a loading or error message
+    const {data: session, status} = useSession();
+    if (!checkClientSessionExpiry(session, status)) {
+            redirect(`/`);
     }
+    const [displayName, setDisplayName] = useState<string>('');
+    const [latestFollowingReviews, setLatestFollowingReviews] = useState<any[]>([]);
 
     useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                // Fetch the 10 newest reviews
+                const currUser = await getCurrentUser(); 
+                const currUserFollowing = await getCurrentUserFollowing();
+
+                if(currUser && currUserFollowing) {
+                    const followingRevs = await getMultipleUserSongReviews(currUserFollowing.map((user) => {return user.following_id}))
+                    setDisplayName(currUser.username);
+                    setLatestFollowingReviews(followingRevs);
+                } else {
+                    // display nothing; our api calls errored.
+                    console.error('Failed to get user or user following.')
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchUser();
         const fetchReviews = async () => {
             try {
                 // Fetch the 10 newest reviews
@@ -42,7 +67,7 @@ export default function HomePage() {
 
         fetchReviews();
     }, []); 
-
+   
     {/* Code for fetching album covers of top songs*/}
     // useEffect(() => {
     //     if (!session) return;
@@ -64,20 +89,16 @@ export default function HomePage() {
     //     fetchAlbumCovers();
     // }, [session]);
 
-    if (!session) {
-        return null;
-    }
-
     return (
     <div className="w-full">
-        <Hero displayName="maxine"></Hero>        
+        <Hero displayName={displayName} albumArts={albumCovers}></Hero>        
         <div className="mx-auto w-[85%] p-4 space-y-8">
             {/* Popular with Friends Section */}
             <section className="w-full">
             <h2 className="text-2xl font-bold mb-4 text-center">Popular with Friends</h2>
             <ScrollArea className="max-w-screen-xl overflow-x-auto w-full">
                 <div className="flex gap-0 pb-4 w-full"> 
-                {latestSongReviews.map((review, index) => (
+                {latestFollowingReviews.map((review, index) => (
                     <div key={index} className="flex-shrink-0 w-[150px] md:w-[200px] m-2"> 
                     <Review {...review} />
                     </div>

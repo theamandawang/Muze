@@ -1,5 +1,9 @@
 import { buildUrl } from 'build-url-ts';
 
+if (!process.env.TICKET_MASTER_API_KEY) {
+    throw new Error('No TICKET_MASTER_API_KEY');
+}
+
 export async function fetchArtistEvents(artistName: string): Promise<any> {
     const apiUrl = buildUrl('https://app.ticketmaster.com', {
         path: 'discovery/v2/events.json', 

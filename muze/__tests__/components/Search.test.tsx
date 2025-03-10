@@ -18,7 +18,8 @@ jest.mock('@/lib/spotify-sdk/ClientInstance', () => ({
 describe('Search Page', () => {
   it('renders search input and performs search', async () => {
     render(
-      <SessionProvider session={{ user: { name: 'Test User' }, expires: '9999' }}>
+      // expires_at is one hour from right now
+      <SessionProvider session={{ user: { name: 'Test User', expires_at: (Date.now() / 1000) + 3600}, status: 'authenticated'}}>
         <Search />
       </SessionProvider>
     );

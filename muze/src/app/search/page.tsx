@@ -5,12 +5,13 @@ import sdk from '@/lib/spotify-sdk/ClientInstance';
 import { useSession } from 'next-auth/react';
 import { useDebouncedCallback } from 'use-debounce';
 import { useEffect, useState } from 'react';
+import { redirect } from 'next/navigation';
+import checkClientSessionExpiry from '@/utils/checkClientSessionExpiry';
 
 export default function Search() {
-    const session = useSession();
-    if (!session || session.status !== 'authenticated') {
-        // TODO: redirect to the log in screen.
-        return <div></div>;
+    const {data: session, status} = useSession();
+    if (!checkClientSessionExpiry(session, status)) {
+            redirect(`/`);
     }
 
     return (
