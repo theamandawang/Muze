@@ -30,6 +30,8 @@ export async function userLikedReview(
     userId: string, 
     reviewId: string
 ) { 
+    // Additional error checking
+    if (userId == null || userId == undefined || reviewId == null || reviewId == undefined) return null;
     return getUserReviewPair(userId, reviewId); 
 }
 
@@ -38,6 +40,8 @@ export async function getUserReviewPair(
     userId: string,
     reviewId: string
 ) {
+    // Additional error checking
+    if (userId == undefined || reviewId == undefined) return null;
     const { data, error } = await supabase.from('review_likes')
         .select('*')
         .eq('user_id', userId)
