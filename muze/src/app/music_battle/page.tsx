@@ -1,60 +1,87 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { HeartIcon, HeartFilledIcon } from "@radix-ui/react-icons";
-import { activeBattles, getVotesForBattle, getVotesForArtistInBattle, addVote, removeVote } from "../api/musicBattles/route";
+import {
+    activeBattles,
+    getVotesForArtistInBattle,
+    addVote,
+    removeVote,
+} from "../api/musicBattles/route";
 
 export default function MusicBattle() {
     const [battles, setBattles] = useState<any[]>([]);
-    const [votes, setVotes] = useState<{ [key: string]: string }>({}); // Tracks votes per battle
-    const [voteCounts, setVoteCounts] = useState<{ [key: string]: { [key: string]: number } }>({}); // Tracks vote counts for each battle
+    const [votes, setVotes] = useState<{ [key: string]: string | null }>({});
+    const [voteCounts, setVoteCounts] = useState<{ [key: string]: { [key: string]: number } }>({});
 
-    useEffect(() => {
-        async function fetchData() {
-            const battlesData = await activeBattles();
-            const votesData = await Promise.all(battlesData.map(battle => getVotesForBattle(battle.id)));
-            const countsMap = battlesData.reduce((acc, battle) => {
-                acc[battle.id] = {
-                    [battle.artist_one_id]: getVotesForArtistInBattle(battle.id, battle.artist_one_id),
-                    [battle.arist_two_id]: getVotesForArtistInBattle(battle.id, battle.arist_two_id),
+    const fetchBattles = async () => {
+        const battlesData = await activeBattles();
+        const countsMap: { [key: string]: { [key: string]: number } } = {};
+
+        await Promise.all(
+            battlesData.map(async (battle) => {
+                const artistOneVotes = await getVotesForArtistInBattle(battle.id, battle.artist_one_id);
+                const artistTwoVotes = await getVotesForArtistInBattle(battle.id, battle.arist_two_id);
+                countsMap[battle.id] = {
+                    [battle.artist_one_id]: artistOneVotes.length,
+                    [battle.arist_two_id]: artistTwoVotes.length,
                 };
-                return acc;
-            }, {} as { [key: string]: { [key: string]: number } });
-            console.log("votes", await getVotesForBattle(battlesData[0].id));
-            console.log("votes for artist 1", await getVotesForArtistInBattle(battlesData[0].id, battlesData[0].artist_one_id));
-            console.log("votes for artist 2", await getVotesForArtistInBattle(battlesData[0].id, battlesData[0].arist_two_id));
-            
-            setBattles(battlesData);
-            setVotes(Object.fromEntries(battlesData.map(battle => [battle.id, votesData[battlesData.indexOf(battle)]])));
-            setVoteCounts(countsMap);
-        }
+            })
+        );
 
-        fetchData();
-    }, []);
+        setBattles(battlesData);
+        setVoteCounts(countsMap);
+    };
 
     const handleVote = async (battleId: string, artistId: string) => {
-        const isSameArtist = votes[battleId] === artistId;
-        isSameArtist ? await removeVote(battleId) : await addVote(battleId, artistId);
-        setVotes(prev => ({ ...prev, [battleId]: isSameArtist ? null : artistId }));
+        const currentVote = votes[battleId];
+
+        if (currentVote === artistId) {
+            await removeVote(battleId);
+            setVotes((prev) => ({ ...prev, [battleId]: null }));
+            setVoteCounts((prev) => ({
+                ...prev,
+                [battleId]: {
+                    ...prev[battleId],
+                    [artistId]: prev[battleId][artistId] - 1,
+                },
+            }));
+        } else {
+            await addVote(battleId, artistId);
+            setVotes((prev) => ({ ...prev, [battleId]: artistId }));
+            setVoteCounts((prev) => ({
+                ...prev,
+                [battleId]: {
+                    ...prev[battleId],
+                    [artistId]: prev[battleId][artistId] + 1,
+                    [currentVote || ""]: currentVote ? prev[battleId][currentVote] - 1 : prev[battleId][artistId],
+                },
+            }));
+        }
     };
 
     const getPercent = (battleId: string) => {
-        const counts = voteCounts[battleId];
-        if (!counts) return { artistOne: 0, artistTwo: 0 };
-        const totalVotes = counts[battleId.artist_one_id] + counts[battleId.artist_two_id];
-        return totalVotes > 0
-            ? {
-                  artistOne: (counts[battleId.artist_one_id] / totalVotes) * 100,
-                  artistTwo: (counts[battleId.artist_two_id] / totalVotes) * 100,
-              }
-            : { artistOne: 0, artistTwo: 0 };
+        const counts = voteCounts[battleId] || {};
+        const totalVotes = (counts[battles.find((b) => b.id === battleId)?.artist_one_id] || 0) +
+                           (counts[battles.find((b) => b.id === battleId)?.arist_two_id] || 0);
+
+        if (totalVotes === 0) return { artistOne: 50, artistTwo: 50 };
+
+        return {
+            artistOne: ((counts[battles.find((b) => b.id === battleId)?.artist_one_id] || 0) / totalVotes) * 100,
+            artistTwo: ((counts[battles.find((b) => b.id === battleId)?.arist_two_id] || 0) / totalVotes) * 100,
+        };
     };
 
+    useEffect(() => {
+        fetchBattles();
+    }, [])
     return (
         <div>
             <div className="text-center font-bold mt-6">
                 <h1>Music Battles</h1>
             </div>
+
             {battles.map((battle) => {
                 const { artistOne, artistTwo } = getPercent(battle.id);
                 const votedArtist = votes[battle.id];
@@ -73,8 +100,8 @@ export default function MusicBattle() {
                                 </button>
                             </div>
                             <div className="flex items-center gap-2">
-                                <button onClick={() => handleVote(battle.id, battle.artist_two_id)}>
-                                    {votedArtist === battle.artist_two_id ? (
+                                <button onClick={() => handleVote(battle.id, battle.arist_two_id)}>
+                                    {votedArtist === battle.arist_two_id ? (
                                         <HeartFilledIcon className="w-6 h-6 text-red-500" />
                                     ) : (
                                         <HeartIcon className="w-6 h-6 text-gray-500" />
@@ -84,21 +111,9 @@ export default function MusicBattle() {
                             </div>
                         </div>
 
-                        <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                            <div
-                                className="h-2 rounded-full"
-                                style={{
-                                    width: `${artistOne}%`,
-                                    backgroundColor: "#f87171",
-                                }}
-                            ></div>
-                            <div
-                                className="h-2 rounded-full"
-                                style={{
-                                    width: `${artistTwo}%`,
-                                    backgroundColor: "#60a5fa",
-                                }}
-                            ></div>
+                        <div className="w-full bg-gray-200 rounded-full h-2 mt-2 relative">
+                            <div className="absolute top-0 left-0 h-2 bg-red-500 rounded-full" style={{ width: `${artistOne}%` }}></div>
+                            <div className="absolute top-0 right-0 h-2 bg-blue-500 rounded-full" style={{ width: `${artistTwo}%` }}></div>
                         </div>
                     </div>
                 );
