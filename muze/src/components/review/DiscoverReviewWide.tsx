@@ -22,6 +22,12 @@ const ReviewWide: React.FC<ReviewProps> = ({
     title,
     content,
 }) => {
+const [isExpanded, setIsExpanded] = useState(false);
+    const characterLimit = 80;
+    const toggleExpand = () => setIsExpanded(!isExpanded);
+    const shouldShowButton = content.length > characterLimit;
+    const displayedText = isExpanded ? content : content.slice(0, characterLimit) + (shouldShowButton ? '...' : '');
+
     return (
         <Card className='w-full max-w-3xl p-3 flex flex-col gap-1 border-none'>
             {/* Top Half: Album Cover and Info */}
@@ -54,6 +60,11 @@ const ReviewWide: React.FC<ReviewProps> = ({
             <div className='mt-0 bg-muted rounded-lg shadow-sm'>
                 <h2 className='text-m font-bold mt-1'>{title}</h2>
                 <p className='text-sm mt-1'>{content}</p>
+                {shouldShowButton && (
+                    <Button variant='ghost' size='sm' className='text-orange-500 hover:underline p-0 m-0' onClick={toggleExpand}>
+                        {isExpanded ? 'Show Less' : 'Show More'}
+                    </Button>
+                )}
             </div>
             <ReviewFooter reviewId={id}/>
         </Card>
