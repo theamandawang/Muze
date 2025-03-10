@@ -1,5 +1,7 @@
+// 'use client';
 import { getReviewsForSong } from '@/app/api/review/route';
 import Link from 'next/link';
+import ReviewFooter from './ReviewFooter';
 
 interface ReviewProps {
     songId: string;
@@ -39,6 +41,7 @@ export default async function Review({ songId }: ReviewProps) {
                             <h2 className='text-xl mb-2'>{review.title}</h2>
                             <h3>{review.content}</h3>
                         </div>
+                        <ReviewFooter reviewId={review.id}/>
                     </div>
                 </div>
             ))}

@@ -9,6 +9,9 @@ import { ReviewProps } from './review-types';
 import ReviewFooter from './ReviewFooter';
 
 const Review: React.FC<ReviewProps> = ({
+    id,
+    user_id, 
+    song_id,
     reviewerName,
     reviewerAvatar,
     mediaCoverArt,
@@ -18,8 +21,6 @@ const Review: React.FC<ReviewProps> = ({
     rating,
     title,
     content,
-    user_id,
-    song_id,
 }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const characterLimit = 60;
@@ -70,7 +71,7 @@ const Review: React.FC<ReviewProps> = ({
                         </Button>
                     )}
                 </div>
-                <ReviewFooter />
+                <ReviewFooter reviewId={id}/>
             </CardContent>
         </Card>
     );

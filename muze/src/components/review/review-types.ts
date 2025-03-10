@@ -1,4 +1,5 @@
 export interface ReviewProps {
+    id: string;
     reviewerName: string
     reviewerAvatar?: string
     mediaCoverArt: string
