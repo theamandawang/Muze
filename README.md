@@ -58,3 +58,15 @@ Muze is designed to make music sharing and discovery more engaging. Our initial 
 -   **Voting System** – Participate in interactive music battles and vote for your favorite artists.
 
 Muze is just getting started, and we can’t wait to grow alongside our community. Stay tuned for more exciting updates!
+
+## Testing
+Ensuring a seamless and reliable user experience is a top priority for Muze. Our testing infrastructure is designed to maintain stability and performance across all features. We employ a combination of unit, integration, and end-to-end testing to cover both frontend and backend functionality.
+
+Tools and Frameworks
+* Jest – Core testing framework providing a test runner, assertions, and mocking capabilities.
+* Testing Library – Used for testing React components in a way that mimics real user interactions.
+* Mock Service Worker (MSW) – Intercepts and mocks API requests to simulate real-world network conditions.
+* Supabase Testing – Ensures database interactions work as expected, maintaining data integrity.
+* Next.js Testing Utilities – Validates Next.js-specific features, including server-side rendering and API routes.
+
+With this robust testing setup, we ensure that Muze remains performant, stable, and ready to scale as new features are introduced.
