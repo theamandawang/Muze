@@ -102,7 +102,7 @@ export default function MusicBattle() {
                             <div className="flex items-center gap-2">
                                 <button onClick={() => handleVote(battle.id, battle.arist_two_id)}>
                                     {votedArtist === battle.arist_two_id ? (
-                                        <HeartFilledIcon className="w-6 h-6 text-red-500" />
+                                        <HeartFilledIcon className="w-6 h-6 text-blue-500" />
                                     ) : (
                                         <HeartIcon className="w-6 h-6 text-gray-500" />
                                     )}
