@@ -10,6 +10,9 @@ import './styles.css';
 import { MediaCoverProps } from '@/components/review/AlbumCoverArt';
 import { getUserTopSongs } from '../../api/topSongs/route';
 import ProfileReviewList from '@/components/review/ProfileReviewList';
+import EditProfileModal from '@/components/edit_profile/EditProfileModal';
+import { Button } from '@mui/material';
+import { useSession } from 'next-auth/react';
 
 interface UserData {
   bio: string | null;
@@ -22,8 +25,14 @@ interface UserData {
 
 export default function UserProfile() {
   const { id } = useParams();  // get user_id from url 
+  const { data: session, status } = useSession();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userReviews, setUserReviews] = useState<ReviewProps[] | null>([]);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  if (status !== 'authenticated' || !session?.user) {
+    return <p>Loading...</p>;
+  }
 
   useEffect(() => {
     // if user id is null, return
@@ -39,6 +48,16 @@ export default function UserProfile() {
         setUserReviews(data);
     });
   }, [id]);    // on change of user id
+
+  const onProfileUpdate = () => {
+    if (id) {
+        if (typeof id !== 'string') return;
+        getUserById(id).then((data) => {
+        if (data) setUserData(data); // Update userData with the new profile info
+      });
+    }
+  };
+  
 
   // if loading, display nothing
   if (!userData || !userReviews) return <p></p>;
@@ -59,6 +78,23 @@ export default function UserProfile() {
                         <p>{userData.bio}</p>
                     </div>
                 </div>
+
+                {/* Edit Profile Button */}
+                {session.user.id === id && (
+                    <Button
+                    onClick={() => setIsEditModalOpen(true)}
+                    sx={{
+                      marginTop: 2,
+                      backgroundColor: 'var(--primary)',
+                      color: 'white'
+                    }}
+                    >
+                    Edit Profile
+                    </Button>
+                )}
+
+                {/* Edit Profile Modal */}
+                <EditProfileModal open={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onProfileUpdate={onProfileUpdate} />
 
                 <div className="flex mt-[2%]">
                     <div className="flex-1 ">
