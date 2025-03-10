@@ -65,3 +65,31 @@ export async function getFollowingPair(
     }
     return null;
 }
+
+// Get the count of users 'userId' is following
+export async function getFollowingCount(userId: string) {
+    const { count, error } = await supabase
+        .from('following')
+        .select('*', { count: 'exact', head: true })
+        .eq('follower_id', userId);
+
+    if (error) {
+        throw new Error('Failed getting following count.');
+    }
+    
+    return count ?? 0;
+}
+
+// Get the count of users following 'userId'
+export async function getFollowerCount(userId: string) {
+    const { count, error } = await supabase
+        .from('following')
+        .select('*', { count: 'exact', head: true })
+        .eq('following_id', userId);
+
+    if (error) {
+        throw new Error('Failed getting follower count.');
+    }
+        
+    return count ?? 0;
+}

@@ -7,6 +7,8 @@ import {
     getFollowers,
     getFollowing,
     getFollowingPair,
+    getFollowingCount,
+    getFollowerCount
 } from '@/db/UserFollowing';
 
 // Follow a User
@@ -101,5 +103,26 @@ export async function getUserFollowingPair(
     } catch (error) {
         console.error(error);
         return null;
+    }
+}
+
+// Get a User's Following/Follower Count
+export async function getUserFollowingCount(userId: string) {
+    try {
+        const count = await getFollowingCount(userId);
+        return count;
+    } catch (error) {
+        console.error(error);
+        return 0;
+    }
+}
+
+export async function getUserFollowerCount(userId: string) {
+    try {
+        const count = await getFollowerCount(userId);
+        return count;
+    } catch (error) {
+        console.error(error);
+        return 0;
     }
 }

@@ -12,6 +12,8 @@ import checkClientSessionExpiry from "@/utils/checkClientSessionExpiry";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "../api/user/route";
 import { getCurrentUserFollowing } from "../api/follow/route";
+import Link from "next/link";
+import { MousePointerClickIcon } from "lucide-react";
 
 export default function HomePage() {
     const [latestSongReviews, setLatestSongReviews] = useState<any[]>([]);
@@ -107,7 +109,18 @@ export default function HomePage() {
                 <ScrollBar orientation="horizontal" />
             </ScrollArea>
             </section>
-            
+            {/* Music Battles Section */}
+            <section className="w-full">
+                <div className="bg-primary flex hover:bg-primary-dark transition-colors duration-300 cursor-pointer hover:shadow-lg">
+                    <Link
+                        className="text-2xl font-bold place-content-center m-8 flex items-center gap-2 hover:opacity-80 transition-opacity duration-300"
+                        href="/music_battle"
+                    >
+                        <h2>Vote for your favorite artists here! 😝🤘</h2>
+                        <MousePointerClickIcon className="w-6 h-6" />
+                    </Link>
+                </div>
+            </section>
             {/* Your Feed or Other Sections */}
             <section className="w-full">
             <h2 className="text-2xl font-bold mb-4 text-center">Latest on Muze</h2>
