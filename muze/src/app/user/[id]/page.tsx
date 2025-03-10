@@ -133,13 +133,18 @@ export default function UserProfile() {
                 </div>
 
                 {/* Edit Profile Button */}
-                {session.user.id === id && (
-                    <Button
+                {session.user.id === id && ( // Button only appears on current user's profile
+                    <Button 
                     onClick={() => setIsEditModalOpen(true)}
                     sx={{
-                      marginTop: 2,
-                      backgroundColor: 'var(--primary)',
-                      color: 'white'
+                        marginTop: 2,
+                        backgroundColor:'transparent', 
+                        color: 'var(--primary)', 
+                        border: `1px solid var(--primary)`,
+                        '&:hover': {
+                            backgroundColor: 'var(--primary)', 
+                            color: 'white',
+                        }
                     }}
                     >
                     Edit Profile

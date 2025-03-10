@@ -73,6 +73,9 @@ export default function EditProfileModal({ open, onClose, onProfileUpdate }: Edi
             color: 'white', // Label color
             '& .MuiInputLabel-root': {
               color: 'white', // Label color
+              '&.Mui-focused': {
+                color: 'var(--primary)', // Change label color when focused (primary)
+              },
             },
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
@@ -85,7 +88,7 @@ export default function EditProfileModal({ open, onClose, onProfileUpdate }: Edi
                 borderColor: 'var(--primary)', // Outline color on focus (primary, thicker border)
               },
               '& input': {
-                color: 'white', // Text 
+                color: 'white', // Text area color (white)
               },
             },
           }}
@@ -104,6 +107,9 @@ export default function EditProfileModal({ open, onClose, onProfileUpdate }: Edi
             color: 'white',
             '& .MuiInputLabel-root': {
               color: 'white', // Label color
+              '&.Mui-focused': {
+                color: 'var(--primary)', // Change label color when focused (primary)
+              },
             },
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
