@@ -100,11 +100,7 @@ export async function getSongReviewsForUsers(
         .from('song_reviews')
         .select(
             `
-            user_id,
-            song_id, 
-            rating, 
-            title, 
-            content,
+            *,
             user: user_id (username)
           `
         ).in('user_id', userIds)
@@ -129,11 +125,7 @@ export async function getSongReviewsForSong(
         .from('song_reviews')
         .select(
             `
-            user_id,
-            song_id, 
-            rating, 
-            title, 
-            content,
+            *,
             user: user_id (username)
             `
         )

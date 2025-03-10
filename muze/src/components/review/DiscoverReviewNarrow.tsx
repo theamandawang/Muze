@@ -7,6 +7,7 @@ import StarRating from './StarRating';
 import Link from 'next/link';
 import { ReviewProps } from './review-types';
 import ReviewFooter from './ReviewFooter';
+import MediaLink from './MediaLink';
 
 const Review: React.FC<ReviewProps> = ({
     id,
@@ -21,8 +22,6 @@ const Review: React.FC<ReviewProps> = ({
     rating,
     title,
     content,
-    user_id,
-    song_id,
 }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const characterLimit = 60;
@@ -46,13 +45,13 @@ const Review: React.FC<ReviewProps> = ({
                     >
                         <p className='text-xs text-muted-foreground'>{reviewerName} listened to</p>
                     </Link>
-                    <Link
-                        href={{
-                            pathname: `/song/${song_id}`,
-                        }}
-                    >
-                        <h2 className='text-md font-bold'>{mediaName}</h2>
-                    </Link>
+                    <h2 className='text-md font-bold'>
+                        <MediaLink 
+                            media_id={media_id}
+                            mediaName={mediaName}
+                            mediaType={mediaType}
+                        />
+                    </h2>
                     <p className='text-xs text-muted-foreground'>
                         {artistName} | {mediaType}
                     </p>
@@ -76,4 +75,6 @@ const Review: React.FC<ReviewProps> = ({
                 <ReviewFooter reviewId={id}/>
             </CardContent>
         </Card>
+    ) 
+} 
 export default Review;

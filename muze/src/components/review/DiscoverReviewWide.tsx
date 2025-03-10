@@ -8,6 +8,7 @@ import StarRating from './StarRating';
 import Link from 'next/link';
 import { ReviewProps } from './review-types';
 import ReviewFooter from './ReviewFooter';
+import MediaLink from './MediaLink';
 const ReviewWide: React.FC<ReviewProps> = ({
     id,
     user_id,
@@ -21,9 +22,8 @@ const ReviewWide: React.FC<ReviewProps> = ({
     rating,
     title,
     content,
-    user_id,
-    song_id,
 }) => {
+    console.log(reviewerAvatar);
     return (
         <Card className='w-full max-w-3xl p-3 flex flex-col gap-1 border-none'>
             {/* Top Half: Album Cover and Info */}
@@ -33,16 +33,16 @@ const ReviewWide: React.FC<ReviewProps> = ({
                         href={{
                             pathname: `/user/${user_id}`,
                         }}
-                    >
+                    >   
+                        <img src={reviewerAvatar} alt={reviewerName} className='w-5 h-5 shrink-0 rounded-full'></img>
                         <p className='text-sm text-muted-foreground'>{reviewerName} listened to</p>
                     </Link>
-                    <h2 className='text-lg font-bold'>
-                        <Link
-                            href={`/song/${song_id}`} // Route to the song reviews page
-                            className='hover:underline cursor-pointer' // Hover underline and cursor pointer for click
-                        >
-                            {mediaName}
-                        </Link>
+                    <h2 className='text-md font-bold'>
+                        <MediaLink 
+                            media_id={media_id}
+                            mediaName={mediaName}
+                            mediaType={mediaType}
+                        />
                     </h2>
                     <p className='text-xs'>
                         {artistName} | {mediaType}
@@ -57,9 +57,7 @@ const ReviewWide: React.FC<ReviewProps> = ({
                 <h2 className='text-m font-bold mt-1'>{title}</h2>
                 <p className='text-sm mt-1'>{content}</p>
             </div>
-            <ReviewFooter
-                reviewId={id}
-            />
+            <ReviewFooter reviewId={id} />
         </Card>
     );
 };

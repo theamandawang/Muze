@@ -11,8 +11,6 @@ export interface ReviewProps {
     rating: number
     title: string
     content: string
-    user_id: string;
-    song_id: string | null;
 }
 
 export enum MediaType {

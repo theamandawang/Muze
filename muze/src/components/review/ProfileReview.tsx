@@ -8,6 +8,7 @@ import { ReviewProps } from './review-types'
 import AlbumCoverArt from './AlbumCoverArt'
 import Link from 'next/link'
 import LikeButton from './LikeButton'
+import MediaLink from './MediaLink'
 
 const ProfileReview: React.FC<ReviewProps> = ({
     id,
@@ -22,7 +23,6 @@ const ProfileReview: React.FC<ReviewProps> = ({
     rating,
     title,
     content,
-    song_id
 }) => {
 
     return (
@@ -34,9 +34,14 @@ const ProfileReview: React.FC<ReviewProps> = ({
                 </div>
                 {/* Right Side: Review Content */}
                 <div className="mt-0 bg-muted rounded-lg shadow-sm text-left w-full">
-                    <Link href={`/song/${song_id}`}>
-                        <p className="text-md">{mediaName} - {artistName} | {mediaType} </p>
-                    </Link>
+                    <p className="text-md">
+                        <MediaLink 
+                            media_id={media_id}
+                            mediaName={mediaName}
+                            mediaType={mediaType}
+                        /> 
+                         - {artistName} | {mediaType} 
+                    </p>
                     <StarRating rating={rating} />
                     <h2 className="text-lg font-bold mt-1">{title}</h2>
                     <p className="text-sm mt-1">{content}</p>

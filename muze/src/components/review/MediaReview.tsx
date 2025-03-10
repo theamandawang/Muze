@@ -10,6 +10,9 @@ import Link from 'next/link';
 import ReviewFooter from './ReviewFooter';
 
 const MediaReview: React.FC<ReviewProps> = ({
+    id,
+    user_id, 
+    media_id,
     reviewerName,
     reviewerAvatar,
     mediaCoverArt,
@@ -19,7 +22,6 @@ const MediaReview: React.FC<ReviewProps> = ({
     rating,
     title,
     content,
-    user_id,
 }) => {
     return (
         <Card className='w-full max-w-3xl p-4 flex flex-col gap-2 border-none'>
@@ -36,7 +38,7 @@ const MediaReview: React.FC<ReviewProps> = ({
                     </div>
                 </div>
             </div>
-            <ReviewFooter />
+            <ReviewFooter reviewId={id} />
         </Card>
     );
 };
