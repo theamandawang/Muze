@@ -5,7 +5,6 @@ import { likeReview, totalReviewLikes, unlikeReview, userLikedReview } from '@/d
 import { useSession } from 'next-auth/react';
 
 const LikeButton: React.FC<{reviewId: string}> = ({reviewId}: {reviewId: string}) => {
-    console.log("review id:", reviewId);
     const [liked, setLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
     const session = useSession();
@@ -13,11 +12,14 @@ const LikeButton: React.FC<{reviewId: string}> = ({reviewId}: {reviewId: string}
     
     useEffect(() => {
         async function fetchLikes() {
-            if (reviewId === null) return;
+            if (reviewId === null || reviewId == undefined) return;
             const totalLikes = await totalReviewLikes(reviewId);
-            // catch error
-            if (totalLikes === null || totalLikes === undefined) return;
-            console.log("total likes:", totalLikes);
+            // if not of type number, either undefined or error statee
+            if (typeof totalLikes !== "number") {
+                console.error("Error fetching likes for review:", reviewId);
+                return;
+            }
+            // set like count
             setLikeCount(totalLikes);
         }
         fetchLikes();
@@ -32,10 +34,8 @@ const LikeButton: React.FC<{reviewId: string}> = ({reviewId}: {reviewId: string}
 
     const toggleLike = () => {
         if (liked) {
-            // console.log("unlike review:", userId, " on ", reviewId);
             unlikeReview(userId, reviewId);
         } else {
-            // console.log("like review:", userId, " on ", reviewId);
             likeReview(userId, reviewId);
         }
         setLiked(!liked);

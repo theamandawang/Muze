@@ -30,6 +30,7 @@ export async function userLikedReview(
     userId: string, 
     reviewId: string
 ) { 
+    if (userId == null || userId == undefined || reviewId == null || reviewId == undefined) return null;
     return getUserReviewPair(userId, reviewId); 
 }
 
@@ -44,6 +45,7 @@ export async function getUserReviewPair(
         .eq('review_id', reviewId)
         .limit(1);
     if (error) {
+        console.log(error);
         throw new Error('Failed getting assocatied review for user');
     }
     if (data) {
