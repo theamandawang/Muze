@@ -15,6 +15,9 @@ import { getCurrentUserFollowing } from "../api/follow/route";
 import Link from "next/link";
 import { MousePointerClickIcon } from "lucide-react";
 
+import { SpotifyApi } from '@spotify/web-api-ts-sdk'; // use "@spotify/web-api-ts-sdk" in your own project
+import sdk from '@/lib/spotify-sdk/ClientInstance';
+
 export default function HomePage() {
     const [latestSongReviews, setLatestSongReviews] = useState<any[]>([]);
     const [albumCovers, setAlbumCovers] = useState<string[]>([]);
@@ -68,28 +71,28 @@ export default function HomePage() {
         };
 
         fetchReviews();
-    }, []); 
-   
-    {/* Code for fetching album covers of top songs*/}
-    // useEffect(() => {
-    //     if (!session) return;
 
-    //     const fetchAlbumCovers = async () => {
-    //         try {
-    //             const userTopSongs = await getUserTopSongs(session.user.id) || [];
-        
-    //             const covers = userTopSongs
-    //                 .map((song) => song.songs?.img)
-    //                 .filter((cover): cover is string => Boolean(cover));
+        const fetchAlbumCovers = async () => {
+            try {
+                // misleading title of top songs... but we actually mean top albums.
+                const userTopAlbums = (await getUserTopSongs(session.user.id)) || [];
 
-    //             setAlbumCovers(covers.slice(0, 5));
-    //         } catch (err) {
-    //             console.error("Failed to load top songs");
-    //         }
-    //     };
+            
+                console.log(userTopAlbums);
+                const covers = await Promise.all(
+                    userTopAlbums.map(async (album) => {
+                        return (sdk.albums.get(album.song_id)).then((album) => {return album.images[0].url})
+                    })
+                );
+                setAlbumCovers(covers.slice(0, 4));
+            } catch (err) {
+                console.error("Failed to load top songs");
+                console.error(err);
+            }
+        };
 
-    //     fetchAlbumCovers();
-    // }, [session]);
+        fetchAlbumCovers();
+    }, [session]); 
 
     return (
     <div className="w-full">
