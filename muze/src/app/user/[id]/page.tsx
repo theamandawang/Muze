@@ -1,10 +1,13 @@
 "use client";
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { getUserById, getUsersByUsername } from '../../api/user/route';
+import { getUserById } from '../../api/user/route';
 import { getUserSongReviews } from '../../api/review/route';
+import { follow, unfollow, getCurrentUserFollowing, getUserFollowingCount, getUserFollowerCount } from '../../api/follow/route';
 import { ReviewProps } from '@/components/review/review-types';
+import FollowButton from '@/components/buttons/FollowButton';
 import * as Tabs from '@radix-ui/react-tabs';
 import './styles.css';
 import { MediaCoverProps } from '@/components/review/AlbumCoverArt';
@@ -26,9 +29,13 @@ interface UserData {
 export default function UserProfile() {
   const { id } = useParams();  // get user_id from url 
   const { data: session, status } = useSession();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userReviews, setUserReviews] = useState<ReviewProps[] | null>([]);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [followingCount, setFollowingCount] = useState<number>(0);
+  const [followerCount, setFollowerCount] = useState<number>(0);
+  const [following, setFollowing] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   if (status !== 'authenticated' || !session?.user) {
     return <p>Loading...</p>;
@@ -47,6 +54,21 @@ export default function UserProfile() {
     getUserSongReviews(id, 20).then((data) => {
         setUserReviews(data);
     });
+    // get user following count
+    getUserFollowingCount(id).then((count) => {
+        setFollowingCount(count);
+    });
+    // get user follower count
+    getUserFollowerCount(id).then((count) => {
+        setFollowerCount(count);
+    });
+    // get current user following data
+    getCurrentUserFollowing().then((followingData) => {
+        if (followingData?.some(follow => follow.following_id == id)){
+            setFollowing(true);
+        }
+    });
+    
   }, [id]);    // on change of user id
 
   const onProfileUpdate = () => {
@@ -58,6 +80,29 @@ export default function UserProfile() {
     }
   };
   
+  const toggleFollow = async () => {
+    if (!id) return;
+    if (typeof id !== 'string') return;
+
+    setIsLoading(true);
+
+    try {
+        setFollowing((prev) => !prev);
+        setFollowerCount((prev) => (following ? prev - 1 : prev + 1));
+
+        if (following) {
+            await unfollow(id);
+        } else {
+            await follow(id);
+        }
+    } catch (error) {
+        console.error("Error toggling follow:", error);
+        setFollowing((prev) => !prev);
+        setFollowerCount((prev) => (following ? prev + 1 : prev - 1));
+    } finally {
+        setIsLoading(false);
+    }
+};
 
   // if loading, display nothing
   if (!userData || !userReviews) return <p></p>;
@@ -72,10 +117,18 @@ export default function UserProfile() {
                         alt={`${userData.username}'s profile`} 
                         className='w-16 h-16 rounded-full object-cover' 
                     />
-                    {/* Username and Bio */}
+                    {/* Username, Bio, and Followers/Following Count */}
                     <div>
                         <h1 className='font-bold text-2xl md:text-3xl lg:text-4xl xl:text-5xl'>{userData.username}</h1>
                         <p>{userData.bio}</p>
+                        <p className='text-gray-500 text-sm'>
+                            <Link href={`/user/${id}/followers`} className='hover:underline'>
+                            {followerCount} followers
+                            </Link>{' '}•{' '}
+                            <Link href={`/user/${id}/following`} className='hover:underline'>
+                            {followingCount} following
+                            </Link>
+                        </p>
                     </div>
                 </div>
 
@@ -95,6 +148,17 @@ export default function UserProfile() {
 
                 {/* Edit Profile Modal */}
                 <EditProfileModal open={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onProfileUpdate={onProfileUpdate} />
+
+                {/* Follow/Unfollow Button */}
+                {session.user.id !== id && ( // Button only appears for profiles that are not the current user's profile
+                <div className='mt-4'>
+                    <FollowButton
+                        following={following}
+                        isLoading={isLoading}
+                        toggleFollow={toggleFollow}
+                    />
+                </div>
+                )}
 
                 <div className="flex mt-[2%]">
                     <div className="flex-1 ">
