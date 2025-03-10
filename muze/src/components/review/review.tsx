@@ -1,4 +1,4 @@
-'use client';
+// 'use client';
 import { getReviewsForSong } from '@/app/api/review/route';
 import Link from 'next/link';
 import ReviewFooter from './ReviewFooter';
