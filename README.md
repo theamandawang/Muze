@@ -30,3 +30,31 @@ For Spotify create a [developer account](https://developer.spotify.com/documenta
 
 For Ticketmaster create a [developer account](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/) and add the following value to the `.env` file: 
 * `TICKET_MASTER_API_KEY`
+
+## Features
+Muze is designed to make music sharing and discovery more engaging. Our initial phase focuses on key social and interactive features that bring music lovers together.
+
+### Music Reviews
+
+-   **Create, Edit, and Delete Reviews** – Share your thoughts on songs and albums with an intuitive text-based review system.
+-   **5-Star Rating System** – A simple and visually appealing rating scale, backed by user research for quick and effective ratings.
+-   **Media Integration** – Album art and track details are automatically fetched via the Spotify API for a seamless experience.
+-   **Sorting & Filtering** – Reviews are ranked by recency and popularity to keep your feed fresh and relevant.
+
+### User Profiles
+
+-   **Custom Profiles** – Users can personalize their profiles with a bio and profile picture.
+-   **Activity Feed** – Each profile showcases recent reviews and favorite tracks.
+-   **Spotify Integration** – Connect your Spotify account to automatically pull in your listening history.
+
+### Social Features
+
+-   **Follow & Unfollow System** – Build a community by following other music lovers.
+-   **Activity Feed** – Stay updated with sections like “Latest on Muze” and “Popular with Friends.”
+-   **Review Likes** – Engage with content by liking reviews with a single click.
+
+### Music Battles
+
+-   **Voting System** – Participate in interactive music battles and vote for your favorite artists.
+
+Muze is just getting started, and we can’t wait to grow alongside our community. Stay tuned for more exciting updates!
