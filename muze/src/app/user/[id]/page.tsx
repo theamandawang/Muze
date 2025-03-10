@@ -13,6 +13,8 @@ import './styles.css';
 import { MediaCoverProps } from '@/components/review/AlbumCoverArt';
 import { getUserTopSongs } from '../../api/topSongs/route';
 import ProfileReviewList from '@/components/review/ProfileReviewList';
+import EditProfileModal from '@/components/edit_profile/editProfileModal';
+import { Button } from '@mui/material';
 import { useSession } from 'next-auth/react';
 
 interface UserData {
@@ -27,7 +29,7 @@ interface UserData {
 export default function UserProfile() {
   const { id } = useParams();  // get user_id from url 
   const { data: session, status } = useSession();
-
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userReviews, setUserReviews] = useState<ReviewProps[] | null>([]);
   const [followingCount, setFollowingCount] = useState<number>(0);
@@ -69,6 +71,15 @@ export default function UserProfile() {
     
   }, [id]);    // on change of user id
 
+  const onProfileUpdate = () => {
+    if (id) {
+        if (typeof id !== 'string') return;
+        getUserById(id).then((data) => {
+        if (data) setUserData(data); // Update userData with the new profile info
+      });
+    }
+  };
+  
   const toggleFollow = async () => {
     if (!id) return;
     if (typeof id !== 'string') return;
@@ -120,6 +131,28 @@ export default function UserProfile() {
                         </p>
                     </div>
                 </div>
+
+                {/* Edit Profile Button */}
+                {session.user.id === id && ( // Button only appears on current user's profile
+                    <Button 
+                    onClick={() => setIsEditModalOpen(true)}
+                    sx={{
+                        marginTop: 2,
+                        backgroundColor:'transparent', 
+                        color: 'var(--primary)', 
+                        border: `1px solid var(--primary)`,
+                        '&:hover': {
+                            backgroundColor: 'var(--primary)', 
+                            color: 'white',
+                        }
+                    }}
+                    >
+                    Edit Profile
+                    </Button>
+                )}
+
+                {/* Edit Profile Modal */}
+                <EditProfileModal open={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onProfileUpdate={onProfileUpdate} />
 
                 {/* Follow/Unfollow Button */}
                 {session.user.id !== id && ( // Button only appears for profiles that are not the current user's profile
