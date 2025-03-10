@@ -9,6 +9,9 @@ import Link from 'next/link';
 import { ReviewProps } from './review-types';
 import ReviewFooter from './ReviewFooter';
 const ReviewWide: React.FC<ReviewProps> = ({
+    id,
+    user_id,
+    media_id, 
     reviewerName,
     reviewerAvatar,
     mediaCoverArt,
@@ -18,8 +21,6 @@ const ReviewWide: React.FC<ReviewProps> = ({
     rating,
     title,
     content,
-    user_id,
-    song_id,
 }) => {
     return (
         <Card className='w-full max-w-3xl p-3 flex flex-col gap-1 border-none'>
@@ -35,7 +36,7 @@ const ReviewWide: React.FC<ReviewProps> = ({
                     </Link>
                     <h2 className='text-lg font-bold'>
                         <Link
-                            href={`/song/${song_id}`} // Route to the song reviews page
+                            href={`/song/${media_id}`} // Route to the song reviews page
                             className='hover:underline cursor-pointer' // Hover underline and cursor pointer for click
                         >
                             {mediaName}
@@ -54,7 +55,7 @@ const ReviewWide: React.FC<ReviewProps> = ({
                 <h2 className='text-m font-bold mt-1'>{title}</h2>
                 <p className='text-sm mt-1'>{content}</p>
             </div>
-            <ReviewFooter />
+            <ReviewFooter reviewId={id}/>
         </Card>
     );
 };

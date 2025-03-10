@@ -1,4 +1,5 @@
 export interface ReviewProps {
+    id: string;
     reviewerName: string
     reviewerAvatar?: string
     mediaCoverArt: string
@@ -9,5 +10,5 @@ export interface ReviewProps {
     title: string
     content: string
     user_id: string;
-    song_id: string | null;
+    media_id: string | null;
 }
