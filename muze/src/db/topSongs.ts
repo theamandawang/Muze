@@ -1,10 +1,11 @@
+'use server';
 import { supabase } from '@/lib/supabase/supabase';
 
 export async function getTopSongs(uid: string) {
     const { data, error } = await supabase
         .from('top_songs')
         .select(
-            'rank, created_at, songs: song_id (spotify_id, album_id, title, img)'
+            'rank, created_at, song_id'
         )
         .eq('user_id', uid)
         .order('rank', { ascending: true });
@@ -13,7 +14,6 @@ export async function getTopSongs(uid: string) {
         console.error('Error fetching top songs:', error);
         return null;
     }
-
     return data;
 }
 
