@@ -131,7 +131,16 @@ export async function getSongReviewsForSong(
 ) {
     const { data, error } = await supabase
         .from('song_reviews')
-        .select()
+        .select(
+            `
+            user_id,
+            song_id, 
+            rating, 
+            title, 
+            content,
+            user: user_id (username)
+            `
+        )
         .eq('song_id', songId)
         .order('created_at', { ascending: false })
         .range(offset, offset + limit - 1);

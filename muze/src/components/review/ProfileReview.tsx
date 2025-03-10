@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import StarRating from './StarRating'
 import { ReviewProps } from './review-types'
 import AlbumCoverArt from './AlbumCoverArt'
+import Link from 'next/link'
 
 const ProfileReview: React.FC<ReviewProps> = ({
     reviewerName,
@@ -17,6 +18,7 @@ const ProfileReview: React.FC<ReviewProps> = ({
     rating,
     title,
     content,
+    song_id
 }) => {
 
     return (
@@ -28,7 +30,9 @@ const ProfileReview: React.FC<ReviewProps> = ({
                 </div>
                 {/* Right Side: Review Content */}
                 <div className="mt-0 bg-muted rounded-lg shadow-sm text-left w-full">
-                    <p className="text-md">{mediaName} - {artistName} | {mediaType} </p>
+                    <Link href={`/song/${song_id}`}>
+                        <p className="text-md">{mediaName} - {artistName} | {mediaType} </p>
+                    </Link>
                     <StarRating rating={rating} />
                     <h2 className="text-lg font-bold mt-1">{title}</h2>
                     <p className="text-sm mt-1">{content}</p>
@@ -37,6 +41,7 @@ const ProfileReview: React.FC<ReviewProps> = ({
                     <Button variant="ghost" className="text-gray-400 hover:text-white">
                         🧡 
                     </Button>
+                    
                     <Button variant="ghost" className="text-gray-400 hover:text-white">
                         ···
                     </Button>

@@ -13,6 +13,7 @@ interface ReviewContent {
     created_at: string | null;
     id: string;
     song_id: string | null;
+    user: {username: string};
 }
 export default async function Review({ songId }: ReviewProps) {
     const data = await getReviewsForSong(songId);
@@ -30,7 +31,7 @@ export default async function Review({ songId }: ReviewProps) {
                     <div className='flex flex-col flex-1'>
                         <Link href={`/user/${review.user_id}`}>
                             <h2 className='text-lg font-semibold px-8'>
-                                {review.user_id} gives this song {review.rating}{' '}
+                                {review.user.username} gives this song {review.rating}{' '}
                                 {review.rating > 1 ? 'stars' : 'star'}
                             </h2>
                         </Link>
