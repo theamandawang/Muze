@@ -12,7 +12,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ userReviews }) => {
       {userReviews?.map((review, index) => (
         
         <div key={index} className="border-t-[1px] border-gray-700">
-          <ProfileReview {...review} />
+            <ProfileReview {...review} />
         </div>
       ))}
     </div>
