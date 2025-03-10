@@ -12,7 +12,7 @@ Muze is a social media platform designed for music lovers to connect, share, and
 Muze isn’t just about listening—it’s about experiencing music together. Join us and dive into the world of music storytelling!
 
 ## Running Muze
-The technology stack for Muze uses Next.Js, Node.js, Supabase, and Postgres. Running muze locally is quite! Just follow these steps: 
+The technology stack for Muze uses Next.Js, Node.js, Supabase, and Postgres. Running muze locally is quite simple! Just follow these steps: 
 1. Clone the repo using `git clone`
 2. Once you clone, lets move into the `Muze` directory by doing `cd Muze` and then moving into the `muze` directory by doing `cd muze`
 3. If you don't have `npm` installed follow the instructions [here](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) to install 
