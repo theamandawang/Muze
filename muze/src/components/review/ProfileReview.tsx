@@ -12,7 +12,7 @@ import LikeButton from './LikeButton'
 const ProfileReview: React.FC<ReviewProps> = ({
     id,
     user_id, 
-    media_id,
+    song_id,
     reviewerName,
     reviewerAvatar,
     mediaCoverArt,
@@ -33,7 +33,7 @@ const ProfileReview: React.FC<ReviewProps> = ({
                 </div>
                 {/* Right Side: Review Content */}
                 <div className="mt-0 bg-muted rounded-lg shadow-sm text-left w-full">
-                    <Link href={`/song/${media_id}`}>
+                    <Link href={`/song/${song_id}`}>
                         <p className="text-md">{mediaName} - {artistName} | {mediaType} </p>
                     </Link>
                     <StarRating rating={rating} />

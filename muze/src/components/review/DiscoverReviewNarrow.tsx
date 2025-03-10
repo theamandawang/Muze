@@ -11,7 +11,7 @@ import ReviewFooter from './ReviewFooter';
 const Review: React.FC<ReviewProps> = ({
     id,
     user_id, 
-    media_id,
+    song_id,
     reviewerName,
     reviewerAvatar,
     mediaCoverArt,
@@ -46,7 +46,7 @@ const Review: React.FC<ReviewProps> = ({
                     </Link>
                     <Link
                         href={{
-                            pathname: `/song/${media_id}`,
+                            pathname: `/song/${song_id}`,
                         }}
                     >
                         <h2 className='text-md font-bold'>{mediaName}</h2>

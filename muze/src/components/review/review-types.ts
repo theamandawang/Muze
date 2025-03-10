@@ -10,5 +10,5 @@ export interface ReviewProps {
     title: string
     content: string
     user_id: string;
-    media_id: string | null;
+    song_id: string | null;
 }

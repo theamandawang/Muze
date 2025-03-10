@@ -11,7 +11,7 @@ import ReviewFooter from './ReviewFooter';
 const ReviewWide: React.FC<ReviewProps> = ({
     id,
     user_id,
-    media_id, 
+    song_id, 
     reviewerName,
     reviewerAvatar,
     mediaCoverArt,
@@ -36,7 +36,7 @@ const ReviewWide: React.FC<ReviewProps> = ({
                     </Link>
                     <h2 className='text-lg font-bold'>
                         <Link
-                            href={`/song/${media_id}`} // Route to the song reviews page
+                            href={`/song/${song_id}`} // Route to the song reviews page
                             className='hover:underline cursor-pointer' // Hover underline and cursor pointer for click
                         >
                             {mediaName}
