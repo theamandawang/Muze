@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getUserFollowers } from '@/app/api/follow/route';
-import { getUserById } from '@/app/api/user/route';
+import { getMultipleUsersById } from '@/app/api/user/route';
 import { useParams } from 'next/navigation';
 
 export default function Followers() {
@@ -19,14 +19,13 @@ export default function Followers() {
         async function getFollowers() {
             try {
                 setIsLoading(true);
+                if (typeof id !== 'string') return;
                 const followersData = await getUserFollowers(id);
 
                 if (followersData) {
-                    const userFollowers = await Promise.all(
-                        followersData.map((pair: any) => getUserById(pair.follower_id))
-                    );
-                    const filtered = userFollowers.filter((user) => user !== null);
-                    setFollowers(filtered);
+                    const followerIds = followersData.map((pair: any) => pair.follower_id);
+                    const userFollowers = await getMultipleUsersById(followerIds);
+                    if (userFollowers) setFollowers(userFollowers);
                 }
             } catch (err) {
                 console.error('Error fetching followers:', err);

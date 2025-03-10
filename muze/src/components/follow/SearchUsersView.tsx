@@ -11,6 +11,7 @@ import {
     Button,
     Link,
 } from '@mui/material';
+import FollowButton from '@/components/buttons/FollowButton';
 import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import Container from '@mui/material/Container';
@@ -164,22 +165,11 @@ export default function SearchUsersView({
                             </Link>
 
                             {/* Follow/Unfollow Button */}
-                            <Button
-                                variant={
-                                    following[user.id]
-                                        ? 'outlined'
-                                        : 'contained'
-                                }
-                                color={
-                                    following[user.id] ? 'secondary' : 'primary'
-                                }
-                                onClick={(e) => {
-                                    e.stopPropagation(); // Prevent triggering onUserSelect
-                                    toggleFollow(user.id);
-                                }}
-                            >
-                                {following[user.id] ? 'Unfollow' : 'Follow'}
-                            </Button>
+                            <FollowButton
+                                following={following[user.id] || false}
+                                isLoading={isLoading}
+                                toggleFollow={() => toggleFollow(user.id)}
+                            />
                         </ListItem>
                     ))}
                 </List>
