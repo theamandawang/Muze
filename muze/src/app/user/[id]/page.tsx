@@ -3,16 +3,17 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { getUserById, getCurrentUser, getUsersByUsername } from '../../api/user/route';
+import { getUserById } from '../../api/user/route';
 import { getUserSongReviews } from '../../api/review/route';
 import { follow, unfollow, getCurrentUserFollowing, getUserFollowingCount, getUserFollowerCount } from '../../api/follow/route';
 import { ReviewProps } from '@/components/review/review-types';
-import { Button } from '@mui/material';
+import FollowButton from '@/components/buttons/FollowButton';
 import * as Tabs from '@radix-ui/react-tabs';
 import './styles.css';
 import { MediaCoverProps } from '@/components/review/AlbumCoverArt';
 import { getUserTopSongs } from '../../api/topSongs/route';
 import ProfileReviewList from '@/components/review/ProfileReviewList';
+import { useSession } from 'next-auth/react';
 
 interface UserData {
   bio: string | null;
@@ -25,7 +26,7 @@ interface UserData {
 
 export default function UserProfile() {
   const { id } = useParams();  // get user_id from url 
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const { data: session, status } = useSession();
 
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userReviews, setUserReviews] = useState<ReviewProps[] | null>([]);
@@ -34,6 +35,9 @@ export default function UserProfile() {
   const [following, setFollowing] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  if (status !== 'authenticated' || !session?.user) {
+    return <p>Loading...</p>;
+  }
 
   useEffect(() => {
     // if user id is null, return
@@ -52,15 +56,10 @@ export default function UserProfile() {
     getUserFollowingCount(id).then((count) => {
         setFollowingCount(count);
     });
-    // get user following count
+    // get user follower count
     getUserFollowerCount(id).then((count) => {
         setFollowerCount(count);
     });
-    //get current user ID
-    getCurrentUser().then((currentUser) => {
-        if (currentUser) setCurrentUserId(currentUser.id);
-    });
-
     // get current user following data
     getCurrentUserFollowing().then((followingData) => {
         if (followingData?.some(follow => follow.following_id == id)){
@@ -72,7 +71,8 @@ export default function UserProfile() {
 
   const toggleFollow = async () => {
     if (!id) return;
-    
+    if (typeof id !== 'string') return;
+
     setIsLoading(true);
 
     try {
@@ -122,16 +122,13 @@ export default function UserProfile() {
                 </div>
 
                 {/* Follow/Unfollow Button */}
-                {currentUserId && currentUserId !== id && ( // Button only appears for profiles that are not the current user's profile
+                {session.user.id !== id && ( // Button only appears for profiles that are not the current user's profile
                 <div className='mt-4'>
-                   <Button
-                        variant={following ? 'outlined' : 'contained'}
-                        color={following ? 'secondary' : 'primary'}
-                        onClick={toggleFollow}
-                        disabled={isLoading}
-                        >
-                        {isLoading ? 'Loading...' : following ? 'Unfollow' : 'Follow'}
-                    </Button> 
+                    <FollowButton
+                        following={following}
+                        isLoading={isLoading}
+                        toggleFollow={toggleFollow}
+                    />
                 </div>
                 )}
 
