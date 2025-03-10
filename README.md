@@ -22,8 +22,8 @@ The technology stack for Muze uses Next.Js, Node.js, Supabase, and Postgres. Run
 **The .env file:** if you get any errors saying that you are missing URLs or Keys it is probably related to the `.env` file. Muze uses Supabase, the Spotifiy API, and the TicketMaster API.  Make sure you do the following: 
 1. Make sure the `.env` file exists in `Muze/muze` otherwise create it
 
-For Supabase read the [documentation](https://supabase.com/docs/guides/getting-started/quickstarts/nextjs) to and add the following:
-  * `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` values and insert them in your `.env` file. 
+For Supabase read the [documentation](https://supabase.com/docs/guides/getting-started/quickstarts/nextjs) and add the following to your `.env' file:
+  * `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` 
 
 For Spotify create a [developer account](https://developer.spotify.com/documentation/web-api) and add the following values into the `.env` file: 
 * `SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, NEXTAUTH_SECRET` 
