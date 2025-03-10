@@ -13,6 +13,21 @@ export async function GetUserById(userId: string) {
     return data;
 }
 
+// Fetch multiple users by their IDs
+export async function GetMultipleUsersById(userIds: string[]) {
+    const { data, error } = await supabase
+        .from('users')
+        .select('id, username, profile_pic, bio')
+        .in('id', userIds); 
+
+    if (error) {
+        console.error('Error fetching multiple users:', error);
+        throw new Error(error.message);
+    }
+
+    return data;
+}
+
 export async function GetUsersByUsername(
     username: string,
     limit: number = 50,
