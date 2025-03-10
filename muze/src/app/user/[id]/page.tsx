@@ -16,6 +16,7 @@ import ProfileReviewList from '@/components/review/ProfileReviewList';
 import EditProfileModal from '@/components/edit_profile/editProfileModal';
 import { Button } from '@mui/material';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 interface UserData {
   bio: string | null;
@@ -27,6 +28,7 @@ interface UserData {
 }
 
 export default function UserProfile() {
+  const router = useRouter();
   const { id } = useParams();  // get user_id from url 
   const { data: session, status } = useSession();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -134,21 +136,39 @@ export default function UserProfile() {
 
                 {/* Edit Profile Button */}
                 {session.user.id === id && ( // Button only appears on current user's profile
-                    <Button 
-                    onClick={() => setIsEditModalOpen(true)}
-                    sx={{
-                        marginTop: 2,
-                        backgroundColor:'transparent', 
-                        color: 'var(--primary)', 
-                        border: `1px solid var(--primary)`,
-                        '&:hover': {
-                            backgroundColor: 'var(--primary)', 
-                            color: 'white',
-                        }
-                    }}
-                    >
-                    Edit Profile
-                    </Button>
+                <div>
+                        <Button 
+                        onClick={() => setIsEditModalOpen(true)}
+                        sx={{
+                            marginTop: 2,
+                            backgroundColor:'transparent', 
+                            color: 'var(--primary)', 
+                            border: `1px solid var(--primary)`,
+                            '&:hover': {
+                                backgroundColor: 'var(--primary)', 
+                                color: 'white',
+                            }
+                        }}
+                        >
+                        Edit Profile
+                        </Button>
+
+                        <Button 
+                        onClick={() => router.push(`/profile/select-top-albums`)}
+                        sx={{
+                            marginTop: 2,
+                            backgroundColor:'transparent', 
+                            color: 'var(--primary)', 
+                            border: `1px solid var(--primary)`,
+                            '&:hover': {
+                                backgroundColor: 'var(--primary)', 
+                                color: 'white',
+                            }
+                        }}
+                        >
+                        Edit Top Songs
+                        </Button>
+                    </div>
                 )}
 
                 {/* Edit Profile Modal */}
