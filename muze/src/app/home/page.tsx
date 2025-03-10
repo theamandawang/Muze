@@ -55,14 +55,6 @@ export default function HomePage() {
                 const reviews = await getLatestSongReviews(10); 
                 setLatestSongReviews(reviews);
 
-            // Extract album cover images from lastest reviews (temporary for visualization purposes)
-            // Comment out once users can set their favorite songs
-                const covers = reviews
-                    .map((review) => review.mediaCoverArt) // Get the cover images
-                    .filter((cover) => cover); // Remove undefined/null covers
-
-                setAlbumCovers(covers.slice(0, 5)); // Limit to 5 covers for the hero section
-
             } catch (err) {
                 console.error("Failed to load reviews")
             } finally {
