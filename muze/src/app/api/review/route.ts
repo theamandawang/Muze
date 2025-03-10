@@ -5,6 +5,7 @@ import {
     getLatestSongReviewsAll,
     getSongReviewsForUser,
     getSongReviewsForSong,
+    getSongReviewsForUsers,
 } from '@/db/songReviews';
 import getSpotifySongInfo from '@/spotify-api/getSongInfo';
 
@@ -122,6 +123,24 @@ export async function getUserSongReviews(
     );
     return finalData; 
 }
+
+// Get song reviews from multiple users (from most recent to least recent)
+export async function getMultipleUserSongReviews(
+    userIds: string[],
+    limit: number = 20,
+    offset: number = 0
+) {
+    // Get reviews from one user
+    const data = await getSongReviewsForUsers(userIds, limit, offset);
+    // Map over all reviews and fetch additional data from Spotify
+    const finalData = await Promise.all(
+        data.map(async (review) => {
+            return await fetchMediaData(review, getSpotifySongInfo);
+        })
+    );
+    return finalData; 
+}
+
 
 // Helper function to fetch data (for the album cover & artists) from Spotify 
 async function fetchMediaData(review: any, mediaFetchFunction: any) {
