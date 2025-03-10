@@ -12,7 +12,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface SearchProps {
-    onMediaSelect: (media: Track | Album) => void;
+    onMediaSelect: (media_img: string, media_id: string) => void;
 }
 
 export default function SearchBar({ onMediaSelect }: SearchProps) {
@@ -77,7 +77,7 @@ export default function SearchBar({ onMediaSelect }: SearchProps) {
                     </TabsContent>
                     <TabsContent value="albums">
                         {results.albums?.items.map((album: Album) => (
-                            <Card key={album.id} className="mb-2 hover:bg-primary/10 cursor-pointer" onClick={() => onMediaSelect(album)}>
+                            <Card key={album.id} className="mb-2 hover:bg-primary/10 cursor-pointer" onClick={() => onMediaSelect(album.images[0].url, album.id)}>
                                 <CardContent className="p-4 flex justify-between items-center">
                                     <p className="text-lg font-medium hover:underline">{album.name}</p>
                                     <span className="text-gray-600">Album • {album.artists[0].name}</span>
