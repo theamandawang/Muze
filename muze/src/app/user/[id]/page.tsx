@@ -13,7 +13,7 @@ import './styles.css';
 import { MediaCoverProps } from '@/components/review/AlbumCoverArt';
 import { getUserTopSongs } from '../../api/topSongs/route';
 import ProfileReviewList from '@/components/review/ProfileReviewList';
-import EditProfileModal from '@/components/edit_profile/EditProfileModal';
+import EditProfileModal from '@/components/edit_profile/editProfileModal';
 import { Button } from '@mui/material';
 import { useSession } from 'next-auth/react';
 
