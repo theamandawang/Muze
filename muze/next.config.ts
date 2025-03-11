@@ -19,6 +19,20 @@ const nextConfig: NextConfig = {
                 port: '',
                 pathname: '/image/**',
             },
+
+            // for ticketmaster images
+            {
+                protocol: 'https',
+                hostname: 's1.ticketm.net',
+                port: '',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'images.universe.com',
+                port: '',
+                pathname: '/**',
+            },
         ],
     },
 };

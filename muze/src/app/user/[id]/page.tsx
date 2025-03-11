@@ -17,6 +17,7 @@ import EditProfileModal from '@/components/edit_profile/editProfileModal';
 import { Button } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Events from '@/components/events/EventsList';
 
 interface UserData {
   bio: string | null;
@@ -191,7 +192,7 @@ export default function UserProfile() {
                             <Tabs.List className="TabsList">
                                 <Tabs.Trigger value="overview" className="TabsTrigger">Overview</Tabs.Trigger> 
                                 <Tabs.Trigger value="reviews" className="TabsTrigger">Reviews</Tabs.Trigger> 
-                                <Tabs.Trigger value="concerts" className="TabsTrigger">Concerts</Tabs.Trigger> 
+                                <Tabs.Trigger value="events" className="TabsTrigger">Events</Tabs.Trigger> 
                             </Tabs.List>
                             <Tabs.Content value="overview" className="TabsContent w-full">
                                 <ProfileReviewList userReviews={userReviews?.slice(0, 10) || []} />
@@ -199,8 +200,8 @@ export default function UserProfile() {
                             <Tabs.Content value="reviews" className="TabsContent w-full">
                             <ProfileReviewList userReviews={userReviews || []} />
                             </Tabs.Content>
-                            <Tabs.Content value="concerts" className="TabsContent w-full">
-                                
+                            <Tabs.Content value="events" className="TabsContent w-full">
+                                <Events />
                             </Tabs.Content>
                         </Tabs.Root>
                     </div>
