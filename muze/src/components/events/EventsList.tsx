@@ -3,40 +3,12 @@ import { Card } from "@mui/material";
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import sdk from '@/lib/spotify-sdk/ClientInstance';
 import { useSession } from "next-auth/react";
-import { redirect } from "next/dist/server/api-utils";
+import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
-
-const dummyEvents = [
-  {
-    Event_name: "Rock Fest 2025",
-    Location: "Madison Square Garden",
-    City: "New York",
-    Country: "USA",
-    Time: "March 15, 2025, 8:00 PM",
-    Picture: "https://via.placeholder.com/150",
-    URL: "https://example.com/rockfest2025",
-  },
-  {
-    Event_name: "Indie Vibes",
-    Location: "The Roxy",
-    City: "Los Angeles",
-    Country: "USA",
-    Time: "April 2, 2025, 7:30 PM",
-    Picture: "https://via.placeholder.com/150",
-    URL: "https://example.com/indievibes",
-  },
-  {
-    Event_name: "Jazz Nights",
-    Location: "Blue Note",
-    City: "New York",
-    Country: "USA",
-    Time: "May 10, 2025, 9:00 PM",
-    Picture: "https://via.placeholder.com/150",
-    URL: "https://example.com/jazznights",
-  },
-];
+import { fetchArtistEvents } from "@/lib/ticketmaster/ticketMasterAPI";
 
 export default function Events() {
+
     const { data: session, status } = useSession();
     if (!checkClientSessionExpiry(session, status)) {
         redirect(`/`);
@@ -50,14 +22,30 @@ export default function Events() {
 }
 
 function EventsList({ sdk }: { sdk: SpotifyApi }) {
+
     const [results, setResults] = useState<string[]>([]);
+    const [dummyEvents, setDummyEvents] = useState<any[]>([]);
     
     useEffect(() => {
         (async () => {
-            const results = await sdk.currentUser.topItems('artists');
+            const results = await sdk.currentUser.topItems('artists', 'short_term', 4);
             const names = results.items.map((item: { name: string }) => item.name);
-            setResults(names);
+            try {
+                const events = 
+                    await 
+                    Promise.all(names.map((name) => {
+                        return fetchArtistEvents(name, 3);
+                    }));
+                const flatEvents = events.flat();
+
+                setDummyEvents(flatEvents);
+                setResults(names);
+                
+            } catch(err) {
+                console.log(err);
+            }
         })();
+
     }, [sdk]);
 
     return (
