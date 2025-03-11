@@ -192,7 +192,9 @@ export default function UserProfile() {
                             <Tabs.List className="TabsList">
                                 <Tabs.Trigger value="overview" className="TabsTrigger">Overview</Tabs.Trigger> 
                                 <Tabs.Trigger value="reviews" className="TabsTrigger">Reviews</Tabs.Trigger> 
-                                <Tabs.Trigger value="events" className="TabsTrigger">Events</Tabs.Trigger> 
+                                {session.user.id === id && 
+                                    <Tabs.Trigger value="events" className="TabsTrigger">Events</Tabs.Trigger> 
+                                }
                             </Tabs.List>
                             <Tabs.Content value="overview" className="TabsContent w-full">
                                 <ProfileReviewList userReviews={userReviews?.slice(0, 10) || []} />
