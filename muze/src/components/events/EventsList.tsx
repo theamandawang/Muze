@@ -58,7 +58,7 @@ function EventsList({ sdk }: { sdk: SpotifyApi }) {
                         <p className="font-semibold text-lg">{event.Event_name}</p>
                         <p>{event.Time}</p>
                         <p>{event.Location}, {event.City}, {event.Country}</p>
-                        <a href={event.URL} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">More Info</a>
+                        <a href={event.Url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">More Info</a>
                     </div>
                 ))
             ) : (
