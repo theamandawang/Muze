@@ -13,7 +13,7 @@ import { SpotifyApi } from '@spotify/web-api-ts-sdk'; // use "@spotify/web-api-t
 import sdk from '@/lib/spotify-sdk/ClientInstance';
 
 const AlbumSelection = ({ setTopAlbums }: { setTopAlbums: (album: Track | Album) => void }) => {
-    const [selectedAlbums, setSelectedAlbums] = useState<string[]>([]);
+    const [selectedAlbums, setSelectedAlbums] = useState<string[]>(['','','','']);
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState<Album[]>([]);
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -40,9 +40,10 @@ const AlbumSelection = ({ setTopAlbums }: { setTopAlbums: (album: Track | Album)
             try {
                 const topAlbums = await getUserTopSongs(userId);
                 if (topAlbums == null) return;
-                const covers = await Promise.all(
+                let covers = ['', '', '', ''];
+                await Promise.all(
                     topAlbums.map(async (album) => {
-                        return (sdk.albums.get(album.song_id)).then((album) => {return album.images[0].url})
+                        return (sdk.albums.get(album.song_id)).then((spotify_album) => {covers[album.rank - 1] = spotify_album.images[0].url})
                     })
                 );
                 setSelectedAlbums(covers);
