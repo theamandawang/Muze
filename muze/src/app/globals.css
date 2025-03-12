@@ -15,6 +15,12 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --primary: #62558b;
+    --secondary: "#775460";
+    --custom-fuchsia: "#46293C";
+    --search-purple: '#1c192a';
 }
 
 #root {
