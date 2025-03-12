@@ -8,7 +8,7 @@ export default function SignUp() {
     const router = useRouter();
 
     const logIn = async () => {
-        await signIn('spotify', { redirect: false, callbackUrl: 'http://localhost:3000/' });
+        await signIn('spotify', { redirect: false, callbackUrl: 'https://muze-service-580541375163.us-central1.run.app/' });
         router.push('/');
     };
 

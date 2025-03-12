@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react';
 export default function ProfileDropdown() {
     const handleSignOut = async () => {
         try {
-            await signOut({ redirect: false, callbackUrl: 'http://localhost:3000/'}); // don't redirect immediately
+            await signOut({ redirect: false, callbackUrl: 'https://muze-service-580541375163.us-central1.run.app/'}); // don't redirect immediately
         } catch (error) {
             console.error('Error signing out:', error);
         } 
