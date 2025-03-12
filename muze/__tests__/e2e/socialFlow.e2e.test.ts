@@ -1,5 +1,3 @@
-// File: __tests__/e2e/social.e2e.test.ts
-
 import { follow, unfollow, getUserFollowing, getUserFollowers } from '@/app/api/follow/route';
 import {
   followUser,
