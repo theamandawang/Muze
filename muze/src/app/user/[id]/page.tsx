@@ -10,13 +10,13 @@ import { ReviewProps } from '@/components/review/review-types';
 import FollowButton from '@/components/buttons/FollowButton';
 import * as Tabs from '@radix-ui/react-tabs';
 import './styles.css';
-import { MediaCoverProps } from '@/components/review/AlbumCoverArt';
-import { getUserTopSongs } from '../../api/topSongs/route';
 import ProfileReviewList from '@/components/review/ProfileReviewList';
 import EditProfileModal from '@/components/edit_profile/editProfileModal';
 import { Button } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import checkClientSessionExpiry from '@/utils/checkClientSessionExpiry';
 import Events from '@/components/events/EventsList';
 
 interface UserData {
@@ -40,8 +40,8 @@ export default function UserProfile() {
   const [following, setFollowing] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  if (status !== 'authenticated' || !session?.user) {
-    return <p>Loading...</p>;
+  if (!checkClientSessionExpiry(session, status)) {
+    router.push('/');
   }
 
   useEffect(() => {
@@ -115,10 +115,12 @@ export default function UserProfile() {
             <div className='mx-[7%]'>
                 <div className='flex items-center space-x-4 border-1px'>
                     {/* Profile Picture */}
-                    <img 
+                    <Image
                         src={userData.profile_pic || '/default-profile-pic.jpg'} 
                         alt={`${userData.username}'s profile`} 
                         className='w-16 h-16 rounded-full object-cover' 
+                        width={100}
+                        height={100}
                     />
                     {/* Username, Bio, and Followers/Following Count */}
                     <div>
@@ -202,9 +204,11 @@ export default function UserProfile() {
                             <Tabs.Content value="reviews" className="TabsContent w-full">
                             <ProfileReviewList userReviews={userReviews || []} />
                             </Tabs.Content>
-                            <Tabs.Content value="events" className="TabsContent w-full">
-                                <Events />
-                            </Tabs.Content>
+                            {session.user.id === id && 
+                                <Tabs.Content value="events" className="TabsContent w-full">
+                                    <Events />
+                                </Tabs.Content>
+                            }
                         </Tabs.Root>
                     </div>
 
