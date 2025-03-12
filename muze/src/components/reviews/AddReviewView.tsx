@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { Track, Album } from '@spotify/web-api-ts-sdk';
 import { AuthUser } from '@/app/api/auth/[...nextauth]/authOptions';
-import { addSongReview } from '@/app/api/review/route';
+import { addSongReview } from '@/app/actions/review/action';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

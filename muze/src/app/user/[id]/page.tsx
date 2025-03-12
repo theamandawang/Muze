@@ -3,16 +3,16 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { getUserById } from '../../api/user/route';
+import { getUserById } from '../../actions/user/action';
 import { SearchResults, SpotifyApi, Track } from '@spotify/web-api-ts-sdk'; // use "@spotify/web-api-ts-sdk" in your own project
 import sdk from '@/lib/spotify-sdk/ClientInstance';
-import { getUserSongReviews } from '../../api/review/route';
-import { follow, unfollow, getCurrentUserFollowing, getUserFollowingCount, getUserFollowerCount } from '../../api/follow/route';
+import { getUserSongReviews } from '../../actions/review/action';
+import { follow, unfollow, getCurrentUserFollowing, getUserFollowingCount, getUserFollowerCount } from '../../actions/follow/action';
 import { ReviewProps } from '@/components/review/review-types';
 import FollowButton from '@/components/buttons/FollowButton';
 import * as Tabs from '@radix-ui/react-tabs';
 import './styles.css';
-import { getUserTopSongs } from '../../api/topSongs/route';
+import { getUserTopSongs } from '../../actions/topSongs/action';
 import ProfileReviewList from '@/components/review/ProfileReviewList';
 import EditProfileModal from '@/components/edit_profile/editProfileModal';
 import { Button } from '@mui/material';

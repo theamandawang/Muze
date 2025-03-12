@@ -4,7 +4,7 @@ import {
   
   import {
     addSongReview,
-  } from '@/app/api/review/route';
+  } from '@/app/actions/review/action';
   
   jest.mock('@/db/songReviews', () => ({
     __esModule: true,

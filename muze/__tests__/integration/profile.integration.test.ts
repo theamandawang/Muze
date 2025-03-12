@@ -1,5 +1,5 @@
 import { UpdateUser, UploadPhoto } from '@/db/UserUpdate';
-import { updateUser } from '@/app/api/user/route';
+import { updateUser } from '@/app/actions/user/action';
 import { checkSession } from '@/utils/serverSession';
 import { getAvatarImageSrc } from '@/app/profile/settings/avatar-utils';
 

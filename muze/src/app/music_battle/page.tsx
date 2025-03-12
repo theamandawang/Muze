@@ -7,7 +7,7 @@ import {
     getVotesForArtistInBattle,
     addVote,
     removeVote,
-} from "../api/musicBattles/route";
+} from "../actions/musicBattles/action";
 
 export default function MusicBattle() {
     const [battles, setBattles] = useState<any[]>([]);

@@ -15,12 +15,12 @@ import FollowButton from '@/components/buttons/FollowButton';
 import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import Container from '@mui/material/Container';
-import { getUsersByUsername } from '@/app/api/user/route';
+import { getUsersByUsername } from '@/app/actions/user/action';
 import {
     follow,
     unfollow,
     getCurrentUserFollowing,
-} from '@/app/api/follow/route';
+} from '@/app/actions/follow/action';
 
 // import { getServerSession } from 'next-auth';
 

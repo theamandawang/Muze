@@ -1,4 +1,4 @@
-import { addSongReview } from '@/app/api/review/route';
+import { addSongReview } from '@/app/actions/review/action';
 import { createSongReview } from '@/db/songReviews';
 
 jest.mock('@/db/songReviews', () => ({

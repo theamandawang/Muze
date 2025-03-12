@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getUserFollowing } from '@/app/api/follow/route';
-import { getMultipleUsersById } from '@/app/api/user/route';
+import { getUserFollowing } from '@/app/actions/follow/action';
+import { getMultipleUsersById } from '@/app/actions/user/action';
 import { useParams } from 'next/navigation';
 
 export default function Following() {

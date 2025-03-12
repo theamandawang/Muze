@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import Avatar from '@/app/profile/settings/avatar';
 import { TextField } from '@mui/material';
-import { getCurrentUser, updateUser } from '@/app/api/user/route';
+import { getCurrentUser, updateUser } from '@/app/actions/user/action';
 
 interface EditProfileModalProps {
   open: boolean;

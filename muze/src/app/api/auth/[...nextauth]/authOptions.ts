@@ -1,7 +1,7 @@
 import spotifyProfile, { refreshAccessToken } from './SpotifyProfile';
 import { Account, AuthOptions } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
-import { createUser } from '@/app/api/user/route';
+import { createUser } from '@/app/actions/user/action';
 
 export type AuthUser = {
     name: string;

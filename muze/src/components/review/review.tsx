@@ -1,5 +1,5 @@
 // 'use client';
-import { getReviewsForSong } from '@/app/api/review/route';
+import { getReviewsForSong } from '@/app/actions/review/action';
 import Link from 'next/link';
 import ReviewFooter from './ReviewFooter';
 

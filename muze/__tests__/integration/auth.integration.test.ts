@@ -1,9 +1,9 @@
 import authOptions from '@/app/api/auth/[...nextauth]/authOptions';
 import { JWT } from 'next-auth/jwt';
-import { createUser } from '@/app/api/user/route';
+import { createUser } from '@/app/actions/user/action';
 import { refreshAccessToken } from '@/app/api/auth/[...nextauth]/SpotifyProfile';
 
-jest.mock('@/app/api/user/route', () => ({
+jest.mock('@/app/actions/user/action', () => ({
     __esModule: false,
     createUser: jest.fn(),
 }));

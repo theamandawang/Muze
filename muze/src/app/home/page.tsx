@@ -5,13 +5,13 @@ import Review from "@/components/review/DiscoverReviewNarrow"
 import ReviewWide from "@/components/review/DiscoverReviewWide"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { useEffect, useState } from "react";
-import { getLatestSongReviews, getMultipleUserSongReviews } from "../api/review/route";
-import { getUserTopSongs } from "../api/topSongs/route";
+import { getLatestSongReviews, getMultipleUserSongReviews } from "../actions/review/action";
+import { getUserTopSongs } from "../actions/topSongs/action";
 import { useSession } from "next-auth/react";
 import checkClientSessionExpiry from "@/utils/checkClientSessionExpiry";
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "../api/user/route";
-import { getCurrentUserFollowing } from "../api/follow/route";
+import { getCurrentUser } from "../actions/user/action";
+import { getCurrentUserFollowing } from "../actions/follow/action";
 import Link from "next/link";
 import { MousePointerClickIcon } from "lucide-react";
 

@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { getCurrentUser, updateUser } from '@/app/api/user/route';
+import { getCurrentUser, updateUser } from '@/app/actions/user/action';
 import { getAvatarImageSrc } from './avatar-utils'
 
 export default function Avatar({

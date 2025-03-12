@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { getCurrentUserFollowing } from '@/app/api/follow/route';
-import { getUserById } from '@/app/api/user/route';
+import { getCurrentUserFollowing } from '@/app/actions/follow/action';
+import { getUserById } from '@/app/actions/user/action';
 
 export default async function Follows() {
     async function getFollowing() {

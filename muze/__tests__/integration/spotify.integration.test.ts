@@ -1,6 +1,6 @@
 import getSpotifySongInfo from '@/spotify-api/getSongInfo';
 import sdk from '@/lib/spotify-sdk/ClientInstance';
-import { updateUserTopSongs, getUserTopSongs } from '@/app/api/topSongs/route';
+import { updateUserTopSongs, getUserTopSongs } from '@/app/actions/topSongs/action';
 import { getTopSongs, updateTopSong } from '@/db/topSongs';
 import { fetchArtistEvents } from '@/lib/ticketmaster/ticketMasterAPI';
 

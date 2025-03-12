@@ -9,7 +9,7 @@ import ProfileDropdown from "../profile_pic/ProfileDropdown";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { useSession } from "next-auth/react";
 
-import { getCurrentUserProfilePicture } from "@/app/api/user/route";
+import { getCurrentUserProfilePicture } from "@/app/actions/user/action";
 import checkClientSessionExpiry from "@/utils/checkClientSessionExpiry";
 
 export default function MuzeHeader() {

@@ -7,12 +7,12 @@ import SearchBar from "@/components/profile/SpotifySearch";
 import { Track, Album } from '@spotify/web-api-ts-sdk';
 import { useSession } from "next-auth/react";
 import { AuthUser } from "@/app/api/auth/[...nextauth]/authOptions";
-import { getUserTopSongs, updateUserTopSongs } from "@/app/api/topSongs/route";
+import { getUserTopSongs, updateUserTopSongs } from "@/app/actions/topSongs/action";
 import getSpotifyAlbumInfo from "@/spotify-api/getAlbumInfo";
 import { SpotifyApi } from '@spotify/web-api-ts-sdk'; // use "@spotify/web-api-ts-sdk" in your own project
 import sdk from '@/lib/spotify-sdk/ClientInstance';
 
-const AlbumSelection = ({ setTopAlbums }: { setTopAlbums: (album: Track | Album) => void }) => {
+export default function AlbumSelection({ setTopAlbums }: { setTopAlbums: (album: Track | Album) => void }) {
     const [selectedAlbums, setSelectedAlbums] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState<Album[]>([]);
@@ -84,5 +84,3 @@ const AlbumSelection = ({ setTopAlbums }: { setTopAlbums: (album: Track | Album)
     </div>
     );
 };
-
-export default AlbumSelection;

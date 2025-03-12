@@ -1,4 +1,4 @@
-import { updateUser, getCurrentUser, createUser } from '@/app/api/user/route';
+import { updateUser, getCurrentUser, createUser } from '@/app/actions/user/action';
 import { checkSession } from '@/utils/serverSession';
 import { UpdateUser, UploadPhoto } from '@/db/UserUpdate';
 
@@ -11,7 +11,7 @@ jest.mock('@/db/UserUpdate', () => ({
   UploadPhoto: jest.fn(),
 }));
 
-jest.mock('@/app/api/user/route', () => ({
+jest.mock('@/app/actions/user/action', () => ({
   updateUser: jest.fn(),
   getCurrentUser: jest.fn(),
   createUser: jest.fn(),

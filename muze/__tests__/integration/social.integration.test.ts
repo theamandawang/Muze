@@ -1,4 +1,4 @@
-import { follow, unfollow, getUserFollowing, getUserFollowers } from '@/app/api/follow/route';
+import { follow, unfollow, getUserFollowing, getUserFollowers } from '@/app/actions/follow/action';
 import { getServerSession } from 'next-auth';
 import { followUser, unfollowUser, getFollowing, getFollowers } from '@/db/UserFollowing';
 
