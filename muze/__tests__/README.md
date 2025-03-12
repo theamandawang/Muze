@@ -8,19 +8,24 @@ All test cases are located inside the `__tests__/` directory, organized by **uni
 
 ## Test Coverage Summary
 
-| **Test**                      | **Category**     | **Purpose**                                      | **Test Oracle (Pass/Fail Criteria)**                           | **Edge Cases**                                  |
-|--------------------------------|----------------|------------------------------------------------|----------------------------------------------------------------|------------------------------------------------|
-| `auth.integration.test.ts`     | Integration    | Ensures authentication (token refresh, login, session) | ✅ New token if expired <br> ❌ Fails if token remains the same | - Expired token <br> - Missing user session |
-| `profile.integration.test.ts`  | Integration    | Ensures user profile updates work correctly  | ✅ Updates username, bio, avatar <br> ❌ Fails on invalid input | - Username too short <br> - Avatar upload failure |
-| `spotify.integration.test.ts`  | Integration    | Ensures Spotify API interactions work correctly | ✅ Fetches song details <br> ❌ Fails if API request fails | - Missing album art <br> - No artist data |
-| `social.integration.test.ts`   | Integration    | Ensures user follow/unfollow functionality works | ✅ Users can follow/unfollow <br> ❌ Prevents self-follow | - Follows a new user <br> - Unfollows correctly |
-| `review.e2e.test.ts`          | E2E            | Ensures user can create and retrieve reviews | ✅ Saves and retrieves reviews correctly <br> ❌ Fails if missing title/rating | - Invalid rating (0 or 6) <br> - Empty review |
-| `auth.e2e.test.ts`            | E2E            | Simulates full authentication flow | ✅ Logs in and maintains session <br> ❌ Fails on incorrect credentials | - Invalid credentials <br> - Redirect handling |
-| `userProfileWorkflow.e2e.test.ts` | E2E        | Ensures full user profile update workflow | ✅ Updates user profile successfully <br> ❌ Fails if `updatedUser` is null | - Profile update with missing fields <br> - Avatar upload error |
-| `review.unit.test.ts`         | Unit           | Tests validation logic for reviews | ✅ Valid reviews pass <br> ❌ Fails on empty title | - Long review title <br> - Missing rating |
-| `spotify.unit.test.ts`        | Unit           | Tests individual Spotify API wrapper functions | ✅ Fetches correct track data <br> ❌ Fails on API error | - API unavailable <br> - No track found |
-| `userGet.unit.test.ts`        | Unit           | Ensures fuzzy search retrieves correct users | ✅ Returns sorted, relevant users <br> ❌ Fails if no matches | - Partial username match <br> - No results found |
-| `avatarUtils.unit.test.ts`    | Unit           | Ensures avatar image processing works correctly | ✅ Cache busting applies <br> ❌ Returns same image for base64 | - No profile picture <br> - Image URL formatting |
+| **Test**                         | **Category**   | **Purpose**                                                     | **Test Oracle (Pass/Fail Criteria)**                                          | **Edge Cases**                                           |
+|----------------------------------|----------------|-----------------------------------------------------------------|-------------------------------------------------------------------------------|---------------------------------------------------------|
+| `auth.integration.test.ts`       | Integration    | Validates authentication flow (token refresh, login, session)    | ✅ Returns new token when expired <br> ❌ Fails if token remains unchanged         | Expired token, missing user session                     |
+| `profile.integration.test.ts`    | Integration    | Validates user profile update functionality                      | ✅ Updates username, bio, and avatar <br> ❌ Fails on invalid input                    | Username too short, avatar upload failure               |
+| `reviewLikes.integration.test.ts`| Integration    | Ensures review like/dislike endpoints work correctly             | ✅ Registers and removes likes accurately <br> ❌ Inconsistent like counts            | Concurrent likes/unlikes, already liked scenario         |
+| `social.integration.test.ts`     | Integration    | Validates follow/unfollow API endpoints for user interactions      | ✅ Allows follow/unfollow actions <br> ❌ Prevents self-follow and errors               | Following a new user, unfollow edge conditions           |
+| `spotify.integration.test.ts`    | Integration    | Tests Spotify API interactions for retrieving song details         | ✅ Retrieves song info correctly <br> ❌ Fails if API request errors                  | Missing album art, no artist data                        |
+| `reviewFlow.e2e.test.ts`         | E2E            | Tests the complete song review lifecycle (create, update, delete)    | ✅ Successfully creates, updates, retrieves, and deletes a review <br> ❌ Fails on missing/invalid input | Empty title, invalid rating (e.g., 0 or 6)               |
+| `socialFlow.e2e.test.ts`         | E2E            | Simulates full social interactions (follow, unfollow, list following)  | ✅ Follows and unfollows users correctly <br> ❌ Fails on self-follow or session error  | Self-follow attempt, session failure                    |
+| `apiReview.unit.test.ts`         | Unit           | Tests review API helper functions for creating/updating reviews      | ✅ Processes valid review inputs correctly <br> ❌ Returns error on invalid input      | Missing title, invalid rating                            |
+| `avatarUtils.unit.test.ts`       | Unit           | Verifies avatar URL processing and cache busting                     | ✅ Appends a timestamp for cache busting <br> ❌ Alters base64 image data             | No profile picture, malformed URL                        |
+| `fetchArtistEvents.test.ts`      | Unit           | Validates event fetching from the Ticketmaster API                   | ✅ Parses event data correctly <br> ❌ Throws error on HTTP failure                   | API error, no events returned                            |
+| `followButton.component.test.tsx`| Unit           | Ensures the FollowButton component renders and handles click events   | ✅ Renders correct text and invokes click handler <br> ❌ Incorrect behavior on click    | Loading state, rapid clicking                            |
+| `hero.component.test.tsx`        | Unit           | Verifies the Hero component renders dynamic album art and username     | ✅ Displays username and album covers properly <br> ❌ Fails when data is missing       | No album covers, empty username                         |
+| `spotifyAlbumInfo.test.ts`       | Unit           | Tests the Spotify album info wrapper for retrieving album details      | ✅ Returns correct album information <br> ❌ Returns null on API errors                | API failure, incomplete album data                       |
+| `userGet.unit.test.ts`           | Unit           | Ensures fuzzy search returns relevant, sorted user matches             | ✅ Returns sorted and relevant users <br> ❌ Fails when no matches are found            | Partial username match, no results found                 |
+| `validationReview.unit.test.ts`  | Unit           | Validates review input (title and rating) for creation/updating reviews  | ✅ Accepts valid review inputs <br> ❌ Returns error for empty title or invalid rating  | Title too long, rating out of allowed range              |
+
 
 ## How to Run Tests  
 
