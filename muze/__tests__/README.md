@@ -8,6 +8,7 @@ All test cases are located inside the `__tests__/` directory, organized by **uni
 
 ## Test Coverage Summary
 
+
 | **Test**                         | **Category**   | **Purpose**                                                     | **Test Oracle (Pass/Fail Criteria)**                                          | **Edge Cases**                                           |
 |----------------------------------|----------------|-----------------------------------------------------------------|-------------------------------------------------------------------------------|---------------------------------------------------------|
 | `auth.integration.test.ts`       | Integration    | Validates authentication flow (token refresh, login, session)    | ✅ Returns new token when expired <br> ❌ Fails if token remains unchanged         | Expired token, missing user session                     |
@@ -17,6 +18,7 @@ All test cases are located inside the `__tests__/` directory, organized by **uni
 | `spotify.integration.test.ts`    | Integration    | Tests Spotify API interactions for retrieving song details         | ✅ Retrieves song info correctly <br> ❌ Fails if API request errors                  | Missing album art, no artist data                        |
 | `reviewFlow.e2e.test.ts`         | E2E            | Tests the complete song review lifecycle (create, update, delete)    | ✅ Successfully creates, updates, retrieves, and deletes a review <br> ❌ Fails on missing/invalid input | Empty title, invalid rating (e.g., 0 or 6)               |
 | `socialFlow.e2e.test.ts`         | E2E            | Simulates full social interactions (follow, unfollow, list following)  | ✅ Follows and unfollows users correctly <br> ❌ Fails on self-follow or session error  | Self-follow attempt, session failure                    |
+| `userFlow.e2e.test.ts`           | E2E            | Simulates a complete user journey from signup to profile updates   | ✅ Successfully registers a new user, logs in, updates profile <br> ❌ Fails on invalid input or session issues | Missing password, duplicate username                    |
 | `apiReview.unit.test.ts`         | Unit           | Tests review API helper functions for creating/updating reviews      | ✅ Processes valid review inputs correctly <br> ❌ Returns error on invalid input      | Missing title, invalid rating                            |
 | `avatarUtils.unit.test.ts`       | Unit           | Verifies avatar URL processing and cache busting                     | ✅ Appends a timestamp for cache busting <br> ❌ Alters base64 image data             | No profile picture, malformed URL                        |
 | `fetchArtistEvents.test.ts`      | Unit           | Validates event fetching from the Ticketmaster API                   | ✅ Parses event data correctly <br> ❌ Throws error on HTTP failure                   | API error, no events returned                            |
@@ -25,7 +27,6 @@ All test cases are located inside the `__tests__/` directory, organized by **uni
 | `spotifyAlbumInfo.test.ts`       | Unit           | Tests the Spotify album info wrapper for retrieving album details      | ✅ Returns correct album information <br> ❌ Returns null on API errors                | API failure, incomplete album data                       |
 | `userGet.unit.test.ts`           | Unit           | Ensures fuzzy search returns relevant, sorted user matches             | ✅ Returns sorted and relevant users <br> ❌ Fails when no matches are found            | Partial username match, no results found                 |
 | `validationReview.unit.test.ts`  | Unit           | Validates review input (title and rating) for creation/updating reviews  | ✅ Accepts valid review inputs <br> ❌ Returns error for empty title or invalid rating  | Title too long, rating out of allowed range              |
-
 
 ## How to Run Tests  
 
