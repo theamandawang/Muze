@@ -4,12 +4,15 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { getUserById } from '../../api/user/route';
+import { SearchResults, SpotifyApi, Track } from '@spotify/web-api-ts-sdk'; // use "@spotify/web-api-ts-sdk" in your own project
+import sdk from '@/lib/spotify-sdk/ClientInstance';
 import { getUserSongReviews } from '../../api/review/route';
 import { follow, unfollow, getCurrentUserFollowing, getUserFollowingCount, getUserFollowerCount } from '../../api/follow/route';
 import { ReviewProps } from '@/components/review/review-types';
 import FollowButton from '@/components/buttons/FollowButton';
 import * as Tabs from '@radix-ui/react-tabs';
 import './styles.css';
+import { getUserTopSongs } from '../../api/topSongs/route';
 import ProfileReviewList from '@/components/review/ProfileReviewList';
 import EditProfileModal from '@/components/edit_profile/editProfileModal';
 import { Button } from '@mui/material';
@@ -18,6 +21,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import checkClientSessionExpiry from '@/utils/checkClientSessionExpiry';
 import Events from '@/components/events/EventsList';
+import TopAlbums from '@/components/profile/TopAlbums';
 
 interface UserData {
   bio: string | null;
@@ -37,6 +41,7 @@ export default function UserProfile() {
   const [userReviews, setUserReviews] = useState<ReviewProps[] | null>([]);
   const [followingCount, setFollowingCount] = useState<number>(0);
   const [followerCount, setFollowerCount] = useState<number>(0);
+  const [topAlbums, setTopAlbums] = useState<{id: string, name: string, coverArt: string}[]>([]);
   const [following, setFollowing] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -46,7 +51,7 @@ export default function UserProfile() {
 
   useEffect(() => {
     // if user id is null, return
-    if (id == null) return;
+    if (!id) return;
     // ensure user id is a string
     if (typeof id !== 'string') return;
     // get user data by user id
@@ -71,6 +76,26 @@ export default function UserProfile() {
             setFollowing(true);
         }
     });
+
+    const fetchTopAlbums = async () => {
+                
+    
+        try {
+            const topAlbums = await getUserTopSongs(id);
+            if (topAlbums == null) return;
+            const covers = await Promise.all(
+                topAlbums.map(async (album) => {
+                    return (sdk.albums.get(album.song_id)).then((album) => {return {id: album.id, name: album.name, coverArt: album.images[0].url}})
+                })
+            );
+            setTopAlbums(covers);
+        } catch (err) {
+            console.error("Failed to load top songs");
+            console.error(err);
+        }
+    };
+    
+    fetchTopAlbums();
     
   }, [id]);    // on change of user id
 
@@ -193,7 +218,7 @@ export default function UserProfile() {
                         <Tabs.Root className="TabsRoot flex-shrink-0 w-full w-[300px] md:w-[700px]" defaultValue="overview">
                             <Tabs.List className="TabsList">
                                 <Tabs.Trigger value="overview" className="TabsTrigger">Overview</Tabs.Trigger> 
-                                <Tabs.Trigger value="reviews" className="TabsTrigger">Reviews</Tabs.Trigger> 
+                                <Tabs.Trigger value="topAlbums" className="TabsTrigger">Top Albums</Tabs.Trigger> 
                                 {session.user.id === id && 
                                     <Tabs.Trigger value="events" className="TabsTrigger">Events</Tabs.Trigger> 
                                 }
@@ -201,8 +226,8 @@ export default function UserProfile() {
                             <Tabs.Content value="overview" className="TabsContent w-full">
                                 <ProfileReviewList userReviews={userReviews?.slice(0, 10) || []} />
                             </Tabs.Content>
-                            <Tabs.Content value="reviews" className="TabsContent w-full">
-                            <ProfileReviewList userReviews={userReviews || []} />
+                            <Tabs.Content value="topAlbums" className="TabsContent w-full">
+                                <TopAlbums topAlbums={topAlbums}/>
                             </Tabs.Content>
                             {session.user.id === id && 
                                 <Tabs.Content value="events" className="TabsContent w-full">

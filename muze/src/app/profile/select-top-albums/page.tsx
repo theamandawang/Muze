@@ -47,7 +47,7 @@ const AlbumSelection = ({ setTopAlbums }: { setTopAlbums: (album: Track | Album)
                 );
                 setSelectedAlbums(covers);
             } catch (err) {
-                console.error("Failed to load top songs");
+                console.error("Failed to load top albums");
                 console.error(err);
             }
         };
